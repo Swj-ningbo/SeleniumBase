@@ -23,7 +23,7 @@ self.double_click(selector, by=By.CSS_SELECTOR, timeout=None)
 
 self.click_chain(selectors_list, by=By.CSS_SELECTOR, timeout=None, spacing=0)
 
-self.update_text(selector, new_value, by=By.CSS_SELECTOR, timeout=None, retry=False)
+self.update_text(selector, text, by=By.CSS_SELECTOR, timeout=None, retry=False)
 # Duplicates: self.type(selector, text, by=By.CSS_SELECTOR, timeout=None, retry=False)
 #             self.input(selector, text, by=By.CSS_SELECTOR, timeout=None, retry=False)
 #             self.write(selector, text, by=By.CSS_SELECTOR, timeout=None, retry=False)
@@ -42,6 +42,8 @@ self.get_page_source()
 
 self.get_title()
 # Duplicates: self.get_page_title()
+
+self.get_user_agent()
 
 self.go_back()
 
@@ -121,6 +123,10 @@ self.hover_and_double_click(hover_selector, click_selector,
                             hover_by=By.CSS_SELECTOR, click_by=By.CSS_SELECTOR,
                             timeout=None)
 
+self.drag_and_drop(drag_selector, drop_selector,
+                   drag_by=By.CSS_SELECTOR, drop_by=By.CSS_SELECTOR,
+                   timeout=None)
+
 self.select_option_by_text(dropdown_selector, option,
                            dropdown_by=By.CSS_SELECTOR,
                            timeout=None)
@@ -193,7 +199,7 @@ self.bring_to_front(selector, by=By.CSS_SELECTOR)
 
 self.highlight_click(selector, by=By.CSS_SELECTOR, loops=3, scroll=True)
 
-self.highlight_update_text(selector, new_value, by=By.CSS_SELECTOR, loops=3, scroll=True)
+self.highlight_update_text(selector, text, by=By.CSS_SELECTOR, loops=3, scroll=True)
 
 self.highlight(selector, by=By.CSS_SELECTOR, loops=4, scroll=True)
 
@@ -249,6 +255,7 @@ self.get_link_status_code(link, allow_redirects=False, timeout=5)
 self.assert_link_status_code_is_not_404(link)
 
 self.assert_no_404_errors(multithreaded=True)
+# Duplicates: self.assert_no_broken_links(multithreaded=True)
 
 self.print_unique_links_with_status_codes()
 
@@ -300,11 +307,12 @@ self.convert_xpath_to_css(xpath)
 
 self.convert_to_css_selector(selector, by)
 
-self.set_value(selector, new_value, by=By.CSS_SELECTOR, timeout=None)
+self.set_value(selector, text, by=By.CSS_SELECTOR, timeout=None)
 
-self.js_update_text(selector, new_value, by=By.CSS_SELECTOR, timeout=None)
+self.js_update_text(selector, text, by=By.CSS_SELECTOR, timeout=None)
+# Duplicates: self.js_type(selector, text, by=By.CSS_SELECTOR, timeout=None)
 
-self.jquery_update_text(selector, new_value, by=By.CSS_SELECTOR, timeout=None)
+self.jquery_update_text(selector, text, by=By.CSS_SELECTOR, timeout=None)
 
 self.set_time_limit(time_limit)
 
@@ -352,6 +360,44 @@ self.add_meta_tag(http_equiv=None, content=None)
 
 ############
 
+self.create_presentation(name=None, theme="default", transition="default")
+
+self.add_slide(content=None, image=None, code=None, iframe=None,
+               content2=None, notes=None, transition=None, name=None)
+
+self.save_presentation(name=None, filename=None, show_notes=False, interval=0)
+
+self.begin_presentation(name=None, filename=None, show_notes=False, interval=0)
+
+############
+
+self.create_pie_chart(chart_name=None, title=None, subtitle=None,
+                      data_name=None, unit=None, libs=True)
+
+self.create_bar_chart(chart_name=None, title=None, subtitle=None,
+                      data_name=None, unit=None, libs=True)
+
+self.create_column_chart(chart_name=None, title=None, subtitle=None,
+                         data_name=None, unit=None, libs=True)
+
+self.create_line_chart(chart_name=None, title=None, subtitle=None,
+                       data_name=None, unit=None, zero=False, libs=True)
+
+self.create_area_chart(chart_name=None, title=None, subtitle=None,
+                       data_name=None, unit=None, zero=False, libs=True)
+
+self.add_series_to_chart(data_name=None, chart_name=None)
+
+self.add_data_point(label, value, color=None, chart_name=None)
+
+self.save_chart(chart_name=None, filename=None)
+
+self.display_chart(chart_name=None, filename=None, interval=0)
+
+self.extract_chart(chart_name=None)
+
+############
+
 self.create_tour(name=None, theme=None)
 
 self.create_shepherd_tour(name=None, theme=None)
@@ -374,6 +420,8 @@ self.activate_jquery_confirm()
 self.activate_messenger()
 
 self.post_message(message, duration=None, pause=True, style="info")
+
+self.post_message_and_highlight(message, selector, by=By.CSS_SELECTOR)
 
 self.post_success_message(message, duration=None, pause=True)
 

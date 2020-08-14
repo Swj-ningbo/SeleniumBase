@@ -13,7 +13,7 @@ Example:
         seleniumbase install chromedriver
         seleniumbase install geckodriver
         seleniumbase install edgedriver
-        seleniumbase install chromedriver 81.0.4044.69
+        seleniumbase install chromedriver 83.0.4103.39
         seleniumbase install chromedriver latest
         seleniumbase install chromedriver -p
         seleniumbase install chromedriver latest -p
@@ -41,7 +41,7 @@ DRIVER_DIR = os.path.dirname(os.path.realpath(drivers.__file__))
 LOCAL_PATH = "/usr/local/bin/"  # On Mac and Linux systems
 DEFAULT_CHROMEDRIVER_VERSION = "2.44"
 DEFAULT_GECKODRIVER_VERSION = "v0.26.0"
-DEFAULT_EDGEDRIVER_VERSION = "79.0.309.65"
+DEFAULT_EDGEDRIVER_VERSION = "84.0.522.52"
 DEFAULT_OPERADRIVER_VERSION = "v.81.0.4044.113"
 
 

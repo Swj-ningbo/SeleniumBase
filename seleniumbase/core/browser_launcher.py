@@ -4,7 +4,6 @@ import os
 import random
 import re
 import sys
-import threading
 import time
 import urllib3
 import warnings
@@ -15,7 +14,6 @@ from seleniumbase.config import proxy_list
 from seleniumbase.config import settings
 from seleniumbase.core import download_helper
 from seleniumbase.core import proxy_helper
-from seleniumbase.core import capabilities_parser
 from seleniumbase.fixtures import constants
 from seleniumbase.fixtures import page_utils
 from seleniumbase import drivers  # webdriver storage folder for SeleniumBase
@@ -106,6 +104,7 @@ def _add_chrome_proxy_extension(
         proxy_helper.create_proxy_zip(proxy_string, proxy_user, proxy_pass)
     else:
         # Pytest multi-threaded test
+        import threading
         lock = threading.Lock()
         with lock:
             time.sleep(random.uniform(0.02, 0.15))
@@ -133,8 +132,8 @@ def _set_chrome_options(
         downloads_path, headless,
         proxy_string, proxy_auth, proxy_user, proxy_pass,
         user_agent, disable_csp, enable_sync, use_auto_ext,
-        no_sandbox, disable_gpu, incognito, guest_mode, devtools,
-        user_data_dir, extension_zip, extension_dir, servername,
+        no_sandbox, disable_gpu, incognito, guest_mode, devtools, swiftshader,
+        block_images, user_data_dir, extension_zip, extension_dir, servername,
         mobile_emulator, device_width, device_height, device_pixel_ratio):
     chrome_options = webdriver.ChromeOptions()
     prefs = {
@@ -145,6 +144,8 @@ def _set_chrome_options(
             "password_manager_enabled": False
         }
     }
+    if block_images:
+        prefs["profile.managed_default_content_settings.images"] = 2
     chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_experimental_option("w3c", True)
     if enable_sync:
@@ -174,12 +175,22 @@ def _set_chrome_options(
         chrome_options.add_experimental_option(
             "mobileEmulation", emulator_settings)
         chrome_options.add_argument("--enable-sync")
-    if incognito:
-        chrome_options.add_argument("--incognito")
-    elif guest_mode:
-        chrome_options.add_argument("--guest")
-    else:
-        pass
+    if not proxy_auth and not disable_csp and (
+            not extension_zip and not extension_dir):
+        if incognito:
+            # Use Chrome's Incognito Mode
+            # Incognito Mode prevents Chrome extensions from loading,
+            # so if using extensions or a feature that uses extensions,
+            # then Chrome's Incognito mode will be disabled instead.
+            chrome_options.add_argument("--incognito")
+        elif guest_mode:
+            # Use Chrome's Guest Mode
+            # Guest mode prevents Chrome extensions from loading,
+            # so if using extensions or a feature that uses extensions,
+            # then Chrome's Guest Mode will be disabled instead.
+            chrome_options.add_argument("--guest")
+        else:
+            pass
     if user_data_dir:
         abs_path = os.path.abspath(user_data_dir)
         chrome_options.add_argument("user-data-dir=%s" % abs_path)
@@ -210,7 +221,10 @@ def _set_chrome_options(
     chrome_options.add_argument("--disable-translate")
     chrome_options.add_argument("--disable-web-security")
     chrome_options.add_argument("--homepage=about:blank")
+    chrome_options.add_argument("--dns-prefetch-disable")
     chrome_options.add_argument("--dom-automation")
+    chrome_options.add_argument("--disable-hang-monitor")
+    chrome_options.add_argument("--disable-prompt-on-repost")
     if not use_auto_ext:  # (It's ON by default. Disable it when not wanted.)
         chrome_options.add_experimental_option("useAutomationExtension", False)
     if (settings.DISABLE_CSP_ON_CHROME or disable_csp) and not headless:
@@ -222,8 +236,6 @@ def _set_chrome_options(
             chrome_options = _add_chrome_proxy_extension(
                 chrome_options, proxy_string, proxy_user, proxy_pass)
         chrome_options.add_argument('--proxy-server=%s' % proxy_string)
-    else:
-        chrome_options.add_argument("--no-proxy-server")
     if headless:
         if not proxy_auth:
             # Headless Chrome doesn't support extensions, which are
@@ -232,10 +244,12 @@ def _set_chrome_options(
             # using Chrome's built-in headless mode. See link for details:
             # https://bugs.chromium.org/p/chromium/issues/detail?id=706008
             chrome_options.add_argument("--headless")
-    # if headless or disable_gpu:
-    chrome_options.add_argument("--disable-gpu")  # (Now always on)
     # if (headless and "linux" in PLATFORM) or no_sandbox:
     chrome_options.add_argument("--no-sandbox")  # (Now always on)
+    if swiftshader:
+        chrome_options.add_argument("--use-gl=swiftshader")
+    else:
+        chrome_options.add_argument("--disable-gpu")
     if "linux" in PLATFORM:
         chrome_options.add_argument("--disable-dev-shm-usage")
     return chrome_options
@@ -259,6 +273,9 @@ def _create_firefox_profile(
     profile.set_preference("app.update.silent", True)
     profile.set_preference("browser.privatebrowsing.autostart", True)
     profile.set_preference("devtools.errorconsole.enabled", False)
+    profile.set_preference("dom.webnotifications.enabled", False)
+    profile.set_preference("dom.disable_beforeunload", True)
+    profile.set_preference("browser.contentblocking.database.enabled", False)
     profile.set_preference("extensions.allowPrivateBrowsingByDefault", True)
     profile.set_preference("extensions.PrivateBrowsing.notification", False)
     profile.set_preference("extensions.systemAddon.update.enabled", False)
@@ -358,7 +375,8 @@ def get_driver(browser_name, headless=False, use_grid=False,
                disable_csp=None, enable_sync=None, use_auto_ext=None,
                no_sandbox=None, disable_gpu=None,
                incognito=None, guest_mode=None, devtools=None,
-               user_data_dir=None, extension_zip=None, extension_dir=None,
+               swiftshader=None, block_images=None, user_data_dir=None,
+               extension_zip=None, extension_dir=None,
                test_id=None, mobile_emulator=False, device_width=None,
                device_height=None, device_pixel_ratio=None):
     proxy_auth = False
@@ -396,14 +414,15 @@ def get_driver(browser_name, headless=False, use_grid=False,
             proxy_string, proxy_auth, proxy_user, proxy_pass, user_agent,
             cap_file, cap_string, disable_csp, enable_sync, use_auto_ext,
             no_sandbox, disable_gpu, incognito, guest_mode, devtools,
-            user_data_dir, extension_zip, extension_dir, test_id,
+            swiftshader, block_images, user_data_dir,
+            extension_zip, extension_dir, test_id,
             mobile_emulator, device_width, device_height, device_pixel_ratio)
     else:
         return get_local_driver(
             browser_name, headless, servername,
             proxy_string, proxy_auth, proxy_user, proxy_pass, user_agent,
             disable_csp, enable_sync, use_auto_ext, no_sandbox, disable_gpu,
-            incognito, guest_mode, devtools,
+            incognito, guest_mode, devtools, swiftshader, block_images,
             user_data_dir, extension_zip, extension_dir,
             mobile_emulator, device_width, device_height, device_pixel_ratio)
 
@@ -412,7 +431,7 @@ def get_remote_driver(
         browser_name, headless, servername, port, proxy_string, proxy_auth,
         proxy_user, proxy_pass, user_agent, cap_file, cap_string,
         disable_csp, enable_sync, use_auto_ext, no_sandbox, disable_gpu,
-        incognito, guest_mode, devtools,
+        incognito, guest_mode, devtools, swiftshader, block_images,
         user_data_dir, extension_zip, extension_dir, test_id,
         mobile_emulator, device_width, device_height, device_pixel_ratio):
     downloads_path = download_helper.get_downloads_folder()
@@ -421,6 +440,7 @@ def get_remote_driver(
     desired_caps = {}
     extra_caps = {}
     if cap_file:
+        from seleniumbase.core import capabilities_parser
         desired_caps = capabilities_parser.get_desired_capabilities(cap_file)
     if cap_string:
         try:
@@ -443,7 +463,7 @@ def get_remote_driver(
             downloads_path, headless,
             proxy_string, proxy_auth, proxy_user, proxy_pass, user_agent,
             disable_csp, enable_sync, use_auto_ext, no_sandbox, disable_gpu,
-            incognito, guest_mode, devtools,
+            incognito, guest_mode, devtools, swiftshader, block_images,
             user_data_dir, extension_zip, extension_dir, servername,
             mobile_emulator, device_width, device_height, device_pixel_ratio)
         capabilities = chrome_options.to_capabilities()
@@ -567,7 +587,7 @@ def get_local_driver(
         browser_name, headless, servername,
         proxy_string, proxy_auth, proxy_user, proxy_pass, user_agent,
         disable_csp, enable_sync, use_auto_ext, no_sandbox, disable_gpu,
-        incognito, guest_mode, devtools,
+        incognito, guest_mode, devtools, swiftshader, block_images,
         user_data_dir, extension_zip, extension_dir,
         mobile_emulator, device_width, device_height, device_pixel_ratio):
     '''
@@ -658,7 +678,8 @@ def get_local_driver(
                 proxy_string, proxy_auth, proxy_user, proxy_pass, user_agent,
                 disable_csp, enable_sync, use_auto_ext,
                 no_sandbox, disable_gpu, incognito, guest_mode, devtools,
-                user_data_dir, extension_zip, extension_dir, servername,
+                swiftshader, block_images, user_data_dir,
+                extension_zip, extension_dir, servername,
                 mobile_emulator, device_width, device_height,
                 device_pixel_ratio)
             if LOCAL_EDGEDRIVER and os.path.exists(LOCAL_EDGEDRIVER):
@@ -676,18 +697,93 @@ def get_local_driver(
                     print("\nWarning: msedgedriver not found. Installing now:")
                     sb_install.main(override="edgedriver")
                     sys.argv = sys_args  # Put back the original sys args
+            # For Microsoft Edge (Chromium) version 79 or lower
             return webdriver.Chrome(executable_path=LOCAL_EDGEDRIVER,
                                     options=chrome_options)
-        except Exception as e:
-            if headless:
-                raise Exception(e)
+        except Exception:
+            # For Microsoft Edge (Chromium) version 80 or higher
+            from msedge.selenium_tools import Edge, EdgeOptions
             if LOCAL_EDGEDRIVER and os.path.exists(LOCAL_EDGEDRIVER):
                 try:
                     make_driver_executable_if_not(LOCAL_EDGEDRIVER)
                 except Exception as e:
                     logging.debug("\nWarning: Could not make edgedriver"
                                   " executable: %s" % e)
-            return webdriver.Chrome(executable_path=LOCAL_EDGEDRIVER)
+            edge_options = EdgeOptions()
+            edge_options.use_chromium = True
+            prefs = {
+                "download.default_directory": downloads_path,
+                "local_discovery.notifications_enabled": False,
+                "credentials_enable_service": False,
+                "profile": {
+                    "password_manager_enabled": False
+                }
+            }
+            if block_images:
+                prefs["profile.managed_default_content_settings.images"] = 2
+            edge_options.add_experimental_option("prefs", prefs)
+            edge_options.add_experimental_option("w3c", True)
+            edge_options.add_experimental_option(
+                "useAutomationExtension", False)
+            edge_options.add_experimental_option(
+                "excludeSwitches", ["enable-automation", "enable-logging"])
+            if guest_mode:
+                edge_options.add_argument("--guest")
+            if headless:
+                edge_options.add_argument("--headless")
+            if mobile_emulator:
+                emulator_settings = {}
+                device_metrics = {}
+                if type(device_width) is int and (
+                        type(device_height) is int and (
+                        type(device_pixel_ratio) is int)):
+                    device_metrics["width"] = device_width
+                    device_metrics["height"] = device_height
+                    device_metrics["pixelRatio"] = device_pixel_ratio
+                else:
+                    device_metrics["width"] = 411
+                    device_metrics["height"] = 731
+                    device_metrics["pixelRatio"] = 3
+                emulator_settings["deviceMetrics"] = device_metrics
+                if user_agent:
+                    emulator_settings["userAgent"] = user_agent
+                edge_options.add_experimental_option(
+                    "mobileEmulation", emulator_settings)
+                edge_options.add_argument("--enable-sync")
+            edge_options.add_argument("--disable-infobars")
+            edge_options.add_argument("--disable-save-password-bubble")
+            edge_options.add_argument("--disable-single-click-autofill")
+            edge_options.add_argument("--disable-translate")
+            edge_options.add_argument("--disable-web-security")
+            edge_options.add_argument("--homepage=about:blank")
+            edge_options.add_argument("--dns-prefetch-disable")
+            edge_options.add_argument("--dom-automation")
+            edge_options.add_argument("--disable-hang-monitor")
+            edge_options.add_argument("--disable-prompt-on-repost")
+            if proxy_string:
+                edge_options.add_argument('--proxy-server=%s' % proxy_string)
+            edge_options.add_argument("--test-type")
+            edge_options.add_argument("--log-level=3")
+            edge_options.add_argument("--no-first-run")
+            edge_options.add_argument("--ignore-certificate-errors")
+            if devtools and not headless:
+                edge_options.add_argument("--auto-open-devtools-for-tabs")
+            edge_options.add_argument("--allow-file-access-from-files")
+            edge_options.add_argument("--allow-insecure-localhost")
+            edge_options.add_argument("--allow-running-insecure-content")
+            if user_agent:
+                edge_options.add_argument("--user-agent=%s" % user_agent)
+            edge_options.add_argument("--no-sandbox")
+            if swiftshader:
+                edge_options.add_argument("--use-gl=swiftshader")
+            else:
+                edge_options.add_argument("--disable-gpu")
+            if "linux" in PLATFORM:
+                edge_options.add_argument("--disable-dev-shm-usage")
+            capabilities = edge_options.to_capabilities()
+            capabilities["platform"] = ''
+            return Edge(
+                executable_path=LOCAL_EDGEDRIVER, capabilities=capabilities)
     elif browser_name == constants.Browser.SAFARI:
         arg_join = " ".join(sys.argv)
         if ("-n" in sys.argv) or ("-n=" in arg_join) or (arg_join == "-c"):
@@ -715,9 +811,9 @@ def get_local_driver(
                 proxy_string, proxy_auth, proxy_user, proxy_pass, user_agent,
                 disable_csp, enable_sync, use_auto_ext,
                 no_sandbox, disable_gpu, incognito, guest_mode, devtools,
-                user_data_dir, extension_zip, extension_dir, servername,
-                mobile_emulator, device_width, device_height,
-                device_pixel_ratio)
+                swiftshader, block_images, user_data_dir, extension_zip,
+                extension_dir, servername, mobile_emulator,
+                device_width, device_height, device_pixel_ratio)
             if LOCAL_CHROMEDRIVER and os.path.exists(LOCAL_CHROMEDRIVER):
                 try:
                     make_driver_executable_if_not(LOCAL_CHROMEDRIVER)

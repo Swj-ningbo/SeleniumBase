@@ -5,6 +5,10 @@ from seleniumbase import MasterQA
 
 class 셀레늄_테스트_케이스(BaseCase):  # noqa
 
+    def __init__(self, *args, **kwargs):
+        super(셀레늄_테스트_케이스, self).__init__(*args, **kwargs)
+        self._language = "Korean"
+
     def 열기(self, *args, **kwargs):
         # open(url)
         return self.open(*args, **kwargs)
@@ -25,20 +29,28 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
         # slow_click(selector)
         return self.slow_click(*args, **kwargs)
 
+    def 보이는_경우_클릭(self, *args, **kwargs):
+        # click_if_visible(selector, by=By.CSS_SELECTOR)
+        return self.click_if_visible(*args, **kwargs)
+
     def 링크_텍스트를_클릭합니다(self, *args, **kwargs):
         # click_link_text(link_text)
         return self.click_link_text(*args, **kwargs)
 
     def 텍스트를_업데이트(self, *args, **kwargs):
-        # update_text(selector, new_value)
+        # update_text(selector, text)
         return self.update_text(*args, **kwargs)
 
+    def 입력(self, *args, **kwargs):
+        # type(selector, text)  # Same as update_text()
+        return self.type(*args, **kwargs)
+
     def 텍스트를_추가(self, *args, **kwargs):
-        # add_text(selector, new_value)
+        # add_text(selector, text)
         return self.add_text(*args, **kwargs)
 
     def 텍스트를_검색(self, *args, **kwargs):
-        # get_text(selector, new_value)
+        # get_text(selector, text)
         return self.get_text(*args, **kwargs)
 
     def 텍스트_확인(self, *args, **kwargs):
@@ -169,6 +181,14 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
         # js_click(selector)
         return self.js_click(*args, **kwargs)
 
+    def JS_텍스트를_업데이트(self, *args, **kwargs):
+        # js_update_text(selector, text)
+        return self.js_update_text(*args, **kwargs)
+
+    def JS_입력(self, *args, **kwargs):
+        # js_type(selector, text)
+        return self.js_type(*args, **kwargs)
+
     def HTML_확인(self, *args, **kwargs):
         # inspect_html()
         return self.inspect_html(*args, **kwargs)
@@ -184,6 +204,14 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
     def 스크립트를_실행하려면(self, *args, **kwargs):
         # execute_script(script)
         return self.execute_script(*args, **kwargs)
+
+    def 스크립트를_안전하게_실행(self, *args, **kwargs):
+        # safe_execute_script(script)
+        return self.safe_execute_script(*args, **kwargs)
+
+    def JQUERY_로드(self, *args, **kwargs):
+        # activate_jquery()
+        return self.activate_jquery(*args, **kwargs)
 
     def 광고_차단(self, *args, **kwargs):
         # ad_block()
@@ -285,6 +313,70 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
         # select_option_by_value(dropdown_selector, option)
         return self.select_option_by_value(*args, **kwargs)
 
+    def 프레젠테이션_만들기(self, *args, **kwargs):
+        # create_presentation(name=None, theme="default", transition="default")
+        return self.create_presentation(*args, **kwargs)
+
+    def 슬라이드_추가(self, *args, **kwargs):
+        # add_slide(content=None, image=None, code=None, iframe=None,
+        #           content2=None, notes=None, transition=None, name=None)
+        return self.add_slide(*args, **kwargs)
+
+    def 프레젠테이션_저장(self, *args, **kwargs):
+        # save_presentation(name=None, filename=None,
+        #                   show_notes=False, interval=0)
+        return self.save_presentation(*args, **kwargs)
+
+    def 프레젠테이션_시작(self, *args, **kwargs):
+        # begin_presentation(name=None, filename=None,
+        #                    show_notes=False, interval=0)
+        return self.begin_presentation(*args, **kwargs)
+
+    def 원형_차트_만들기(self, *args, **kwargs):
+        # create_pie_chart(chart_name=None, title=None, subtitle=None,
+        #                  data_name=None, unit=None, libs=True)
+        return self.create_pie_chart(*args, **kwargs)
+
+    def 막대_차트_만들기(self, *args, **kwargs):
+        # create_bar_chart(chart_name=None, title=None, subtitle=None,
+        #                  data_name=None, unit=None, libs=True)
+        return self.create_bar_chart(*args, **kwargs)
+
+    def 열_차트_만들기(self, *args, **kwargs):
+        # create_column_chart(chart_name=None, title=None, subtitle=None,
+        #                     data_name=None, unit=None, libs=True)
+        return self.create_column_chart(*args, **kwargs)
+
+    def 선_차트_만들기(self, *args, **kwargs):
+        # create_line_chart(chart_name=None, title=None, subtitle=None,
+        #                   data_name=None, unit=None, zero=False, libs=True)
+        return self.create_line_chart(*args, **kwargs)
+
+    def 영역_차트_만들기(self, *args, **kwargs):
+        # create_area_chart(chart_name=None, title=None, subtitle=None,
+        #                   data_name=None, unit=None, zero=False, libs=True)
+        return self.create_area_chart(*args, **kwargs)
+
+    def 차트에_시리즈_추가(self, *args, **kwargs):
+        # add_series_to_chart(data_name=None, chart_name=None)
+        return self.add_series_to_chart(*args, **kwargs)
+
+    def 데이터_포인트_추가(self, *args, **kwargs):
+        # add_data_point(label, value, color=None, chart_name=None)
+        return self.add_data_point(*args, **kwargs)
+
+    def 차트_저장(self, *args, **kwargs):
+        # save_chart(chart_name=None, filename=None)
+        return self.save_chart(*args, **kwargs)
+
+    def 차트_표시(self, *args, **kwargs):
+        # display_chart(chart_name=None, filename=None, interval=0)
+        return self.display_chart(*args, **kwargs)
+
+    def 차트_추출(self, *args, **kwargs):
+        # extract_chart(chart_name=None)
+        return self.extract_chart(*args, **kwargs)
+
     def 가이드_투어_만들기(self, *args, **kwargs):
         # create_tour(name=None, theme=None)
         return self.create_tour(*args, **kwargs)
@@ -322,6 +414,16 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
         # export_tour(name=None, filename="my_tour.js", url=None)
         return self.export_tour(*args, **kwargs)
 
+    def PDF_텍스트를_검색(self, *args, **kwargs):
+        # get_pdf_text(pdf, page=None, maxpages=None, password=None,
+        #              codec='utf-8', wrap=False, nav=False, override=False)
+        return self.get_pdf_text(*args, **kwargs)
+
+    def PDF_텍스트_확인(self, *args, **kwargs):
+        # assert_pdf_text(pdf, text, page=None, maxpages=None, password=None,
+        #                 codec='utf-8', wrap=True, nav=False, override=False)
+        return self.assert_pdf_text(*args, **kwargs)
+
     def 실패(self, *args, **kwargs):
         # fail(msg=None)  # Inherited from "unittest"
         return self.fail(*args, **kwargs)
@@ -346,6 +448,14 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
         # find_element(selector)  # Element must be visible
         return self.find_element(*args, **kwargs)
 
+    def 첫_번째_요소_제거(self, *args, **kwargs):
+        # remove_element(selector)
+        return self.remove_element(*args, **kwargs)
+
+    def 모든_요소_제거(self, *args, **kwargs):
+        # remove_elements(selector)
+        return self.remove_elements(*args, **kwargs)
+
     def 텍스트_찾기(self, *args, **kwargs):
         # find_text(text, selector="html")  # Same as wait_for_text
         return self.find_text(*args, **kwargs)
@@ -362,13 +472,13 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
         # set_attributes(selector, attribute, value)
         return self.set_attributes(*args, **kwargs)
 
-    def 입력(self, *args, **kwargs):
-        # input(selector, new_value)  # Same as update_text()
-        return self.input(*args, **kwargs)
-
     def 쓰다(self, *args, **kwargs):
-        # write(selector, new_value)  # Same as update_text()
+        # write(selector, text)  # Same as update_text()
         return self.write(*args, **kwargs)
+
+    def 메시지_테마_설정(self, *args, **kwargs):
+        # set_messenger_theme(theme="default", location="default")
+        return self.set_messenger_theme(*args, **kwargs)
 
     def 메시지를_표시(self, *args, **kwargs):
         # post_message(message, duration=None, pause=True, style="info")
@@ -402,6 +512,10 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
         # switch_to_alert(timeout=None)
         return self.switch_to_alert(*args, **kwargs)
 
+    def 드래그_앤_드롭(self, *args, **kwargs):
+        # drag_and_drop(drag_selector, drop_selector)
+        return self.drag_and_drop(*args, **kwargs)
+
     def HTML_파일_로드(self, *args, **kwargs):
         # load_html_file(html_file, new_page=True)
         return self.load_html_file(*args, **kwargs)
@@ -409,6 +523,14 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
     def HTML_파일_열기(self, *args, **kwargs):
         # open_html_file(html_file)
         return self.open_html_file(*args, **kwargs)
+
+    def 모든_쿠키_삭제(self, *args, **kwargs):
+        # delete_all_cookies()
+        return self.delete_all_cookies(*args, **kwargs)
+
+    def 사용자_에이전트_가져_오기(self, *args, **kwargs):
+        # get_user_agent()
+        return self.get_user_agent(*args, **kwargs)
 
 
 class MasterQA_한국어(MasterQA, 셀레늄_테스트_케이스):

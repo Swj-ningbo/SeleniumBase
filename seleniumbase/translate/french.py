@@ -5,6 +5,10 @@ from seleniumbase import MasterQA
 
 class CasDeBase(BaseCase):
 
+    def __init__(self, *args, **kwargs):
+        super(CasDeBase, self).__init__(*args, **kwargs)
+        self._language = "French"
+
     def ouvrir(self, *args, **kwargs):
         # open(url)
         return self.open(*args, **kwargs)
@@ -25,27 +29,35 @@ class CasDeBase(BaseCase):
         # slow_click(selector)
         return self.slow_click(*args, **kwargs)
 
+    def cliquer_si_affiché(self, *args, **kwargs):  # noqa
+        # click_if_visible(selector, by=By.CSS_SELECTOR)
+        return self.click_if_visible(*args, **kwargs)
+
     def cliquer_texte_du_lien(self, *args, **kwargs):
         # click_link_text(link_text)
         return self.click_link_text(*args, **kwargs)
 
     def modifier_texte(self, *args, **kwargs):
-        # update_text(selector, new_value)
+        # update_text(selector, text)
         return self.update_text(*args, **kwargs)
 
+    def taper(self, *args, **kwargs):
+        # type(selector, text)  # Same as update_text()
+        return self.type(*args, **kwargs)
+
     def ajouter_texte(self, *args, **kwargs):
-        # add_text(selector, new_value)
+        # add_text(selector, text)
         return self.add_text(*args, **kwargs)
 
     def obtenir_texte(self, *args, **kwargs):
-        # get_text(selector, new_value)
+        # get_text(selector, text)
         return self.get_text(*args, **kwargs)
 
-    def vérifier_texte(self, *args, **kwargs):  # noqa
+    def vérifier_texte(self, *args, **kwargs):
         # assert_text(text, selector)
         return self.assert_text(*args, **kwargs)
 
-    def vérifier_exactement_texte(self, *args, **kwargs):
+    def vérifier_texte_exactement(self, *args, **kwargs):
         # assert_exact_text(text, selector)
         return self.assert_exact_text(*args, **kwargs)
 
@@ -165,9 +177,17 @@ class CasDeBase(BaseCase):
         # submit(selector)
         return self.submit(*args, **kwargs)
 
-    def js_clic(self, *args, **kwargs):
+    def js_cliquer(self, *args, **kwargs):
         # js_click(selector)
         return self.js_click(*args, **kwargs)
+
+    def js_modifier_texte(self, *args, **kwargs):
+        # js_update_text(selector, text)
+        return self.js_update_text(*args, **kwargs)
+
+    def js_taper(self, *args, **kwargs):
+        # js_type(selector, text)
+        return self.js_type(*args, **kwargs)
 
     def vérifier_html(self, *args, **kwargs):
         # inspect_html()
@@ -181,9 +201,17 @@ class CasDeBase(BaseCase):
         # choose_file(selector, file_path)
         return self.choose_file(*args, **kwargs)
 
-    def exécuter_le_script(self, *args, **kwargs):
+    def exécuter_script(self, *args, **kwargs):
         # execute_script(script)
         return self.execute_script(*args, **kwargs)
+
+    def exécuter_script_sans_risque(self, *args, **kwargs):
+        # safe_execute_script(script)
+        return self.safe_execute_script(*args, **kwargs)
+
+    def activer_jquery(self, *args, **kwargs):
+        # activate_jquery()
+        return self.activate_jquery(*args, **kwargs)
 
     def annonces_de_bloc(self, *args, **kwargs):
         # ad_block()
@@ -285,6 +313,70 @@ class CasDeBase(BaseCase):
         # select_option_by_value(dropdown_selector, option)
         return self.select_option_by_value(*args, **kwargs)
 
+    def créer_une_présentation(self, *args, **kwargs):
+        # create_presentation(name=None, theme="default", transition="default")
+        return self.create_presentation(*args, **kwargs)
+
+    def ajouter_une_diapositive(self, *args, **kwargs):
+        # add_slide(content=None, image=None, code=None, iframe=None,
+        #           content2=None, notes=None, transition=None, name=None)
+        return self.add_slide(*args, **kwargs)
+
+    def enregistrer_la_présentation(self, *args, **kwargs):
+        # save_presentation(name=None, filename=None,
+        #                   show_notes=False, interval=0)
+        return self.save_presentation(*args, **kwargs)
+
+    def démarrer_la_présentation(self, *args, **kwargs):
+        # begin_presentation(name=None, filename=None,
+        #                    show_notes=False, interval=0)
+        return self.begin_presentation(*args, **kwargs)
+
+    def créer_un_graphique_à_secteurs(self, *args, **kwargs):
+        # create_pie_chart(chart_name=None, title=None, subtitle=None,
+        #                  data_name=None, unit=None, libs=True)
+        return self.create_pie_chart(*args, **kwargs)
+
+    def créer_un_graphique_à_barres(self, *args, **kwargs):
+        # create_bar_chart(chart_name=None, title=None, subtitle=None,
+        #                  data_name=None, unit=None, libs=True)
+        return self.create_bar_chart(*args, **kwargs)
+
+    def créer_un_graphique_à_colonnes(self, *args, **kwargs):
+        # create_column_chart(chart_name=None, title=None, subtitle=None,
+        #                     data_name=None, unit=None, libs=True)
+        return self.create_column_chart(*args, **kwargs)
+
+    def créer_un_graphique_linéaire(self, *args, **kwargs):
+        # create_line_chart(chart_name=None, title=None, subtitle=None,
+        #                   data_name=None, unit=None, zero=False, libs=True)
+        return self.create_line_chart(*args, **kwargs)
+
+    def créer_un_graphique_en_aires(self, *args, **kwargs):
+        # create_area_chart(chart_name=None, title=None, subtitle=None,
+        #                   data_name=None, unit=None, zero=False, libs=True)
+        return self.create_area_chart(*args, **kwargs)
+
+    def ajouter_séries_au_graphique(self, *args, **kwargs):
+        # add_series_to_chart(data_name=None, chart_name=None)
+        return self.add_series_to_chart(*args, **kwargs)
+
+    def ajouter_un_point_de_données(self, *args, **kwargs):
+        # add_data_point(label, value, color=None, chart_name=None)
+        return self.add_data_point(*args, **kwargs)
+
+    def enregistrer_le_graphique(self, *args, **kwargs):
+        # save_chart(chart_name=None, filename=None)
+        return self.save_chart(*args, **kwargs)
+
+    def afficher_le_graphique(self, *args, **kwargs):
+        # display_chart(chart_name=None, filename=None, interval=0)
+        return self.display_chart(*args, **kwargs)
+
+    def extraire_le_graphique(self, *args, **kwargs):
+        # extract_chart(chart_name=None)
+        return self.extract_chart(*args, **kwargs)
+
     def créer_une_visite(self, *args, **kwargs):
         # create_tour(name=None, theme=None)
         return self.create_tour(*args, **kwargs)
@@ -322,6 +414,16 @@ class CasDeBase(BaseCase):
         # export_tour(name=None, filename="my_tour.js", url=None)
         return self.export_tour(*args, **kwargs)
 
+    def obtenir_texte_pdf(self, *args, **kwargs):
+        # get_pdf_text(pdf, page=None, maxpages=None, password=None,
+        #              codec='utf-8', wrap=False, nav=False, override=False)
+        return self.get_pdf_text(*args, **kwargs)
+
+    def vérifier_texte_pdf(self, *args, **kwargs):
+        # assert_pdf_text(pdf, text, page=None, maxpages=None, password=None,
+        #                 codec='utf-8', wrap=True, nav=False, override=False)
+        return self.assert_pdf_text(*args, **kwargs)
+
     def échouer(self, *args, **kwargs):
         # fail(msg=None)  # Inherited from "unittest"
         return self.fail(*args, **kwargs)
@@ -346,6 +448,14 @@ class CasDeBase(BaseCase):
         # find_element(selector)  # Element must be visible
         return self.find_element(*args, **kwargs)
 
+    def supprimer_élément(self, *args, **kwargs):
+        # remove_element(selector)
+        return self.remove_element(*args, **kwargs)
+
+    def supprimer_éléments(self, *args, **kwargs):
+        # remove_elements(selector)
+        return self.remove_elements(*args, **kwargs)
+
     def trouver_texte(self, *args, **kwargs):
         # find_text(text, selector="html")  # Same as wait_for_text
         return self.find_text(*args, **kwargs)
@@ -362,13 +472,13 @@ class CasDeBase(BaseCase):
         # set_attributes(selector, attribute, value)
         return self.set_attributes(*args, **kwargs)
 
-    def taper(self, *args, **kwargs):
-        # input(selector, new_value)  # Same as update_text()
-        return self.input(*args, **kwargs)
-
     def écriver(self, *args, **kwargs):
-        # write(selector, new_value)  # Same as update_text()
+        # write(selector, text)  # Same as update_text()
         return self.write(*args, **kwargs)
+
+    def définir_thème_du_message(self, *args, **kwargs):
+        # set_messenger_theme(theme="default", location="default")
+        return self.set_messenger_theme(*args, **kwargs)
 
     def afficher_message(self, *args, **kwargs):
         # post_message(message, duration=None, pause=True, style="info")
@@ -402,6 +512,10 @@ class CasDeBase(BaseCase):
         # switch_to_alert(timeout=None)
         return self.switch_to_alert(*args, **kwargs)
 
+    def glisser_et_déposer(self, *args, **kwargs):
+        # drag_and_drop(drag_selector, drop_selector)
+        return self.drag_and_drop(*args, **kwargs)
+
     def charger_html_fichier(self, *args, **kwargs):
         # load_html_file(html_file, new_page=True)
         return self.load_html_file(*args, **kwargs)
@@ -409,6 +523,14 @@ class CasDeBase(BaseCase):
     def ouvrir_html_fichier(self, *args, **kwargs):
         # open_html_file(html_file)
         return self.open_html_file(*args, **kwargs)
+
+    def supprimer_tous_les_cookies(self, *args, **kwargs):
+        # delete_all_cookies()
+        return self.delete_all_cookies(*args, **kwargs)
+
+    def obtenir_agent_utilisateur(self, *args, **kwargs):
+        # get_user_agent()
+        return self.get_user_agent(*args, **kwargs)
 
 
 class MasterQA_Français(MasterQA, CasDeBase):

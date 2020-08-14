@@ -5,6 +5,10 @@ from seleniumbase import MasterQA
 
 class 硒测试用例(BaseCase):  # noqa
 
+    def __init__(self, *args, **kwargs):
+        super(硒测试用例, self).__init__(*args, **kwargs)
+        self._language = "Chinese"
+
     def 开启(self, *args, **kwargs):
         # open(url)
         return self.open(*args, **kwargs)
@@ -25,20 +29,28 @@ class 硒测试用例(BaseCase):  # noqa
         # slow_click(selector)
         return self.slow_click(*args, **kwargs)
 
+    def 如果可见请单击(self, *args, **kwargs):
+        # click_if_visible(selector, by=By.CSS_SELECTOR)
+        return self.click_if_visible(*args, **kwargs)
+
     def 单击链接文本(self, *args, **kwargs):
         # click_link_text(link_text)
         return self.click_link_text(*args, **kwargs)
 
     def 更新文本(self, *args, **kwargs):
-        # update_text(selector, new_value)
+        # update_text(selector, text)
         return self.update_text(*args, **kwargs)
 
+    def 输入文本(self, *args, **kwargs):
+        # type(selector, text)  # Same as update_text()
+        return self.type(*args, **kwargs)
+
     def 添加文本(self, *args, **kwargs):
-        # add_text(selector, new_value)
+        # add_text(selector, text)
         return self.add_text(*args, **kwargs)
 
     def 获取文本(self, *args, **kwargs):
-        # get_text(selector, new_value)
+        # get_text(selector, text)
         return self.get_text(*args, **kwargs)
 
     def 断言文本(self, *args, **kwargs):
@@ -169,6 +181,14 @@ class 硒测试用例(BaseCase):  # noqa
         # js_click(selector)
         return self.js_click(*args, **kwargs)
 
+    def JS更新文本(self, *args, **kwargs):
+        # js_update_text(selector, text)
+        return self.js_update_text(*args, **kwargs)
+
+    def JS输入文本(self, *args, **kwargs):
+        # js_type(selector, text)
+        return self.js_type(*args, **kwargs)
+
     def 检查HTML(self, *args, **kwargs):
         # inspect_html()
         return self.inspect_html(*args, **kwargs)
@@ -184,6 +204,14 @@ class 硒测试用例(BaseCase):  # noqa
     def 执行脚本(self, *args, **kwargs):
         # execute_script(script)
         return self.execute_script(*args, **kwargs)
+
+    def 安全执行脚本(self, *args, **kwargs):
+        # safe_execute_script(script)
+        return self.safe_execute_script(*args, **kwargs)
+
+    def 加载JQUERY(self, *args, **kwargs):
+        # activate_jquery()
+        return self.activate_jquery(*args, **kwargs)
 
     def 阻止广告(self, *args, **kwargs):
         # ad_block()
@@ -285,6 +313,70 @@ class 硒测试用例(BaseCase):  # noqa
         # select_option_by_value(dropdown_selector, option)
         return self.select_option_by_value(*args, **kwargs)
 
+    def 创建演示文稿(self, *args, **kwargs):
+        # create_presentation(name=None, theme="default", transition="default")
+        return self.create_presentation(*args, **kwargs)
+
+    def 添加幻灯片(self, *args, **kwargs):
+        # add_slide(content=None, image=None, code=None, iframe=None,
+        #           content2=None, notes=None, transition=None, name=None)
+        return self.add_slide(*args, **kwargs)
+
+    def 保存演示文稿(self, *args, **kwargs):
+        # save_presentation(name=None, filename=None,
+        #                   show_notes=False, interval=0)
+        return self.save_presentation(*args, **kwargs)
+
+    def 开始演示文稿(self, *args, **kwargs):
+        # begin_presentation(name=None, filename=None,
+        #                    show_notes=False, interval=0)
+        return self.begin_presentation(*args, **kwargs)
+
+    def 创建饼图(self, *args, **kwargs):
+        # create_pie_chart(chart_name=None, title=None, subtitle=None,
+        #                  data_name=None, unit=None, libs=True)
+        return self.create_pie_chart(*args, **kwargs)
+
+    def 创建条形图(self, *args, **kwargs):
+        # create_bar_chart(chart_name=None, title=None, subtitle=None,
+        #                  data_name=None, unit=None, libs=True)
+        return self.create_bar_chart(*args, **kwargs)
+
+    def 创建柱形图(self, *args, **kwargs):
+        # create_column_chart(chart_name=None, title=None, subtitle=None,
+        #                     data_name=None, unit=None, libs=True)
+        return self.create_column_chart(*args, **kwargs)
+
+    def 创建折线图(self, *args, **kwargs):
+        # create_line_chart(chart_name=None, title=None, subtitle=None,
+        #                   data_name=None, unit=None, zero=False, libs=True)
+        return self.create_line_chart(*args, **kwargs)
+
+    def 创建面积图(self, *args, **kwargs):
+        # create_area_chart(chart_name=None, title=None, subtitle=None,
+        #                   data_name=None, unit=None, zero=False, libs=True)
+        return self.create_area_chart(*args, **kwargs)
+
+    def 将系列添加到图表(self, *args, **kwargs):
+        # add_series_to_chart(data_name=None, chart_name=None)
+        return self.add_series_to_chart(*args, **kwargs)
+
+    def 添加数据点(self, *args, **kwargs):
+        # add_data_point(label, value, color=None, chart_name=None)
+        return self.add_data_point(*args, **kwargs)
+
+    def 保存图表(self, *args, **kwargs):
+        # save_chart(chart_name=None, filename=None)
+        return self.save_chart(*args, **kwargs)
+
+    def 显示图表(self, *args, **kwargs):
+        # display_chart(chart_name=None, filename=None, interval=0)
+        return self.display_chart(*args, **kwargs)
+
+    def 提取图表(self, *args, **kwargs):
+        # extract_chart(chart_name=None)
+        return self.extract_chart(*args, **kwargs)
+
     def 创建游览(self, *args, **kwargs):
         # create_tour(name=None, theme=None)
         return self.create_tour(*args, **kwargs)
@@ -322,6 +414,16 @@ class 硒测试用例(BaseCase):  # noqa
         # export_tour(name=None, filename="my_tour.js", url=None)
         return self.export_tour(*args, **kwargs)
 
+    def 获取PDF文本(self, *args, **kwargs):
+        # get_pdf_text(pdf, page=None, maxpages=None, password=None,
+        #              codec='utf-8', wrap=False, nav=False, override=False)
+        return self.get_pdf_text(*args, **kwargs)
+
+    def 断言PDF文本(self, *args, **kwargs):
+        # assert_pdf_text(pdf, text, page=None, maxpages=None, password=None,
+        #                 codec='utf-8', wrap=True, nav=False, override=False)
+        return self.assert_pdf_text(*args, **kwargs)
+
     def 失败(self, *args, **kwargs):
         # fail(msg=None)  # Inherited from "unittest"
         return self.fail(*args, **kwargs)
@@ -346,6 +448,14 @@ class 硒测试用例(BaseCase):  # noqa
         # find_element(selector)  # Element must be visible
         return self.find_element(*args, **kwargs)
 
+    def 删除第一个元素(self, *args, **kwargs):
+        # remove_element(selector)
+        return self.remove_element(*args, **kwargs)
+
+    def 删除所有元素(self, *args, **kwargs):
+        # remove_elements(selector)
+        return self.remove_elements(*args, **kwargs)
+
     def 查找文本(self, *args, **kwargs):
         # find_text(text, selector="html")  # Same as wait_for_text
         return self.find_text(*args, **kwargs)
@@ -362,13 +472,13 @@ class 硒测试用例(BaseCase):  # noqa
         # set_attributes(selector, attribute, value)
         return self.set_attributes(*args, **kwargs)
 
-    def 输入文字(self, *args, **kwargs):
-        # input(selector, new_value)  # Same as update_text()
-        return self.input(*args, **kwargs)
-
-    def 写文字(self, *args, **kwargs):
-        # write(selector, new_value)  # Same as update_text()
+    def 写文本(self, *args, **kwargs):
+        # write(selector, text)  # Same as update_text()
         return self.write(*args, **kwargs)
+
+    def 设置消息主题(self, *args, **kwargs):
+        # set_messenger_theme(theme="default", location="default")
+        return self.set_messenger_theme(*args, **kwargs)
 
     def 显示讯息(self, *args, **kwargs):
         # post_message(message, duration=None, pause=True, style="info")
@@ -402,6 +512,10 @@ class 硒测试用例(BaseCase):  # noqa
         # switch_to_alert(timeout=None)
         return self.switch_to_alert(*args, **kwargs)
 
+    def 拖放(self, *args, **kwargs):
+        # drag_and_drop(drag_selector, drop_selector)
+        return self.drag_and_drop(*args, **kwargs)
+
     def 加载HTML文件(self, *args, **kwargs):
         # load_html_file(html_file, new_page=True)
         return self.load_html_file(*args, **kwargs)
@@ -409,6 +523,14 @@ class 硒测试用例(BaseCase):  # noqa
     def 打开HTML文件(self, *args, **kwargs):
         # open_html_file(html_file)
         return self.open_html_file(*args, **kwargs)
+
+    def 删除所有COOKIE(self, *args, **kwargs):
+        # delete_all_cookies()
+        return self.delete_all_cookies(*args, **kwargs)
+
+    def 获取用户代理(self, *args, **kwargs):
+        # get_user_agent()
+        return self.get_user_agent(*args, **kwargs)
 
 
 class MasterQA_中文(MasterQA, 硒测试用例):

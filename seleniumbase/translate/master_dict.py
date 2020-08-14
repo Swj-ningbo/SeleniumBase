@@ -1,17 +1,19 @@
+# -*- coding: utf-8 -*-
+"""
+Master Dictionary
 
-# Master Dictionary
-
-# Translations
-# 0: English
-# 1: Chinese
-# 2: Dutch
-# 3: French
-# 4: Italian
-# 5: Japanese
-# 6: Korean
-# 7: Portuguese
-# 8: Russian
-# 9: Spanish
+Translations
+0: English
+1: Chinese
+2: Dutch
+3: French
+4: Italian
+5: Japanese
+6: Korean
+7: Portuguese
+8: Russian
+9: Spanish
+"""
 
 
 class MD_F:
@@ -290,24 +292,36 @@ class MD:
     md["slow_click"][1] = "慢单击"
     md["slow_click"][2] = "klik_langzaam"
     md["slow_click"][3] = "cliquer_lentement"
-    md["slow_click"][4] = "clicca_lentamente"
+    md["slow_click"][4] = "clic_lentamente"
     md["slow_click"][5] = "ゆっくりクリックして"
     md["slow_click"][6] = "천천히_클릭"
     md["slow_click"][7] = "clique_devagar"
     md["slow_click"][8] = "нажмите_медленно"
-    md["slow_click"][9] = "haga_clic_lentamente"
+    md["slow_click"][9] = "clic_lentamente"
+
+    md["click_if_visible"] = ["*"] * num_langs
+    md["click_if_visible"][0] = "click_if_visible"
+    md["click_if_visible"][1] = "如果可见请单击"
+    md["click_if_visible"][2] = "klik_indien_zichtbaar"
+    md["click_if_visible"][3] = "cliquer_si_affiché"
+    md["click_if_visible"][4] = "clic_se_visto"
+    md["click_if_visible"][5] = "表示されている場合はクリック"
+    md["click_if_visible"][6] = "보이는_경우_클릭"
+    md["click_if_visible"][7] = "clique_se_está_visível"
+    md["click_if_visible"][8] = "нажмите_если_виден"
+    md["click_if_visible"][9] = "clic_si_está_muestra"
 
     md["click_link_text"] = ["*"] * num_langs
     md["click_link_text"][0] = "click_link_text"
     md["click_link_text"][1] = "单击链接文本"
     md["click_link_text"][2] = "klik_linktekst"
     md["click_link_text"][3] = "cliquer_texte_du_lien"
-    md["click_link_text"][4] = "fare_clic_testo_del_collegamento"
+    md["click_link_text"][4] = "clic_testo_del_collegamento"
     md["click_link_text"][5] = "リンクテキストをクリックします"
     md["click_link_text"][6] = "링크_텍스트를_클릭합니다"
     md["click_link_text"][7] = "clique_texto_do_link"
     md["click_link_text"][8] = "нажмите_ссылку"
-    md["click_link_text"][9] = "haga_clic_texto_del_enlace"
+    md["click_link_text"][9] = "clic_texto_del_enlace"
 
     md["update_text"] = ["*"] * num_langs
     md["update_text"][0] = "update_text"
@@ -361,7 +375,7 @@ class MD:
     md["assert_exact_text"][0] = "assert_exact_text"
     md["assert_exact_text"][1] = "确切断言文本"
     md["assert_exact_text"][2] = "controleren_exacte_tekst"
-    md["assert_exact_text"][3] = "vérifier_exactement_texte"
+    md["assert_exact_text"][3] = "vérifier_texte_exactement"
     md["assert_exact_text"][4] = "verificare_testo_esatto"
     md["assert_exact_text"][5] = "正確なテキストを確認する"
     md["assert_exact_text"][6] = "정확한_텍스트를_확인하는"
@@ -403,7 +417,7 @@ class MD:
     md["assert_element_visible"][6] = "요소가_보이는지_확인"
     md["assert_element_visible"][7] = "verificar_elemento_visível"
     md["assert_element_visible"][8] = "подтвердить_элемент_виден"
-    md["assert_element_visible"][9] = "verificar_elemento_se_muestre"
+    md["assert_element_visible"][9] = "verificar_elemento_se_muestra"
 
     md["assert_element_not_visible"] = ["*"] * num_langs
     md["assert_element_not_visible"][0] = "assert_element_not_visible"
@@ -415,7 +429,7 @@ class MD:
     md["assert_element_not_visible"][6] = "요소가_보이지_않는지_확인"
     md["assert_element_not_visible"][7] = "verificar_elemento_não_visível"
     md["assert_element_not_visible"][8] = "подтвердить_элемент_не_виден"
-    md["assert_element_not_visible"][9] = "verificar_elemento_no_se_muestre"
+    md["assert_element_not_visible"][9] = "verificar_elemento_no_se_muestra"
 
     md["assert_element_present"] = ["*"] * num_langs
     md["assert_element_present"][0] = "assert_element_present"
@@ -643,7 +657,7 @@ class MD:
     md["wait_for_element_visible"][6] = "요소가_표시_될_때까지_기다립니다"
     md["wait_for_element_visible"][7] = "aguardar_o_elemento_visível"
     md["wait_for_element_visible"][8] = "ждать_элемента_виден"
-    md["wait_for_element_visible"][9] = "espera_el_elemento_se_muestre"
+    md["wait_for_element_visible"][9] = "espera_el_elemento_se_muestra"
 
     md["wait_for_element_not_visible"] = ["*"] * num_langs
     md["wait_for_element_not_visible"][0] = "wait_for_element_not_visible"
@@ -655,7 +669,7 @@ class MD:
     md["wait_for_element_not_visible"][6] = "요소가_사라질_때까지_기다리십시오"
     md["wait_for_element_not_visible"][7] = "aguardar_o_elemento_não_visível"
     md["wait_for_element_not_visible"][8] = "ждать_элемента_не_виден"
-    md["wait_for_element_not_visible"][9] = "espera_el_elemento_no_se_muestre"
+    md["wait_for_element_not_visible"][9] = "espera_el_elemento_no_se_muestra"
 
     md["wait_for_element_present"] = ["*"] * num_langs
     md["wait_for_element_present"][0] = "wait_for_element_present"
@@ -721,13 +735,37 @@ class MD:
     md["js_click"][0] = "js_click"
     md["js_click"][1] = "JS单击"
     md["js_click"][2] = "js_klik"
-    md["js_click"][3] = "js_clic"
+    md["js_click"][3] = "js_cliquer"
     md["js_click"][4] = "js_fare_clic"
     md["js_click"][5] = "JSクリックして"
     md["js_click"][6] = "JS_클릭"
     md["js_click"][7] = "js_clique"
     md["js_click"][8] = "JS_нажмите"
     md["js_click"][9] = "js_haga_clic"
+
+    md["js_update_text"] = ["*"] * num_langs
+    md["js_update_text"][0] = "js_update_text"
+    md["js_update_text"][1] = "JS更新文本"
+    md["js_update_text"][2] = "js_tekst_bijwerken"
+    md["js_update_text"][3] = "js_modifier_texte"
+    md["js_update_text"][4] = "js_aggiornare_testo"
+    md["js_update_text"][5] = "JSテキストを更新"
+    md["js_update_text"][6] = "JS_텍스트를_업데이트"
+    md["js_update_text"][7] = "js_atualizar_texto"
+    md["js_update_text"][8] = "JS_обновить_текст"
+    md["js_update_text"][9] = "js_actualizar_texto"
+
+    md["js_type"] = ["*"] * num_langs
+    md["js_type"][0] = "js_type"
+    md["js_type"][1] = "JS输入文本"
+    md["js_type"][2] = "js_typ"
+    md["js_type"][3] = "js_taper"
+    md["js_type"][4] = "js_digitare"
+    md["js_type"][5] = "JS入力"
+    md["js_type"][6] = "JS_입력"
+    md["js_type"][7] = "js_tipo"
+    md["js_type"][8] = "JS_введите"
+    md["js_type"][9] = "js_escriba"
 
     md["inspect_html"] = ["*"] * num_langs
     md["inspect_html"][0] = "inspect_html"
@@ -768,14 +806,38 @@ class MD:
     md["execute_script"] = ["*"] * num_langs
     md["execute_script"][0] = "execute_script"
     md["execute_script"][1] = "执行脚本"
-    md["execute_script"][2] = "voer_het_script_uit"
-    md["execute_script"][3] = "exécuter_le_script"
-    md["execute_script"][4] = "esegui_script"
+    md["execute_script"][2] = "script_uitvoeren"
+    md["execute_script"][3] = "exécuter_script"
+    md["execute_script"][4] = "eseguire_script"
     md["execute_script"][5] = "スクリプトを実行する"
     md["execute_script"][6] = "스크립트를_실행하려면"
-    md["execute_script"][7] = "executar_o_script"
-    md["execute_script"][8] = "выполнить_скрипт"
+    md["execute_script"][7] = "executar_script"
+    md["execute_script"][8] = "выполнение_скрипта"
     md["execute_script"][9] = "ejecutar_script"
+
+    md["safe_execute_script"] = ["*"] * num_langs
+    md["safe_execute_script"][0] = "safe_execute_script"
+    md["safe_execute_script"][1] = "安全执行脚本"
+    md["safe_execute_script"][2] = "script_veilig_uitvoeren"
+    md["safe_execute_script"][3] = "exécuter_script_sans_risque"
+    md["safe_execute_script"][4] = "eseguire_script_sicuro"
+    md["safe_execute_script"][5] = "スクリプトを安全に実行する"
+    md["safe_execute_script"][6] = "스크립트를_안전하게_실행"
+    md["safe_execute_script"][7] = "executar_script_com_segurança"
+    md["safe_execute_script"][8] = "безопасное_выполнение_скрипта"
+    md["safe_execute_script"][9] = "ejecutar_script_de_forma_segura"
+
+    md["activate_jquery"] = ["*"] * num_langs
+    md["activate_jquery"][0] = "activate_jquery"
+    md["activate_jquery"][1] = "加载JQUERY"
+    md["activate_jquery"][2] = "activeer_jquery"
+    md["activate_jquery"][3] = "activer_jquery"
+    md["activate_jquery"][4] = "attiva_jquery"
+    md["activate_jquery"][5] = "JQUERYを読み込む"
+    md["activate_jquery"][6] = "JQUERY_로드"
+    md["activate_jquery"][7] = "ativar_jquery"
+    md["activate_jquery"][8] = "активировать_JQUERY"
+    md["activate_jquery"][9] = "activar_jquery"
 
     md["ad_block"] = ["*"] * num_langs
     md["ad_block"][0] = "ad_block"
@@ -1035,12 +1097,12 @@ class MD:
     md["click_visible_elements"][1] = "单击可见元素"
     md["click_visible_elements"][2] = "klik_zichtbare_elementen"
     md["click_visible_elements"][3] = "cliquer_éléments_visibles"
-    md["click_visible_elements"][4] = "fare_clic_sugli_elementi_visibili"
+    md["click_visible_elements"][4] = "clic_sugli_elementi_visibili"
     md["click_visible_elements"][5] = "表示要素をクリックします"
     md["click_visible_elements"][6] = "페이지_요소를_클릭_합니다"
     md["click_visible_elements"][7] = "clique_nos_elementos_visíveis"
     md["click_visible_elements"][8] = "нажмите_видимые_элементы"
-    md["click_visible_elements"][9] = "haga_clic_en_elementos_visibles"
+    md["click_visible_elements"][9] = "clic_en_elementos_visibles"
 
     md["select_option_by_text"] = ["*"] * num_langs
     md["select_option_by_text"][0] = "select_option_by_text"
@@ -1078,6 +1140,174 @@ class MD:
     md["select_option_by_value"][8] = "выбрать_опцию_по_значению"
     md["select_option_by_value"][9] = "seleccionar_opción_por_valor"
 
+    md["create_presentation"] = ["*"] * num_langs
+    md["create_presentation"][0] = "create_presentation"
+    md["create_presentation"][1] = "创建演示文稿"
+    md["create_presentation"][2] = "maak_een_presentatie"
+    md["create_presentation"][3] = "créer_une_présentation"
+    md["create_presentation"][4] = "creare_una_presentazione"
+    md["create_presentation"][5] = "プレゼンテーションを作成する"
+    md["create_presentation"][6] = "프레젠테이션_만들기"
+    md["create_presentation"][7] = "criar_uma_apresentação"
+    md["create_presentation"][8] = "создать_презентацию"
+    md["create_presentation"][9] = "crear_una_presentación"
+
+    md["add_slide"] = ["*"] * num_langs
+    md["add_slide"][0] = "add_slide"
+    md["add_slide"][1] = "添加幻灯片"
+    md["add_slide"][2] = "een_dia_toevoegen"
+    md["add_slide"][3] = "ajouter_une_diapositive"
+    md["add_slide"][4] = "aggiungere_una_diapositiva"
+    md["add_slide"][5] = "スライドを追加する"
+    md["add_slide"][6] = "슬라이드_추가"
+    md["add_slide"][7] = "adicionar_um_slide"
+    md["add_slide"][8] = "добавить_слайд"
+    md["add_slide"][9] = "agregar_una_diapositiva"
+
+    md["save_presentation"] = ["*"] * num_langs
+    md["save_presentation"][0] = "save_presentation"
+    md["save_presentation"][1] = "保存演示文稿"
+    md["save_presentation"][2] = "de_presentatie_opslaan"
+    md["save_presentation"][3] = "enregistrer_la_présentation"
+    md["save_presentation"][4] = "salva_la_presentazione"
+    md["save_presentation"][5] = "プレゼンテーションを保存する"
+    md["save_presentation"][6] = "프레젠테이션_저장"
+    md["save_presentation"][7] = "salvar_apresentação"
+    md["save_presentation"][8] = "сохранить_презентацию"
+    md["save_presentation"][9] = "guardar_presentación"
+
+    md["begin_presentation"] = ["*"] * num_langs
+    md["begin_presentation"][0] = "begin_presentation"
+    md["begin_presentation"][1] = "开始演示文稿"
+    md["begin_presentation"][2] = "de_presentatie_starten"
+    md["begin_presentation"][3] = "démarrer_la_présentation"
+    md["begin_presentation"][4] = "avviare_la_presentazione"
+    md["begin_presentation"][5] = "プレゼンテーションを開始する"
+    md["begin_presentation"][6] = "프레젠테이션_시작"
+    md["begin_presentation"][7] = "iniciar_apresentação"
+    md["begin_presentation"][8] = "начать_презентацию"
+    md["begin_presentation"][9] = "iniciar_presentación"
+
+    md["create_pie_chart"] = ["*"] * num_langs
+    md["create_pie_chart"][0] = "create_pie_chart"
+    md["create_pie_chart"][1] = "创建饼图"
+    md["create_pie_chart"][2] = "maak_een_cirkeldiagram"
+    md["create_pie_chart"][3] = "créer_un_graphique_à_secteurs"
+    md["create_pie_chart"][4] = "creare_un_grafico_a_torta"
+    md["create_pie_chart"][5] = "円グラフを作成する"
+    md["create_pie_chart"][6] = "원형_차트_만들기"
+    md["create_pie_chart"][7] = "criar_um_gráfico_de_pizza"
+    md["create_pie_chart"][8] = "создать_круговую_диаграмму"
+    md["create_pie_chart"][9] = "crear_un_gráfico_circular"
+
+    md["create_bar_chart"] = ["*"] * num_langs
+    md["create_bar_chart"][0] = "create_bar_chart"
+    md["create_bar_chart"][1] = "创建条形图"
+    md["create_bar_chart"][2] = "maak_een_staafdiagram"
+    md["create_bar_chart"][3] = "créer_un_graphique_à_barres"
+    md["create_bar_chart"][4] = "creare_un_grafico_a_barre"
+    md["create_bar_chart"][5] = "棒グラフを作成する"
+    md["create_bar_chart"][6] = "막대_차트_만들기"
+    md["create_bar_chart"][7] = "criar_um_gráfico_de_barras"
+    md["create_bar_chart"][8] = "создать_бар_диаграмму"
+    md["create_bar_chart"][9] = "crear_un_gráfico_de_barras"
+
+    md["create_column_chart"] = ["*"] * num_langs
+    md["create_column_chart"][0] = "create_column_chart"
+    md["create_column_chart"][1] = "创建柱形图"
+    md["create_column_chart"][2] = "maak_een_kolomdiagram"
+    md["create_column_chart"][3] = "créer_un_graphique_à_colonnes"
+    md["create_column_chart"][4] = "creare_un_grafico_a_colonne"
+    md["create_column_chart"][5] = "縦棒グラフを作成する"
+    md["create_column_chart"][6] = "열_차트_만들기"
+    md["create_column_chart"][7] = "criar_um_gráfico_de_colunas"
+    md["create_column_chart"][8] = "создать_столбчатую_диаграмму"
+    md["create_column_chart"][9] = "crear_un_gráfico_de_columnas"
+
+    md["create_line_chart"] = ["*"] * num_langs
+    md["create_line_chart"][0] = "create_line_chart"
+    md["create_line_chart"][1] = "创建折线图"
+    md["create_line_chart"][2] = "maak_een_lijndiagram"
+    md["create_line_chart"][3] = "créer_un_graphique_linéaire"
+    md["create_line_chart"][4] = "creare_un_grafico_a_linee"
+    md["create_line_chart"][5] = "折れ線グラフを作成する"
+    md["create_line_chart"][6] = "선_차트_만들기"
+    md["create_line_chart"][7] = "criar_um_gráfico_de_linhas"
+    md["create_line_chart"][8] = "создать_линейную_диаграмму"
+    md["create_line_chart"][9] = "crear_un_gráfico_de_líneas"
+
+    md["create_area_chart"] = ["*"] * num_langs
+    md["create_area_chart"][0] = "create_area_chart"
+    md["create_area_chart"][1] = "创建面积图"
+    md["create_area_chart"][2] = "maak_een_vlakdiagram"
+    md["create_area_chart"][3] = "créer_un_graphique_en_aires"
+    md["create_area_chart"][4] = "creare_un_grafico_ad_area"
+    md["create_area_chart"][5] = "面グラフを作成する"
+    md["create_area_chart"][6] = "영역_차트_만들기"
+    md["create_area_chart"][7] = "criar_um_gráfico_de_área"
+    md["create_area_chart"][8] = "создать_диаграмму_области"
+    md["create_area_chart"][9] = "crear_un_gráfico_de_área"
+
+    md["add_series_to_chart"] = ["*"] * num_langs
+    md["add_series_to_chart"][0] = "add_series_to_chart"
+    md["add_series_to_chart"][1] = "将系列添加到图表"
+    md["add_series_to_chart"][2] = "reeksen_toevoegen_aan_grafiek"
+    md["add_series_to_chart"][3] = "ajouter_séries_au_graphique"
+    md["add_series_to_chart"][4] = "aggiungere_serie_al_grafico"
+    md["add_series_to_chart"][5] = "グラフに系列を追加する"
+    md["add_series_to_chart"][6] = "차트에_시리즈_추가"
+    md["add_series_to_chart"][7] = "adicionar_séries_ao_gráfico"
+    md["add_series_to_chart"][8] = "добавить_серии_в_диаграмму"
+    md["add_series_to_chart"][9] = "agregar_series_al_gráfico"
+
+    md["add_data_point"] = ["*"] * num_langs
+    md["add_data_point"][0] = "add_data_point"
+    md["add_data_point"][1] = "添加数据点"
+    md["add_data_point"][2] = "gegevenspunt_toevoegen"
+    md["add_data_point"][3] = "ajouter_un_point_de_données"
+    md["add_data_point"][4] = "aggiungi_punto_dati"
+    md["add_data_point"][5] = "データポイントを追加する"
+    md["add_data_point"][6] = "데이터_포인트_추가"
+    md["add_data_point"][7] = "adicionar_ponto_de_dados"
+    md["add_data_point"][8] = "добавить_точку_данных"
+    md["add_data_point"][9] = "agregar_punto_de_datos"
+
+    md["save_chart"] = ["*"] * num_langs
+    md["save_chart"][0] = "save_chart"
+    md["save_chart"][1] = "保存图表"
+    md["save_chart"][2] = "grafiek_opslaan"
+    md["save_chart"][3] = "enregistrer_le_graphique"
+    md["save_chart"][4] = "salva_il_grafico"
+    md["save_chart"][5] = "グラフを保存する"
+    md["save_chart"][6] = "차트_저장"
+    md["save_chart"][7] = "salvar_gráfico"
+    md["save_chart"][8] = "сохранить_диаграмму"
+    md["save_chart"][9] = "guardar_gráfico"
+
+    md["display_chart"] = ["*"] * num_langs
+    md["display_chart"][0] = "display_chart"
+    md["display_chart"][1] = "显示图表"
+    md["display_chart"][2] = "grafiek_weergeven"
+    md["display_chart"][3] = "afficher_le_graphique"
+    md["display_chart"][4] = "mostra_il_grafico"
+    md["display_chart"][5] = "グラフを表示する"
+    md["display_chart"][6] = "차트_표시"
+    md["display_chart"][7] = "exibir_gráfico"
+    md["display_chart"][8] = "отображать_диаграмму"
+    md["display_chart"][9] = "muestra_gráfico"
+
+    md["extract_chart"] = ["*"] * num_langs
+    md["extract_chart"][0] = "extract_chart"
+    md["extract_chart"][1] = "提取图表"
+    md["extract_chart"][2] = "grafiek_uitpakken"
+    md["extract_chart"][3] = "extraire_le_graphique"
+    md["extract_chart"][4] = "estrarre_il_grafico"
+    md["extract_chart"][5] = "グラフを抽出する"
+    md["extract_chart"][6] = "차트_추출"
+    md["extract_chart"][7] = "extrair_gráfico"
+    md["extract_chart"][8] = "извлекать_диаграмму"
+    md["extract_chart"][9] = "extracto_gráfico"
+
     md["create_tour"] = ["*"] * num_langs
     md["create_tour"][0] = "create_tour"
     md["create_tour"][1] = "创建游览"
@@ -1087,7 +1317,7 @@ class MD:
     md["create_tour"][5] = "ツアーを作成する"
     md["create_tour"][6] = "가이드_투어_만들기"
     md["create_tour"][7] = "criar_um_tour"
-    md["create_tour"][8] = "сделать_тур"
+    md["create_tour"][8] = "создать_тур"
     md["create_tour"][9] = "crear_una_gira"
 
     md["create_shepherd_tour"] = ["*"] * num_langs
@@ -1099,7 +1329,7 @@ class MD:
     md["create_shepherd_tour"][5] = "SHEPHERDツアーを作成する"
     md["create_shepherd_tour"][6] = "가이드_SHEPHERD_투어_만들기"
     md["create_shepherd_tour"][7] = "criar_um_tour_shepherd"
-    md["create_shepherd_tour"][8] = "сделать_SHEPHERD_тур"
+    md["create_shepherd_tour"][8] = "создать_SHEPHERD_тур"
     md["create_shepherd_tour"][9] = "crear_una_gira_shepherd"
 
     md["create_bootstrap_tour"] = ["*"] * num_langs
@@ -1111,7 +1341,7 @@ class MD:
     md["create_bootstrap_tour"][5] = "BOOTSTRAPツアーを作成する"
     md["create_bootstrap_tour"][6] = "가이드_BOOTSTRAP_투어_만들기"
     md["create_bootstrap_tour"][7] = "criar_um_tour_bootstrap"
-    md["create_bootstrap_tour"][8] = "сделать_BOOTSTRAP_тур"
+    md["create_bootstrap_tour"][8] = "создать_BOOTSTRAP_тур"
     md["create_bootstrap_tour"][9] = "crear_una_gira_bootstrap"
 
     md["create_driverjs_tour"] = ["*"] * num_langs
@@ -1123,7 +1353,7 @@ class MD:
     md["create_driverjs_tour"][5] = "DRIVERJSツアーを作成する"
     md["create_driverjs_tour"][6] = "가이드_DRIVERJS_투어_만들기"
     md["create_driverjs_tour"][7] = "criar_um_tour_driverjs"
-    md["create_driverjs_tour"][8] = "сделать_DRIVERJS_тур"
+    md["create_driverjs_tour"][8] = "создать_DRIVERJS_тур"
     md["create_driverjs_tour"][9] = "crear_una_gira_driverjs"
 
     md["create_hopscotch_tour"] = ["*"] * num_langs
@@ -1135,7 +1365,7 @@ class MD:
     md["create_hopscotch_tour"][5] = "HOPSCOTCHツアーを作成する"
     md["create_hopscotch_tour"][6] = "가이드_HOPSCOTCH_투어_만들기"
     md["create_hopscotch_tour"][7] = "criar_um_tour_hopscotch"
-    md["create_hopscotch_tour"][8] = "сделать_HOPSCOTCH_тур"
+    md["create_hopscotch_tour"][8] = "создать_HOPSCOTCH_тур"
     md["create_hopscotch_tour"][9] = "crear_una_gira_hopscotch"
 
     md["create_introjs_tour"] = ["*"] * num_langs
@@ -1147,7 +1377,7 @@ class MD:
     md["create_introjs_tour"][5] = "INTROJSツアーを作成する"
     md["create_introjs_tour"][6] = "가이드_INTROJS_투어_만들기"
     md["create_introjs_tour"][7] = "criar_um_tour_introjs"
-    md["create_introjs_tour"][8] = "сделать_INTROJS_тур"
+    md["create_introjs_tour"][8] = "создать_INTROJS_тур"
     md["create_introjs_tour"][9] = "crear_una_gira_introjs"
 
     md["add_tour_step"] = ["*"] * num_langs
@@ -1185,6 +1415,30 @@ class MD:
     md["export_tour"][7] = "exportar_o_tour"
     md["export_tour"][8] = "экспортировать_тур"
     md["export_tour"][9] = "exportar_la_gira"
+
+    md["get_pdf_text"] = ["*"] * num_langs
+    md["get_pdf_text"][0] = "get_pdf_text"
+    md["get_pdf_text"][1] = "获取PDF文本"
+    md["get_pdf_text"][2] = "pdf_tekst_ophalen"
+    md["get_pdf_text"][3] = "obtenir_texte_pdf"
+    md["get_pdf_text"][4] = "ottenere_testo_pdf"
+    md["get_pdf_text"][5] = "PDFテキストを取得"
+    md["get_pdf_text"][6] = "PDF_텍스트를_검색"
+    md["get_pdf_text"][7] = "obter_texto_pdf"
+    md["get_pdf_text"][8] = "получить_текст_PDF"
+    md["get_pdf_text"][9] = "obtener_texto_pdf"
+
+    md["assert_pdf_text"] = ["*"] * num_langs
+    md["assert_pdf_text"][0] = "assert_pdf_text"
+    md["assert_pdf_text"][1] = "断言PDF文本"
+    md["assert_pdf_text"][2] = "controleren_pdf_tekst"
+    md["assert_pdf_text"][3] = "vérifier_texte_pdf"
+    md["assert_pdf_text"][4] = "verificare_testo_pdf"
+    md["assert_pdf_text"][5] = "PDFテキストを確認する"
+    md["assert_pdf_text"][6] = "PDF_텍스트_확인"
+    md["assert_pdf_text"][7] = "verificar_texto_pdf"
+    md["assert_pdf_text"][8] = "подтвердить_текст_PDF"
+    md["assert_pdf_text"][9] = "verificar_texto_pdf"
 
     md["fail"] = ["*"] * num_langs
     md["fail"][0] = "fail"
@@ -1258,6 +1512,30 @@ class MD:
     md["find_element"][8] = "найти_элемент"
     md["find_element"][9] = "encontrar_elemento"
 
+    md["remove_element"] = ["*"] * num_langs
+    md["remove_element"][0] = "remove_element"
+    md["remove_element"][1] = "删除第一个元素"
+    md["remove_element"][2] = "verwijder_element"
+    md["remove_element"][3] = "supprimer_élément"
+    md["remove_element"][4] = "rimuovere_elemento"
+    md["remove_element"][5] = "最初の要素を削除"
+    md["remove_element"][6] = "첫_번째_요소_제거"
+    md["remove_element"][7] = "remover_elemento"
+    md["remove_element"][8] = "удалить_элемент"
+    md["remove_element"][9] = "eliminar_elemento"
+
+    md["remove_elements"] = ["*"] * num_langs
+    md["remove_elements"][0] = "remove_elements"
+    md["remove_elements"][1] = "删除所有元素"
+    md["remove_elements"][2] = "verwijder_elementen"
+    md["remove_elements"][3] = "supprimer_éléments"
+    md["remove_elements"][4] = "rimuovere_elementi"
+    md["remove_elements"][5] = "すべての要素を削除"
+    md["remove_elements"][6] = "모든_요소_제거"
+    md["remove_elements"][7] = "remover_elementos"
+    md["remove_elements"][8] = "удалить_элементы"
+    md["remove_elements"][9] = "eliminar_elementos"
+
     md["find_text"] = ["*"] * num_langs
     md["find_text"][0] = "find_text"
     md["find_text"][1] = "查找文本"
@@ -1306,21 +1584,21 @@ class MD:
     md["set_attributes"][8] = "набор_атрибутов"
     md["set_attributes"][9] = "establecer_atributos"
 
-    md["input"] = ["*"] * num_langs
-    md["input"][0] = "input"
-    md["input"][1] = "输入文字"
-    md["input"][2] = "voer"
-    md["input"][3] = "taper"
-    md["input"][4] = "digitare"
-    md["input"][5] = "入力"
-    md["input"][6] = "입력"
-    md["input"][7] = "entrada"
-    md["input"][8] = "введите"
-    md["input"][9] = "entrada"
+    md["type"] = ["*"] * num_langs
+    md["type"][0] = "type"
+    md["type"][1] = "输入文本"
+    md["type"][2] = "typ"
+    md["type"][3] = "taper"
+    md["type"][4] = "digitare"
+    md["type"][5] = "入力"
+    md["type"][6] = "입력"
+    md["type"][7] = "tipo"
+    md["type"][8] = "введите"
+    md["type"][9] = "escriba"
 
     md["write"] = ["*"] * num_langs
     md["write"][0] = "write"
-    md["write"][1] = "写文字"
+    md["write"][1] = "写文本"
     md["write"][2] = "schrijven"
     md["write"][3] = "écriver"
     md["write"][4] = "scrivere"
@@ -1329,6 +1607,18 @@ class MD:
     md["write"][7] = "escreva"
     md["write"][8] = "написать"
     md["write"][9] = "escribir"
+
+    md["set_messenger_theme"] = ["*"] * num_langs
+    md["set_messenger_theme"][0] = "set_messenger_theme"
+    md["set_messenger_theme"][1] = "设置消息主题"
+    md["set_messenger_theme"][2] = "kenmerk_thema_van_bericht"
+    md["set_messenger_theme"][3] = "définir_thème_du_message"
+    md["set_messenger_theme"][4] = "impostare_tema_del_messaggio"
+    md["set_messenger_theme"][5] = "メッセージのスタイルを設定する"
+    md["set_messenger_theme"][6] = "메시지_테마_설정"
+    md["set_messenger_theme"][7] = "definir_tema_da_mensagem"
+    md["set_messenger_theme"][8] = "набор_тему_сообщения"
+    md["set_messenger_theme"][9] = "establecer_tema_del_mensaje"
 
     md["post_message"] = ["*"] * num_langs
     md["post_message"][0] = "post_message"
@@ -1426,6 +1716,18 @@ class MD:
     md["switch_to_alert"][8] = "переключиться_на_оповещение"
     md["switch_to_alert"][9] = "cambiar_a_alerta"
 
+    md["drag_and_drop"] = ["*"] * num_langs
+    md["drag_and_drop"][0] = "drag_and_drop"
+    md["drag_and_drop"][1] = "拖放"
+    md["drag_and_drop"][2] = "slepen_en_neerzetten"
+    md["drag_and_drop"][3] = "glisser_et_déposer"
+    md["drag_and_drop"][4] = "trascinare_e_rilasciare"
+    md["drag_and_drop"][5] = "ドラッグアンドドロップ"
+    md["drag_and_drop"][6] = "드래그_앤_드롭"
+    md["drag_and_drop"][7] = "arrastar_e_soltar"
+    md["drag_and_drop"][8] = "перетащить_и_падение"
+    md["drag_and_drop"][9] = "arrastrar_y_soltar"
+
     md["load_html_file"] = ["*"] * num_langs
     md["load_html_file"][0] = "load_html_file"
     md["load_html_file"][1] = "加载HTML文件"
@@ -1450,21 +1752,45 @@ class MD:
     md["open_html_file"][8] = "открыть_HTML_файл"
     md["open_html_file"][9] = "abrir_archivo_html"
 
+    md["delete_all_cookies"] = ["*"] * num_langs
+    md["delete_all_cookies"][0] = "delete_all_cookies"
+    md["delete_all_cookies"][1] = "删除所有COOKIE"
+    md["delete_all_cookies"][2] = "alle_cookies_verwijderen"
+    md["delete_all_cookies"][3] = "supprimer_tous_les_cookies"
+    md["delete_all_cookies"][4] = "elimina_tutti_i_cookie"
+    md["delete_all_cookies"][5] = "すべてのクッキーを削除する"
+    md["delete_all_cookies"][6] = "모든_쿠키_삭제"
+    md["delete_all_cookies"][7] = "excluir_todos_os_cookies"
+    md["delete_all_cookies"][8] = "удалить_все_куки"
+    md["delete_all_cookies"][9] = "eliminar_todas_las_cookies"
+
+    md["get_user_agent"] = ["*"] * num_langs
+    md["get_user_agent"][0] = "get_user_agent"
+    md["get_user_agent"][1] = "获取用户代理"
+    md["get_user_agent"][2] = "gebruikersagent_ophalen"
+    md["get_user_agent"][3] = "obtenir_agent_utilisateur"
+    md["get_user_agent"][4] = "ottenere_agente_utente"
+    md["get_user_agent"][5] = "ユーザーエージェントの取得"
+    md["get_user_agent"][6] = "사용자_에이전트_가져_오기"
+    md["get_user_agent"][7] = "obter_agente_do_usuário"
+    md["get_user_agent"][8] = "получить_агента_пользователя"
+    md["get_user_agent"][9] = "obtener_agente_de_usuario"
+
     ################
     # Duplicates
 
-    # "type" -> duplicate of "input"
-    md["type"] = ["*"] * num_langs
-    md["type"][0] = "type"
-    md["type"][1] = "输入文字"
-    md["type"][2] = "voer"
-    md["type"][3] = "taper"
-    md["type"][4] = "digitare"
-    md["type"][5] = "入力"
-    md["type"][6] = "입력"
-    md["type"][7] = "entrada"
-    md["type"][8] = "введите"
-    md["type"][9] = "entrada"
+    # "input" -> duplicate of "type"
+    md["input"] = ["*"] * num_langs
+    md["input"][0] = "input"
+    md["input"][1] = "输入文本"
+    md["input"][2] = "typ"
+    md["input"][3] = "taper"
+    md["input"][4] = "digitare"
+    md["input"][5] = "入力"
+    md["input"][6] = "입력"
+    md["input"][7] = "tipo"
+    md["input"][8] = "введите"
+    md["input"][9] = "escriba"
 
     # "goto" -> duplicate of "visit"
     md["goto"] = ["*"] * num_langs
@@ -1550,12 +1876,12 @@ class MD:
     md["click_link"][1] = "单击链接文本"
     md["click_link"][2] = "klik_linktekst"
     md["click_link"][3] = "cliquer_texte_du_lien"
-    md["click_link"][4] = "fare_clic_testo_del_collegamento"
+    md["click_link"][4] = "clic_testo_del_collegamento"
     md["click_link"][5] = "リンクテキストをクリックします"
     md["click_link"][6] = "링크_텍스트를_클릭합니다"
     md["click_link"][7] = "clique_texto_do_link"
     md["click_link"][8] = "нажмите_ссылку"
-    md["click_link"][9] = "haga_clic_texto_del_enlace"
+    md["click_link"][9] = "clic_texto_del_enlace"
 
     # "send_keys" -> duplicate of "add_text"
     md["send_keys"] = ["*"] * num_langs
@@ -1595,6 +1921,45 @@ class MD:
     md["is_checked"][7] = "é_selecionado"
     md["is_checked"][8] = "выбран"
     md["is_checked"][9] = "está_seleccionado"
+
+    # "wait_for_text_visible" -> duplicate of "wait_for_text"
+    md["wait_for_text_visible"] = ["*"] * num_langs
+    md["wait_for_text_visible"][0] = "wait_for_text_visible"
+    md["wait_for_text_visible"][1] = "等待文本"
+    md["wait_for_text_visible"][2] = "wachten_op_tekst"
+    md["wait_for_text_visible"][3] = "attendre_le_texte"
+    md["wait_for_text_visible"][4] = "attendere_il_testo"
+    md["wait_for_text_visible"][5] = "テキストを待つ"
+    md["wait_for_text_visible"][6] = "텍스트가_나타날_때까지_기다립니다"
+    md["wait_for_text_visible"][7] = "aguardar_o_texto"
+    md["wait_for_text_visible"][8] = "ждать_текста"
+    md["wait_for_text_visible"][9] = "espera_el_texto"
+
+    # "assert_text_visible" -> duplicate of "assert_text"
+    md["assert_text_visible"] = ["*"] * num_langs
+    md["assert_text_visible"][0] = "assert_text_visible"
+    md["assert_text_visible"][1] = "断言文本"
+    md["assert_text_visible"][2] = "controleren_tekst"
+    md["assert_text_visible"][3] = "vérifier_texte"
+    md["assert_text_visible"][4] = "verificare_testo"
+    md["assert_text_visible"][5] = "テキストを確認する"
+    md["assert_text_visible"][6] = "텍스트_확인"
+    md["assert_text_visible"][7] = "verificar_texto"
+    md["assert_text_visible"][8] = "подтвердить_текст"
+    md["assert_text_visible"][9] = "verificar_texto"
+
+    # "assert_no_broken_links" -> duplicate of "assert_no_404_errors"
+    md["assert_no_broken_links"] = ["*"] * num_langs
+    md["assert_no_broken_links"][0] = "assert_no_broken_links"
+    md["assert_no_broken_links"][1] = "检查断开的链接"
+    md["assert_no_broken_links"][2] = "controleren_op_gebroken_links"
+    md["assert_no_broken_links"][3] = "vérifier_les_liens_rompus"
+    md["assert_no_broken_links"][4] = "verificare_i_collegamenti"
+    md["assert_no_broken_links"][5] = "リンク切れを確認する"
+    md["assert_no_broken_links"][6] = "끊어진_링크_확인"
+    md["assert_no_broken_links"][7] = "verificar_se_há_links_quebrados"
+    md["assert_no_broken_links"][8] = "проверить_ошибки_404"
+    md["assert_no_broken_links"][9] = "verificar_si_hay_enlaces_rotos"
 
     # "block_ads" -> duplicate of "ad_block"
     md["block_ads"] = ["*"] * num_langs

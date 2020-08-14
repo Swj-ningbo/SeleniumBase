@@ -42,9 +42,9 @@ if sys.argv[-1] == 'publish':
         os.system('rm -f dist/*.egg; rm -f dist/*.tar.gz; rm -f dist/*.whl')
         os.system('python setup.py sdist bdist_wheel')  # Create new tar/wheel
         print("\n*** Installing twine: *** (Required for PyPI uploads)\n")
-        os.system("python -m pip install 'twine>=1.15.0'")
+        os.system("python -m pip install --upgrade 'twine>=1.15.0'")
         print("\n*** Installing tqdm: *** (Required for PyPI uploads)\n")
-        os.system("python -m pip install 'tqdm>=4.46.0'")
+        os.system("python -m pip install --upgrade 'tqdm>=4.48.2'")
         print("\n*** Publishing The Release to PyPI: ***\n")
         os.system('python -m twine upload dist/*')  # Requires ~/.pypirc Keys
         print("\n*** The Release was PUBLISHED SUCCESSFULLY to PyPI! :) ***\n")
@@ -54,8 +54,8 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='seleniumbase',
-    version='1.39.3',
-    description='Fast, Easy, and Reliable Browser Automation & Testing.',
+    version='1.46.4',
+    description='Web Automation and Test Framework - https://seleniumbase.io',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/seleniumbase/SeleniumBase',
@@ -90,56 +90,68 @@ setup(
         "Topic :: Utilities",
     ],
     install_requires=[
-        'pip>=20.1.1',
+        'pip>=20.2.2',
         'packaging>=20.4',
-        'setuptools',
+        'setuptools>=44.1.1;python_version<"3.5"',
+        'setuptools>=49.6.0;python_version>="3.5"',
         'setuptools-scm',
-        'wheel',
+        'wheel>=0.35.0',
         'six',
         'nose',
         'ipdb',
-        'idna==2.9',  # Must stay in sync with "requests"
+        'parso==0.7.1',  # The last version for Python 2 and 3.5
+        'jedi==0.17.2',  # The last version for Python 2 and 3.5
+        'idna==2.10',  # Must stay in sync with "requests"
         'chardet==3.0.4',  # Must stay in sync with "requests"
-        'urllib3==1.25.9',  # Must stay in sync with "requests"
-        'requests==2.23.0',
+        'urllib3==1.25.10',  # Must stay in sync with "requests"
+        'requests==2.24.0',
         'selenium==3.141.0',
+        'msedge-selenium-tools==3.141.2',
         'pluggy==0.13.1',
         'attrs>=19.3.0',
-        'pytest==4.6.10;python_version<"3.5"',
-        'pytest==5.4.3;python_version>="3.5"',
-        'pytest-cov==2.9.0',
-        'pytest-forked==1.1.3',
+        'py==1.8.1;python_version<"3.5"',
+        'py==1.9.0;python_version>="3.5"',
+        'pytest==4.6.11;python_version<"3.5"',
+        'pytest==6.0.1;python_version>="3.5"',
+        'pytest-cov==2.10.0',
+        'pytest-forked==1.3.0',
         'pytest-html==1.22.1;python_version<"3.6"',
         'pytest-html==2.0.1;python_version>="3.6"',
         'pytest-metadata==1.8.0;python_version<"3.6"',
-        'pytest-metadata==1.9.0;python_version>="3.6"',
+        'pytest-metadata==1.10.0;python_version>="3.6"',
         'pytest-ordering==0.6',
         'pytest-rerunfailures==8.0;python_version<"3.6"',
         'pytest-rerunfailures==9.0;python_version>="3.6"',
-        'pytest-xdist==1.32.0',
+        'pytest-xdist==1.34.0',
         'parameterized==0.7.4',
         'soupsieve==1.9.6;python_version<"3.5"',
         'soupsieve==2.0.1;python_version>="3.5"',
         'beautifulsoup4==4.9.1',
-        'cryptography==2.9.2',
+        'cryptography==3.0',
         'pyopenssl==19.1.0',
+        'prompt-toolkit==1.0.18;python_version<"3.6.1"',
+        'prompt-toolkit==3.0.6;python_version>="3.6.1"',
         'pygments==2.5.2;python_version<"3.5"',
         'pygments==2.6.1;python_version>="3.5"',
+        'ipython==5.10.0;python_version<"3.5"',
+        'ipython==6.5.0;python_version>="3.5" and python_version<"3.7"',
+        'ipython==7.17.0;python_version>="3.7"',
         'colorama==0.4.3',
+        'pymysql==0.10.0',
+        'coverage==5.2.1',
         'brython>=3.8.9',
-        'pymysql==0.9.3',
-        'coverage==5.1',
-        'pyotp==2.3.0',
+        'pyotp==2.4.0',
         'boto==2.49.0',
-        'cffi==1.14.0',
-        'rich==1.3.1;python_version>="3.6" and python_version<"4.0"',
+        'cffi==1.14.1',
+        'rich==5.1.2;python_version>="3.6" and python_version<"4.0"',
         'flake8==3.7.9;python_version<"3.5"',
-        'flake8==3.8.2;python_version>="3.5"',
+        'flake8==3.8.3;python_version>="3.5"',
         'pyflakes==2.1.1;python_version<"3.5"',
         'pyflakes==2.2.0;python_version>="3.5"',
-        'certifi>=2020.4.5.1',
+        'certifi>=2020.6.20',
+        'allure-pytest==2.8.17',
         'pdfminer.six==20191110;python_version<"3.5"',
-        'pdfminer.six==20200517;python_version>="3.5"',
+        'pdfminer.six==20200726;python_version>="3.5"',
     ],
     packages=[
         'seleniumbase',

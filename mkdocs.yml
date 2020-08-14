@@ -66,12 +66,15 @@ nav:
     - How it Works: help_docs/how_it_works.md
   - Examples: examples/ReadMe.md
   - API Reference: help_docs/method_summary.md
-  - Translations: help_docs/translations.md
-  - Chinese / 中文文件: help_docs/chinese.md
+  - Languages / 语言:
+    - Translations: help_docs/translations.md
+    - Chinese / 中文文件: help_docs/chinese.md
   - Mobile Testing: help_docs/mobile_testing.md
   - Console Scripts: seleniumbase/console_scripts/ReadMe.md
   - JS Package Manager: help_docs/js_package_manager.md
   - Site Tours: examples/tour_examples/ReadMe.md
+  - Presentation Maker: examples/presenter/ReadMe.md
+  - Chart Maker: help_docs/chart_maker.md
   - Visual Testing: examples/visual_testing/ReadMe.md
   - Integrations:
     - Logging and Reports: examples/example_logs/ReadMe.md
@@ -82,8 +85,10 @@ nav:
     - MySQL Help: help_docs/mysql_installation.md
     - Jenkins on Azure: integrations/azure/jenkins/ReadMe.md
     - Jenkins on Google Cloud: integrations/google_cloud/ReadMe.md
-    - Docker Help: integrations/docker/ReadMe.md
     - Recorder and Exporting: seleniumbase/utilities/selenium_ide/ReadMe.md
+    - NodeJS Test Runner: https://github.com/seleniumbase/SeleniumBase/tree/master/integrations/node_js
+    - HighCharts: examples/chart_maker/ReadMe.md 
+    - Docker Help: integrations/docker/ReadMe.md
   - Help Docs ToC:
     - Table of Contents: help_docs/ReadMe.md
     - Master QA: seleniumbase/masterqa/ReadMe.md

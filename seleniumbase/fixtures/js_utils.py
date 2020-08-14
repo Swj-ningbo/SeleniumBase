@@ -9,7 +9,6 @@ from selenium.common.exceptions import WebDriverException
 from seleniumbase import config as sb_config
 from seleniumbase.common import decorators
 from seleniumbase.config import settings
-from seleniumbase.core import style_sheet
 from seleniumbase.fixtures import constants
 from seleniumbase.fixtures import shared_utils
 
@@ -233,7 +232,10 @@ def highlight_with_js(driver, selector, loops, o_bs):
     script = ("""document.querySelector('%s').style.boxShadow =
               '0px 0px 6px 6px rgba(128, 128, 128, 0.5)';"""
               % selector)
-    driver.execute_script(script)
+    try:
+        driver.execute_script(script)
+    except Exception:
+        return
     for n in range(loops):
         script = ("""document.querySelector('%s').style.boxShadow =
                   '0px 0px 6px 6px rgba(255, 0, 0, 1)';"""
@@ -469,12 +471,11 @@ def activate_messenger(driver):
     msgr_theme_ice_css = constants.Messenger.THEME_ICE_CSS
     spinner_css = constants.Messenger.SPINNER_CSS
     underscore_js = constants.Underscore.MIN_JS
-    backbone_js = constants.Backbone.MIN_JS
 
     msg_style = ("Messenger.options = {'maxMessages': 8, "
                  "extraClasses: 'messenger-fixed "
                  "messenger-on-bottom messenger-on-right', "
-                 "theme: 'future'}")
+                 "theme: 'flat'}")
 
     add_js_link(driver, jquery_js)
     wait_for_jquery_active(driver, timeout=0.2)
@@ -485,11 +486,11 @@ def activate_messenger(driver):
     add_css_link(driver, msgr_theme_air_css)
     add_css_link(driver, msgr_theme_ice_css)
     add_js_link(driver, underscore_js)
-    add_js_link(driver, backbone_js)
     add_css_link(driver, spinner_css)
     add_js_link(driver, messenger_js)
     add_js_link(driver, msgr_theme_flat_js)
     add_js_link(driver, msgr_theme_future_js)
+    from seleniumbase.core import style_sheet
     add_css_style(driver, style_sheet.messenger_style)
 
     for x in range(int(settings.MINI_TIMEOUT * 10.0)):
@@ -506,7 +507,7 @@ def activate_messenger(driver):
 def set_messenger_theme(driver, theme="default", location="default",
                         max_messages="default"):
     if theme == "default":
-        theme = "future"
+        theme = "flat"
     if location == "default":
         location = "bottom_right"
     if max_messages == "default":
@@ -577,10 +578,9 @@ def post_messenger_success_message(driver, message, msg_dur):
         msg_dur = settings.DEFAULT_MESSAGE_DURATION
     msg_dur = float(msg_dur)
     try:
-        theme = "future"
+        theme = "flat"
         location = "bottom_right"
         if sb_config.mobile_emulator:
-            theme = "block"
             location = "top_center"
         set_messenger_theme(driver, theme=theme, location=location)
         post_message(
@@ -609,7 +609,10 @@ def highlight_with_js_2(driver, message, selector, o_bs, msg_dur):
     script = ("""document.querySelector('%s').style.boxShadow =
               '0px 0px 6px 6px rgba(128, 128, 128, 0.5)';"""
               % selector)
-    driver.execute_script(script)
+    try:
+        driver.execute_script(script)
+    except Exception:
+        return
     time.sleep(0.0181)
     script = ("""document.querySelector('%s').style.boxShadow =
               '0px 0px 6px 6px rgba(205, 30, 0, 1)';"""
@@ -644,7 +647,10 @@ def highlight_with_jquery_2(driver, message, selector, o_bs, msg_dur):
         selector = "body"
     script = """jQuery('%s').css('box-shadow',
         '0px 0px 6px 6px rgba(128, 128, 128, 0.5)');""" % selector
-    safe_execute_script(driver, script)
+    try:
+        safe_execute_script(driver, script)
+    except Exception:
+        return
     time.sleep(0.0181)
     script = """jQuery('%s').css('box-shadow',
         '0px 0px 6px 6px rgba(205, 30, 0, 1)');""" % selector
@@ -667,6 +673,20 @@ def highlight_with_jquery_2(driver, message, selector, o_bs, msg_dur):
 
     script = """jQuery('%s').css('box-shadow', '%s');""" % (selector, o_bs)
     driver.execute_script(script)
+
+
+def get_scroll_distance_to_element(driver, element):
+    try:
+        scroll_position = driver.execute_script("return window.scrollY;")
+        element_location = None
+        element_location = element.location['y']
+        element_location = element_location - 130
+        if element_location < 0:
+            element_location = 0
+        distance = element_location - scroll_position
+        return distance
+    except Exception:
+        return 0
 
 
 def scroll_to_element(driver, element):
@@ -710,7 +730,7 @@ def slow_scroll_to_element(driver, element, browser):
         step_value = float(distance) / total_steps
         new_position = scroll_position
         for y in range(int(total_steps)):
-            time.sleep(0.0114)
+            time.sleep(0.011)
             new_position += step_value
             scroll_script = "window.scrollTo(0, %s);" % new_position
             driver.execute_script(scroll_script)
@@ -721,6 +741,75 @@ def slow_scroll_to_element(driver, element, browser):
     if distance > 430 or distance < -300:
         # Add small recovery time for long-distance slow-scrolling
         time.sleep(0.162)
+    else:
+        time.sleep(0.045)
+
+
+def get_drag_and_drop_script():
+    script = (r"""(function( $ ) {
+        $.fn.simulateDragDrop = function(options) {
+                return this.each(function() {
+                        new $.simulateDragDrop(this, options);
+                });
+        };
+        $.simulateDragDrop = function(elem, options) {
+                this.options = options;
+                this.simulateEvent(elem, options);
+        };
+        $.extend($.simulateDragDrop.prototype, {
+                simulateEvent: function(elem, options) {
+                        /*Simulating drag start*/
+                        var type = 'dragstart';
+                        var event = this.createEvent(type);
+                        this.dispatchEvent(elem, type, event);
+
+                        /*Simulating drop*/
+                        type = 'drop';
+                        var dropEvent = this.createEvent(type, {});
+                        dropEvent.dataTransfer = event.dataTransfer;
+                        this.dispatchEvent(
+                            $(options.dropTarget)[0], type, dropEvent);
+
+                        /*Simulating drag end*/
+                        type = 'dragend';
+                        var dragEndEvent = this.createEvent(type, {});
+                        dragEndEvent.dataTransfer = event.dataTransfer;
+                        this.dispatchEvent(elem, type, dragEndEvent);
+                },
+                createEvent: function(type) {
+                        var event = document.createEvent("CustomEvent");
+                        event.initCustomEvent(type, true, true, null);
+                        event.dataTransfer = {
+                                data: {
+                                },
+                                setData: function(type, val){
+                                        this.data[type] = val;
+                                },
+                                getData: function(type){
+                                        return this.data[type];
+                                }
+                        };
+                        return event;
+                },
+                dispatchEvent: function(elem, type, event) {
+                        if(elem.dispatchEvent) {
+                                elem.dispatchEvent(event);
+                        }else if( elem.fireEvent ) {
+                                elem.fireEvent("on"+type, event);
+                        }
+                }
+        });
+        })(jQuery);""")
+    return script
+
+
+def clear_out_console_logs(driver):
+    try:
+        # Clear out the current page log before navigating to a new page
+        # (To make sure that assert_no_js_errors() uses current results)
+        driver.get_log('browser')
+    except Exception:
+        pass
 
 
 @decorators.deprecated("Use re.escape() instead, which does what you want!")

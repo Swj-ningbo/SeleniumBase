@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ This is the pytest configuration file """
 
+import colorama
 import pytest
 import sys
 from seleniumbase import config as sb_config
@@ -11,53 +12,62 @@ from seleniumbase.fixtures import constants
 
 def pytest_addoption(parser):
     """
-    This parser plugin includes the following command-line options for pytest:
-    --browser=BROWSER  (The web browser to use.)
+    This plugin adds the following command-line options to pytest:
+    --browser=BROWSER  (The web browser to use. Default: "chrome".)
+    --settings-file=FILE  (Override default SeleniumBase settings.)
+    --env=ENV  (Set the test env. Access with "self.env" in tests.)
+    --data=DATA  (Extra test data. Access with "self.data" in tests.)
+    --var1=DATA  (Extra test data. Access with "self.var1" in tests.)
+    --var2=DATA  (Extra test data. Access with "self.var2" in tests.)
+    --var3=DATA  (Extra test data. Access with "self.var3" in tests.)
+    --user-data-dir=DIR  (Set the Chrome user data directory to use.)
+    --server=SERVER  (The Selenium Grid server/IP used for tests.)
+    --port=PORT  (The Selenium Grid port used by the test server.)
     --cap-file=FILE  (The web browser's desired capabilities to use.)
     --cap-string=STRING  (The web browser's desired capabilities to use.)
-    --settings-file=FILE  (Overrides SeleniumBase settings.py values.)
-    --env=ENV  (Set a test environment. Use "self.env" to use this in tests.)
-    --data=DATA  (Extra data to pass to tests. Use "self.data" in tests.)
-    --var1=DATA  (Extra data to pass to tests. Use "self.var1" in tests.)
-    --var2=DATA  (Extra data to pass to tests. Use "self.var2" in tests.)
-    --var3=DATA  (Extra data to pass to tests. Use "self.var3" in tests.)
-    --user-data-dir=DIR  (Set the Chrome user data directory to use.)
-    --server=SERVER  (The server / IP address used by the tests.)
-    --port=PORT  (The port that's used by the test server.)
-    --proxy=SERVER:PORT  (This is the proxy server:port combo used by tests.)
-    --agent=STRING  (This designates the web browser's User Agent to use.)
-    --mobile  (The option to use the mobile emulator while running tests.)
-    --metrics=STRING  ("CSSWidth,Height,PixelRatio" for mobile emulator tests.)
+    --proxy=SERVER:PORT  (Connect to a proxy server:port for tests.)
+    --proxy=USERNAME:PASSWORD@SERVER:PORT  (Use authenticated proxy server.)
+    --agent=STRING  (Modify the web browser's User-Agent string.)
+    --mobile  (Use the mobile device emulator while running tests.)
+    --metrics=STRING  (Set mobile "CSSWidth,CSSHeight,PixelRatio".)
     --extension-zip=ZIP  (Load a Chrome Extension .zip file, comma-separated.)
     --extension-dir=DIR  (Load a Chrome Extension directory, comma-separated.)
-    --headless  (The option to run tests headlessly. The default on Linux OS.)
-    --headed  (The option to run tests with a GUI on Linux OS.)
+    --headless  (Run tests headlessly. Default mode on Linux OS.)
+    --headed  (Run tests with a GUI on Linux OS.)
     --start-page=URL  (The starting URL for the web browser when tests begin.)
     --archive-logs  (Archive old log files instead of deleting them.)
     --time-limit=SECONDS  (Safely fail any test that exceeds the limit limit.)
-    --slow  (The option to slow down the automation.)
-    --demo  (The option to visually see test actions as they occur.)
-    --demo-sleep=SECONDS  (The option to wait longer after Demo Mode actions.)
+    --slow  (Slow down the automation. Faster than using Demo Mode.)
+    --demo  (Slow down and visually see test actions as they occur.)
+    --demo-sleep=SECONDS  (Set the wait time after Demo Mode actions.)
     --highlights=NUM  (Number of highlight animations for Demo Mode actions.)
     --message-duration=SECONDS  (The time length for Messenger alerts.)
-    --check-js  (The option to check for JavaScript errors after page loads.)
-    --ad-block  (The option to block some display ads after page loads.)
+    --check-js  (Check for JavaScript errors after page loads.)
+    --ad-block  (Block some types of display ads after page loads.)
+    --block-images (Block images from loading during tests.)
     --verify-delay=SECONDS  (The delay before MasterQA verification checks.)
-    --disable-csp  (This disables the Content Security Policy of websites.)
-    --enable-sync  (The option to enable "Chrome Sync".)
-    --use-auto-ext  (The option to use Chrome's automation extension.)
-    --incognito  (The option to enable Chrome's Incognito mode.)
-    --guest  (The option to enable Chrome's Guest mode.)
-    --devtools  (The option to open Chrome's DevTools when the browser opens.)
-    --reuse-session  (The option to reuse the browser session between tests.)
-    --crumbs  (Option to delete all cookies between tests reusing a session.)
-    --maximize  (The option to start with the web browser maximized.)
-    --save-screenshot  (The option to save a screenshot after each test.)
+    --disable-csp  (Disable the Content Security Policy of websites.)
+    --enable-sync  (Enable "Chrome Sync".)
+    --use-auto-ext  (Use Chrome's automation extension.)
+    --swiftshader  (Use Chrome's "--use-gl=swiftshader" feature.)
+    --incognito  (Enable Chrome's Incognito mode.)
+    --guest  (Enable Chrome's Guest mode.)
+    --devtools  (Open Chrome's DevTools when the browser opens.)
+    --reuse-session / --rs  (Reuse the browser session between tests.)
+    --crumbs  (Delete all cookies between tests reusing a session.)
+    --maximize  (Start tests with the web browser window maximized.)
+    --save-screenshot  (Save a screenshot at the end of each test.)
     --visual-baseline  (Set the visual baseline for Visual/Layout tests.)
     --timeout-multiplier=MULTIPLIER  (Multiplies the default timeout values.)
     """
-    parser = parser.getgroup('SeleniumBase',
-                             'SeleniumBase specific configuration options')
+    c1 = colorama.Fore.BLUE + colorama.Back.LIGHTCYAN_EX
+    c2 = colorama.Fore.BLUE + colorama.Back.LIGHTGREEN_EX
+    c3 = colorama.Fore.MAGENTA + colorama.Back.LIGHTYELLOW_EX
+    cr = colorama.Style.RESET_ALL
+    s_str = "SeleniumBase"
+    s_str = s_str.replace("SeleniumBase", c1 + "Selenium" + c2 + "Base" + cr)
+    s_str = s_str + cr + " " + c3 + "command-line options for pytest" + cr
+    parser = parser.getgroup('SeleniumBase', s_str)
     parser.addoption('--browser',
                      action="store",
                      dest='browser',
@@ -71,7 +81,8 @@ def pytest_addoption(parser):
                      action="store_true",
                      dest='with_selenium',
                      default=True,
-                     help="Use if tests need to be run with a web browser.")
+                     help="""(DEPRECATED) Start tests with an open web browser.
+                          (This is ALWAYS True now when importing BaseCase)""")
     parser.addoption('--env',
                      action='store',
                      dest='environment',
@@ -144,7 +155,8 @@ def pytest_addoption(parser):
     parser.addoption('--log_path', '--log-path',
                      dest='log_path',
                      default='latest_logs/',
-                     help='Where log files are saved. (No longer editable!)')
+                     help="""Log files are saved to the "latest_logs/" folder.
+                          (This field is NOT EDITABLE anymore!)""")
     parser.addoption('--archive_logs', '--archive-logs',
                      action="store_true",
                      dest='archive_logs',
@@ -237,7 +249,7 @@ def pytest_addoption(parser):
                           Format: A comma-separated string with the 3 values.
                           Example: "375,734,3"
                           Default: None. (Will use default values if None)""")
-    parser.addoption('--extension_zip', '--extension-zip',
+    parser.addoption('--extension_zip', '--extension-zip', '--crx',
                      action='store',
                      dest='extension_zip',
                      default=None,
@@ -330,6 +342,12 @@ def pytest_addoption(parser):
                      default=False,
                      help="""Using this makes WebDriver block display ads
                           that are defined in ad_block_list.AD_BLOCK_LIST.""")
+    parser.addoption('--block_images', '--block-images',
+                     action="store_true",
+                     dest='block_images',
+                     default=False,
+                     help="""Using this makes WebDriver block images from
+                          loading on web pages during tests.""")
     parser.addoption('--verify_delay', '--verify-delay',
                      action='store',
                      dest='verify_delay',
@@ -370,6 +388,12 @@ def pytest_addoption(parser):
                      default=False,
                      help="""Using this enables the "Disable GPU" feature.
                           (This setting is now always enabled by default.)""")
+    parser.addoption('--swiftshader',
+                     action="store_true",
+                     dest='swiftshader',
+                     default=False,
+                     help="""Using this enables the "--use-gl=swiftshader"
+                          feature when running tests on Chrome.""")
     parser.addoption('--incognito', '--incognito_mode', '--incognito-mode',
                      action="store_true",
                      dest='incognito',
@@ -385,7 +409,7 @@ def pytest_addoption(parser):
                      dest='devtools',
                      default=False,
                      help="""Using this opens Chrome's DevTools.""")
-    parser.addoption('--reuse_session', '--reuse-session',
+    parser.addoption('--rs', '--reuse_session', '--reuse-session',
                      action="store_true",
                      dest='reuse_session',
                      default=False,
@@ -477,12 +501,14 @@ def pytest_configure(config):
     sb_config.message_duration = config.getoption('message_duration')
     sb_config.js_checking_on = config.getoption('js_checking_on')
     sb_config.ad_block_on = config.getoption('ad_block_on')
+    sb_config.block_images = config.getoption('block_images')
     sb_config.verify_delay = config.getoption('verify_delay')
     sb_config.disable_csp = config.getoption('disable_csp')
     sb_config.enable_sync = config.getoption('enable_sync')
     sb_config.use_auto_ext = config.getoption('use_auto_ext')
     sb_config.no_sandbox = config.getoption('no_sandbox')
     sb_config.disable_gpu = config.getoption('disable_gpu')
+    sb_config.swiftshader = config.getoption('swiftshader')
     sb_config.incognito = config.getoption('incognito')
     sb_config.guest_mode = config.getoption('guest_mode')
     sb_config.devtools = config.getoption('devtools')
@@ -494,6 +520,7 @@ def pytest_configure(config):
     sb_config.visual_baseline = config.getoption('visual_baseline')
     sb_config.timeout_multiplier = config.getoption('timeout_multiplier')
     sb_config.pytest_html_report = config.getoption('htmlpath')  # --html=FILE
+    sb_config._sb_node = {}  # sb node dictionary (Used with the sb fixture)
 
     if sb_config.reuse_session:
         arg_join = " ".join(sys.argv)
@@ -566,19 +593,35 @@ def sb(request):
     from seleniumbase import BaseCase
 
     class BaseClass(BaseCase):
-        def base_method():
+
+        def setUp(self):
+            super(BaseClass, self).setUp()
+
+        def tearDown(self):
+            self.save_teardown_screenshot()
+            super(BaseClass, self).tearDown()
+
+        def base_method(self):
             pass
 
     if request.cls:
         request.cls.sb = BaseClass("base_method")
         request.cls.sb.setUp()
+        request.cls.sb._needs_tearDown = True
+        sb_config._sb_node[request.node.nodeid] = request.cls.sb
         yield request.cls.sb
-        request.cls.sb.tearDown()
+        if request.cls.sb._needs_tearDown:
+            request.cls.sb.tearDown()
+            request.cls.sb._needs_tearDown = False
     else:
         sb = BaseClass("base_method")
         sb.setUp()
+        sb._needs_tearDown = True
+        sb_config._sb_node[request.node.nodeid] = sb
         yield sb
-        sb.tearDown()
+        if sb._needs_tearDown:
+            sb.tearDown()
+            sb._needs_tearDown = False
 
 
 @pytest.mark.hookwrapper
@@ -588,9 +631,36 @@ def pytest_runtest_makereport(item, call):
     report = outcome.get_result()
     if pytest_html and report.when == 'call':
         try:
-            extra_report = item._testcase._html_report_extra
+            extra_report = None
+            if hasattr(item, "_testcase"):
+                extra_report = item._testcase._html_report_extra
+            elif hasattr(item.instance, "sb") or (
+                    item.nodeid in sb_config._sb_node):
+                if not hasattr(item.instance, "sb"):
+                    sb_node = sb_config._sb_node[item.nodeid]
+                else:
+                    sb_node = item.instance.sb
+                test_id = item.nodeid
+                if not test_id:
+                    test_id = "unidentified_TestCase"
+                test_id = test_id.replace(' ', '_')
+                if '[' in test_id:
+                    import re
+                    test_id_intro = test_id.split('[')[0]
+                    parameter = test_id.split('[')[1]
+                    parameter = re.sub(re.compile(r'\W'), '', parameter)
+                    test_id = test_id_intro + "__" + parameter
+                test_id = test_id.replace('/', '.').replace('\\', '.')
+                test_id = test_id.replace('::', '.').replace('.py', '')
+                sb_node._sb_test_identifier = test_id
+                if sb_node._needs_tearDown:
+                    sb_node.tearDown()
+                    sb_node._needs_tearDown = False
+                extra_report = sb_node._html_report_extra
+            else:
+                return
             extra = getattr(report, 'extra', [])
-            if extra_report[1]["content"]:
+            if len(extra_report) > 1 and extra_report[1]["content"]:
                 report.extra = extra + extra_report
         except Exception:
             pass

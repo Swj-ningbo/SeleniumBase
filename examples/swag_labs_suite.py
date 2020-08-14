@@ -10,8 +10,8 @@ class SwagLabsTests(BaseCase):
         self.open("https://www.saucedemo.com/")
         if username not in self.get_text("#login_credentials"):
             self.fail("Invalid user for login: %s" % username)
-        self.update_text("#user-name", username)
-        self.update_text("#password", "secret_sauce")
+        self.type("#user-name", username)
+        self.type("#password", "secret_sauce")
         self.click('input[type="submit"]')
         self.assert_element("#inventory_container")
         self.assert_text("Products", "div.product_label")
@@ -58,9 +58,9 @@ class SwagLabsTests(BaseCase):
         self.click("link=CHECKOUT")
         self.assert_exact_text("Checkout: Your Information", "div.subheader")
         self.assert_element("a.cart_cancel_link")
-        self.update_text("#first-name", "SeleniumBase")
-        self.update_text("#last-name", "Rocks")
-        self.update_text("#postal-code", "01720")
+        self.type("#first-name", "SeleniumBase")
+        self.type("#last-name", "Rocks")
+        self.type("#postal-code", "01720")
 
         # Checkout - Overview
         self.click("input.btn_primary")
@@ -73,7 +73,7 @@ class SwagLabsTests(BaseCase):
         # Finish Checkout and verify the item was removed from the cart
         self.click("link=FINISH")
         self.assert_exact_text("THANK YOU FOR YOUR ORDER", "h2")
-        self.assert_element("div.pony_express")
+        self.assert_element("img.pony_express")
         self.click("#shopping_cart_container path")
         self.assert_element_absent("div.inventory_item_name")
         self.click(continue_shopping_button)

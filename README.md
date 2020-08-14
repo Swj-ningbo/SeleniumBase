@@ -1,52 +1,58 @@
 <meta property="og:site_name" content="SeleniumBase | Docs">
-<meta property="og:title" content="SeleniumBase | Reliable Test Automation" />
-<meta property="og:description" content="Simple browser automation and testing with Python." />
-<meta property="og:image" content="https://seleniumbase.io/img/sb_logo_7.png" />
+<meta property="og:title" content="SeleniumBase | Easy Test Automation" />
+<meta property="og:description" content="Browser automation and testing with Python." />
+<meta property="og:image" content="https://seleniumbase.io/img/sb_logo_10.png" />
 <link rel="icon" href="https://seleniumbase.io/img/logo3a.png" />
-<!-- SeleniumBase Header1 -->
-<p align="center"><a href="https://github.com/seleniumbase/SeleniumBase/">
-<img src="https://seleniumbase.io/img/sb_logo_7.png" alt="SeleniumBase" width="260" />
-</a></p>
-<!-- View on GitHub -->
-<!-- SeleniumBase Header2 -->
 
+<p align="center"><a href="https://github.com/seleniumbase/SeleniumBase/">
+<img src="https://seleniumbase.io/img/sb_logo_10.png" alt="SeleniumBase" width="260" />
+</a></p>
+<p align="center">
+<b>The fastest way to test web apps.</b>
+</p>
+<!-- View on GitHub -->
 <p align="center">
 <a href="https://github.com/seleniumbase/SeleniumBase/releases">
 <img src="https://img.shields.io/github/v/release/seleniumbase/SeleniumBase.svg?color=2277EE" alt="Latest Release on GitHub" /></a> <a href="https://pypi.python.org/pypi/seleniumbase">
 <img src="https://img.shields.io/pypi/v/seleniumbase.svg?color=22AAEE" alt="Latest Release on PyPI" /></a> <a href="https://seleniumbase.io">
-<img src="https://img.shields.io/badge/Docs%3F-%20Yes%21-11BBDD.svg" alt="SeleniumBase.io Docs" /></a> <a href="https://travis-ci.org/seleniumbase/SeleniumBase">
+<img src="https://img.shields.io/badge/docs-%20seleniumbase.io-11BBDD.svg" alt="SeleniumBase.io Docs" /></a> <a href="https://travis-ci.org/seleniumbase/SeleniumBase">
 <img src="https://img.shields.io/travis/seleniumbase/SeleniumBase/master.svg" alt="SeleniumBase on TravisCI" /></a> <a href="https://github.com/seleniumbase/SeleniumBase/actions">
 <img src="https://github.com/seleniumbase/SeleniumBase/workflows/CI%20build/badge.svg" alt="SeleniumBase GitHub Actions" /></a> <a href="https://gitter.im/seleniumbase/SeleniumBase">
 <img src="https://badges.gitter.im/seleniumbase/SeleniumBase.svg" alt="SeleniumBase" /></a>
 </p>
 
-<p align="center">
-<b>Everything you need for web testing.</b>
+<p>
+SeleniumBase is an all-in-one framework for web automation, end-to-end testing, presentations, charts, and website tours.
+Tests are run with "pytest". Browsers are controlled by WebDriver.
 </p>
 
 <p align="center">
-<a href="#python_installation">🚀 Get Started</a> |
-<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/customizing_test_runs.md">🧙‍♂️ CMD Options</a> |
+<a href="#python_installation">🚀 Start</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/customizing_test_runs.md">🧙‍♂️ cmd</a> |
 <a href="https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/features_list.md">🏰 Features</a> |
-<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/ReadMe.md">👨‍🏫 Examples</a> |
-<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/mobile_testing.md">📱 Mobile Testing</a> |
-<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/example_logs/ReadMe.md">📊 Reports</a>
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/ReadMe.md">👨‍🏫 Examples</a>
 <br />
 <a href="https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/method_summary.md">📖 API</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/example_logs/ReadMe.md">📋 Reports</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/mobile_testing.md">📱 Mobile</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/seleniumbase/utilities/selenium_ide/ReadMe.md">⏺️ Recorder</a>
+<br />
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/integrations/github/workflows/ReadMe.md">🤖 CI</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/translations.md">🌎 Translate</a> |
 <a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/tour_examples/ReadMe.md">🗺️ Tours</a> |
-<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/help_docs/translations.md">🌎 Languages</a> |
-<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/seleniumbase/utilities/selenium_ide/ReadMe.md">⏺️ Recorder</a> |
-<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/master_qa/ReadMe.md">🛂 MasterQA</a> |
-<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/visual_testing/ReadMe.md">👩‍🎨 Visual Tests</a> |
-<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/integrations/github/workflows/ReadMe.md">🤖 GitHub-CI</a>
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/visual_testing/ReadMe.md">🖼️ VisualTests</a>
+<br />
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/presenter/ReadMe.md">📰 Presenter</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/chart_maker/ReadMe.md">📊 Chart Maker</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/examples/master_qa/ReadMe.md">🛂 MasterQA</a>
+<br />
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/seleniumbase/console_scripts/ReadMe.md">💻 Console Scripts</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/blob/master/seleniumbase/utilities/selenium_grid/ReadMe.md">🌐 Grid</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/tree/master/integrations/node_js">🏃 NodeRunner</a>
 </p>
 
-<p align="center">
-<b>Selenium and pytest in one combined.</b>
-</p>
 <p align="center"><img src="https://cdn2.hubspot.net/hubfs/100006/images/swag_labs_gif.gif" alt="SeleniumBase" title="SeleniumBase" /></p>
 
-<!-- SeleniumBase Docs -->
 <a id="python_installation"></a>
 <h2><img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Get Started:</h2>
 
@@ -65,12 +71,10 @@ python -m pip install -U pip
 ```bash
 git clone https://github.com/seleniumbase/SeleniumBase.git
 cd SeleniumBase/
-pip install -r requirements.txt
-python setup.py install
+pip install .
 ```
-If multiple versions of Python are installed, be specific (E.g. use ``python3`` instead of ``python``).
 
-* You can also install ``seleniumbase`` from [pypi](https://pypi.python.org/pypi/seleniumbase):
+* You can also install ``seleniumbase`` from [pypi](https://pypi.python.org/pypi/seleniumbase).
 ```bash
 pip install seleniumbase
 ```
@@ -89,12 +93,15 @@ seleniumbase install chromedriver
 seleniumbase install chromedriver latest
 ```
 
+(See [seleniumbase.io/seleniumbase/console_scripts/ReadMe/](https://seleniumbase.io/seleniumbase/console_scripts/ReadMe/) for more information on SeleniumBase console scripts, such as ``seleniumbase install`` and ``seleniumbase mkdir``.)
+
 <h3><img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Run a test on Chrome:</h3>
 
 ```bash
 cd examples/
 pytest my_first_test.py
 ```
+
 * Chrome is the default browser if not specified with ``--browser=BROWSER``.
 * On Linux ``--headless`` is the default behavior (running with no GUI). You can also run in headless mode on any OS. If your Linux machine has a GUI and you want to see the web browser as tests run, add ``--headed`` or ``--gui``.
 
@@ -114,17 +121,17 @@ from seleniumbase import BaseCase
 class MyTestClass(BaseCase):
 
     def test_basic(self):
+        self.open("https://store.xkcd.com/search")
+        self.type('input[name="q"]', "xkcd book\n")
+        self.assert_text("xkcd: volume 0", "h3")
         self.open("https://xkcd.com/353/")
         self.assert_title("xkcd: Python")
         self.assert_element('img[alt="Python"]')
         self.click('a[rel="license"]')
         self.assert_text("free to copy and reuse")
         self.go_back()
-        self.click("link=About")
-        self.assert_text("xkcd.com", "h2")
-        self.open("://store.xkcd.com/collections/everything")
-        self.update_text("input.search-input", "xkcd book\n")
-        self.assert_exact_text("xkcd: volume 0", "h3")
+        self.click_link_text("About")
+        self.assert_exact_text("xkcd.com", "h2")
 ```
 
 * By default, **[CSS Selectors](https://www.w3schools.com/cssref/css_selectors.asp)** are used for finding page elements.
@@ -134,7 +141,7 @@ class MyTestClass(BaseCase):
 ```python
 self.open(URL)  # Navigate to the web page
 self.click(SELECTOR)  # Click a page element
-self.update_text(SELECTOR, TEXT)  # Type text (Add "\n" to text for pressing enter/return.)
+self.type(SELECTOR, TEXT)  # Type text (Add "\n" to text for pressing enter/return.)
 self.assert_element(SELECTOR)  # Assert element is visible
 self.assert_text(TEXT)  # Assert text is visible (has optional SELECTOR arg)
 self.assert_title(PAGE_TITLE)  # Assert page title
@@ -165,7 +172,7 @@ SeleniumBase automatically handles common WebDriver actions such as spinning up 
 SeleniumBase uses simple syntax for commands, such as:
 
 ```python
-self.update_text("input", "dogs\n")
+self.type("input", "dogs\n")
 ```
 
 The same command with regular WebDriver is very messy:
@@ -181,10 +188,9 @@ element.submit()
 
 As you can see, the old WebDriver way is very bad!
 Use SeleniumBase to make testing much easier!
-(<i>You can still use ``self.driver`` in your code.</i>)
+(You can still use ``self.driver`` in your code.)
 
-<h4>Run tests with ``pytest`` or ``nosetests`` in any browser:</h4>
-(<i>Using **pytest** is recommended. **Chrome** is the default browser.</i>)
+You can interchange ``pytest`` with ``nosetests`` for most tests, but using ``pytest`` is recommended. (``chrome`` is the default browser if not specified.)
 
 ```bash
 pytest my_first_test.py --browser=chrome
@@ -227,7 +233,7 @@ seleniumbase install iedriver
 seleniumbase install operadriver
 ```
 
-Next, choose between **pytest** and **nosetests** test runners. (<i>Mostly interchangeable.</i>)
+Next, choose between ``pytest`` and ``nosetests`` test runners. (<i>Mostly interchangeable.</i>)
 
 ```bash
 cd examples/
@@ -240,7 +246,7 @@ nosetests my_first_test.py --browser=firefox
 (<i>If no browser is specified, Chrome is used by default.</i>)
 With Pytest, a green dot means a test passed. An "F" means a test failed.
 
-<a id="seleniumbase_demo_mode"></a> **Use Demo Mode to help you see what tests are asserting.**
+<a id="seleniumbase_demo_mode"></a> <b>Use Demo Mode to help you see what tests are asserting.</b>
 
 If the example test is moving too fast for your eyes, you can run it in **Demo Mode** by adding ``--demo`` on the command-line, which pauses the browser briefly between actions, highlights page elements being acted on, and lets you know what test assertions are happening in real time:
 
@@ -248,7 +254,7 @@ If the example test is moving too fast for your eyes, you can run it in **Demo M
 pytest my_first_test.py --demo
 ```
 
-**Pytest** includes test discovery. If you don't specify a specific file or folder to run from, ``pytest`` will search all subdirectories automatically for tests to run based on the following matching criteria:
+``Pytest`` includes test discovery. If you don't specify a specific file or folder to run from, ``pytest`` will search all subdirectories automatically for tests to run based on the following matching criteria:
 Python filenames that start with ``test_`` or end with ``_test.py``.
 Python methods that start with ``test_``.
 The Python class name can be anything since SeleniumBase's ``BaseCase`` class inherits from the ``unittest.TestCase`` class.
@@ -258,27 +264,27 @@ You can see which tests are getting discovered by ``pytest`` by using:
 pytest --collect-only -q
 ```
 
-You can use the following in your scripts to help you debug issues:
-(<i>If using ipdb, make sure you add "-s" to command-line options unless already in pytest.ini</i>)
+You can use the following calls in your scripts to help you debug issues:
+
 ```python
 import time; time.sleep(5)  # Makes the test wait and do nothing for 5 seconds.
 import ipdb; ipdb.set_trace()  # Enter debugging mode. n = next, c = continue, s = step.
 import pytest; pytest.set_trace()  # Enter debugging mode. n = next, c = continue, s = step.
 ```
 
-<b>To pause an active test that throws an exception or error, add ``--pdb -s``:</b>
+To pause an active test that throws an exception or error, add ``--pdb``:
 
 ```bash
-pytest my_first_test.py --pdb -s
+pytest my_first_test.py --pdb
 ```
 
 The code above will leave your browser window open in case there's a failure. (ipdb commands: 'n', 'c', 's' => next, continue, step).
 
-Here are some useful command-line options that come with Pytest:
+Here are some useful command-line options that come with ``pytest``:
 
 ```bash
--v  # Prints the full test name for each test.
--q  # Prints fewer details in the console output when running tests.
+-v  # Verbose mode. Prints the full name of each test run.
+-q  # Quiet mode. Print fewer details in the console output when running tests.
 -x  # Stop running the tests after the first failure is reached.
 --html=report.html  # Creates a detailed pytest-html report after tests finish.
 --collect-only  # Show what tests would get run without actually running them.
@@ -286,53 +292,56 @@ Here are some useful command-line options that come with Pytest:
 -s  # See print statements. (Should be on by default with pytest.ini present.)
 --junit-xml=report.xml  # Creates a junit-xml report after tests finish.
 --pdb  # If a test fails, pause run and enter debug mode. (Don't use with CI!)
--m=MARKER  # Only run tests that are marked with the specified pytest marker.
+-m=MARKER  # Run tests with the specified pytest marker.
 ```
 
-SeleniumBase provides additional Pytest command-line options for tests:
+SeleniumBase provides additional ``pytest`` command-line options for tests:
 
 ```bash
---browser=BROWSER  # (The web browser to use.)
+--browser=BROWSER  # (The web browser to use. Default: "chrome".)
 --cap-file=FILE  # (The web browser's desired capabilities to use.)
 --cap-string=STRING  # (The web browser's desired capabilities to use.)
---settings-file=FILE  # (Overrides SeleniumBase settings.py values.)
+--settings-file=FILE  # (Override default SeleniumBase settings.)
 --env=ENV  # (Set a test environment. Use "self.env" to use this in tests.)
---data=DATA  # (Extra data to pass to tests. Use "self.data" in tests.)
---var1=DATA  # (Extra data to pass to tests. Use "self.var1" in tests.)
---var2=DATA  # (Extra data to pass to tests. Use "self.var2" in tests.)
---var3=DATA  # (Extra data to pass to tests. Use "self.var3" in tests.)
+--data=DATA  # (Extra test data. Access with "self.data" in tests.)
+--var1=DATA  # (Extra test data. Access with "self.var1" in tests.)
+--var2=DATA  # (Extra test data. Access with "self.var2" in tests.)
+--var3=DATA  # (Extra test data. Access with "self.var3" in tests.)
 --user-data-dir=DIR  # (Set the Chrome user data directory to use.)
---server=SERVER  # (The server / IP address used by the tests.)
---port=PORT  # (The port that's used by the test server.)
---proxy=SERVER:PORT  # (This is the proxy server:port combo used by tests.)
---agent=STRING  # (This designates the web browser's User Agent to use.)
---mobile  # (The option to use the mobile emulator while running tests.)
---metrics=STRING  # ("CSSWidth,Height,PixelRatio" for mobile emulator tests.)
+--server=SERVER  # (The Selenium Grid server/IP used for tests.)
+--port=PORT  # (The Selenium Grid port used by the test server.)
+--proxy=SERVER:PORT  # (Connect to a proxy server:port for tests.)
+--proxy=USERNAME:PASSWORD@SERVER:PORT  # (Use authenticated proxy server.)
+--agent=STRING  # (Modify the web browser's User-Agent string.)
+--mobile  # (Use the mobile device emulator while running tests.)
+--metrics=STRING  # (Set mobile "CSSWidth,CSSHeight,PixelRatio".)
 --extension-zip=ZIP  # (Load a Chrome Extension .zip file, comma-separated.)
 --extension-dir=DIR  # (Load a Chrome Extension directory, comma-separated.)
---headless  # (The option to run tests headlessly. The default on Linux OS.)
---headed  # (The option to run tests with a GUI on Linux OS.)
+--headless  # (Run tests headlessly. Default mode on Linux OS.)
+--headed  # (Run tests with a GUI on Linux OS.)
 --start-page=URL  # (The starting URL for the web browser when tests begin.)
 --archive-logs  # (Archive old log files instead of deleting them.)
 --time-limit=SECONDS  # (Safely fail any test that exceeds the limit limit.)
---slow  # (The option to slow down the automation.)
---demo  # (The option to visually see test actions as they occur.)
---demo-sleep=SECONDS  # (The option to wait longer after Demo Mode actions.)
+--slow  # (Slow down the automation. Faster than using Demo Mode.)
+--demo  # (Slow down and visually see test actions as they occur.)
+--demo-sleep=SECONDS  # (Set the wait time after Demo Mode actions.)
 --highlights=NUM  # (Number of highlight animations for Demo Mode actions.)
 --message-duration=SECONDS  # (The time length for Messenger alerts.)
---check-js  # (The option to check for JavaScript errors after page loads.)
---ad-block  # (The option to block some display ads after page loads.)
+--check-js  # (Check for JavaScript errors after page loads.)
+--ad-block  # (Block some types of display ads after page loads.)
+--block-images  # (Block images from loading during tests.)
 --verify-delay=SECONDS  # (The delay before MasterQA verification checks.)
 --disable-csp  # (This disables the Content Security Policy of websites.)
---enable-sync  # (The option to enable "Chrome Sync".)
---use-auto-ext  # (The option to use Chrome's automation extension.)
---incognito  #  (The option to enable Chrome's Incognito mode.)
---guest  # (The option to enable Chrome's Guest mode.)
---devtools  # (The option to open Chrome's DevTools when the browser opens.)
---reuse-session  # (The option to reuse the browser session between tests.)
---crumbs  # (Option to delete all cookies between tests reusing a session.)
---maximize-window  # (The option to start with the web browser maximized.)
---save-screenshot  # (The option to save a screenshot after each test.)
+--enable-sync  # (Enable "Chrome Sync".)
+--use-auto-ext  # (Use Chrome's automation extension.)
+--swiftshader  # (Use Chrome's "--use-gl=swiftshader" feature.)
+--incognito  #  (Enable Chrome's Incognito mode.)
+--guest  # (Enable Chrome's Guest mode.)
+--devtools  # (Open Chrome's DevTools when the browser opens.)
+--reuse-session  # (Reuse the browser session between tests.)
+--crumbs  # (Delete all cookies between tests reusing a session.)
+--maximize-window  # (Start tests with the web browser window maximized.)
+--save-screenshot  # (Save a screenshot at the end of each test.)
 --visual-baseline  # (Set the visual baseline for Visual/Layout tests.)
 --timeout-multiplier=MULTIPLIER  # (Multiplies the default timeout values.)
 ```
@@ -427,6 +436,14 @@ nosetests test_suite.py --report
 <img src="https://cdn2.hubspot.net/hubfs/100006/images/Test_Report_2.png" alt="Example Nosetest Report" title="Example Nosetest Report" width="320" />
 
 (NOTE: You can add ``--show-report`` to immediately display Nosetest reports after the test suite completes. Only use ``--show-report`` when running tests locally because it pauses the test run.)
+
+<h4><b>Allure Reports:</b></h4>
+
+See: [https://docs.qameta.io/allure/](https://docs.qameta.io/allure/#_pytest)
+
+```bash
+pytest test_suite.py --alluredir=allure_results
+```
 
 
 <h3><img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Using a Proxy Server:</h3>
@@ -525,10 +542,10 @@ self.click("div#my_id")
 
 <h4>Typing Text</h4>
 
-self.update_text(selector, text)  # updates the text from the specified element with the specified value. An exception is raised if the element is missing or if the text field is not editable. Example:
+self.type(selector, text)  # updates the text from the specified element with the specified value. An exception is raised if the element is missing or if the text field is not editable. Example:
 
 ```python
-self.update_text("input#id_value", "2012")
+self.type("input#id_value", "2012")
 ```
 You can also use self.add_text() or the WebDriver .send_keys() command, but those won't clear the text box first if there's already text inside.
 If you want to type in special keys, that's easy too. Here's an example:

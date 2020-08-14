@@ -17,17 +17,17 @@ Format: A CSS Selector that's ready for JavaScript's querySelectorAll()
 """
 
 AD_BLOCK_LIST = [
-    'script[src*="/adservice."]',
-    'script[src*="doubleclick.net"]',
-    'script[src*="googletagservices.com"]',
-    'script[src*="doubleclick.net"]',
-    'script[src*="adsbygoogle.js"]',
-    'script[src*="adroll.com"]',
-    'script[src*="/pagead/"]',
-    'script[src*="ads-host"]',
-    'script[src*="adsystem.com"]',
-    'script[type="data-doubleclick"]',
+    '[src*="/adservice."]',
+    '[src*="doubleclick.net"]',
+    '[src*="googletagservices.com"]',
+    '[src*="adsbygoogle.js"]',
+    '[src*="adroll.com"]',
+    '[src*="/pagead/"]',
+    '[type="data-doubleclick"]',
+    'iframe[data-google-container-id]',
     'iframe[src*="doubleclick.net"]',
+    'iframe[src*="/AdServer/"]',
+    'iframe[src*="openx.net"]',
     'iframe[onload*="doWithAds"]',
     'iframe[id*="google_ads_frame"]',
     '[aria-label="Ad"]',
@@ -42,6 +42,7 @@ AD_BLOCK_LIST = [
     '[data-ad-feedback-beacon*="AD_"]',
     '[data-ad-feedback-beacon]',
     '[data-dcm-click-tracker*="/adclick."]',
+    '[data-google-av-adk]',
     '[data-google-query-id]',
     '[data-ylk*="pkgt:sponsored_cluster"]',
     '[data-google-av-cxn*="pagead2"]',
@@ -84,5 +85,5 @@ AD_BLOCK_LIST = [
     'img[src*="HomepageAd-"]',
     'img.img_ad',
     'link[href*="/adservice."]',
-    'section.dianomi-ad',
+    'section.dianomi-ad'
 ]

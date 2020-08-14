@@ -19,6 +19,14 @@ class Files:
     ARCHIVED_DOWNLOADS_FOLDER = "archived_files"
 
 
+class Presentations:
+    SAVED_FOLDER = "saved_presentations"
+
+
+class Charts:
+    SAVED_FOLDER = "saved_charts"
+
+
 class SavedCookies:
     STORAGE_FOLDER = "saved_cookies"
 
@@ -29,6 +37,13 @@ class Tours:
 
 class VisualBaseline:
     STORAGE_FOLDER = "visual_baseline"
+
+
+class Values:
+    # Demo Mode has slow scrolling to see where you are on the page better.
+    # However, a regular slow scroll takes too long to cover big distances.
+    # If the scroll distance is greater than SSMD, a slow scroll speeds up.
+    SSMD = 900  # Smooth Scroll Minimum Distance (for advanced slow scroll)
 
 
 class JQuery:
@@ -67,7 +82,7 @@ class Messenger:
 
 
 class Underscore:
-    VER = "1.9.1"
+    VER = "1.10.2"
     MIN_JS = ("https://cdnjs.cloudflare.com/ajax/libs/"
               "underscore.js/%s/underscore-min.js" % VER)
 
@@ -82,6 +97,53 @@ class HtmlInspector:
     VER = "0.8.2"
     MIN_JS = ("https://cdnjs.cloudflare.com/ajax/libs/"
               "html-inspector/%s/html-inspector.min.js" % VER)
+
+
+class PrettifyJS:
+    RUN_PRETTIFY_JS = ("https://cdn.jsdelivr.net/gh/google/"
+                       "code-prettify@master/loader/run_prettify.js")
+
+
+class Reveal:
+    VER = "3.8.0"
+    MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+               "reveal.js/%s/css/reveal.min.css" % VER)
+    SERIF_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                     "reveal.js/%s/css/theme/serif.min.css" % VER)
+    WHITE_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                     "reveal.js/%s/css/theme/white.min.css" % VER)
+    BLACK_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                     "reveal.js/%s/css/theme/black.min.css" % VER)
+    SKY_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                   "reveal.js/%s/css/theme/sky.min.css" % VER)
+    MOON_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                    "reveal.js/%s/css/theme/moon.min.css" % VER)
+    NIGHT_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                     "reveal.js/%s/css/theme/night.min.css" % VER)
+    LEAGUE_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                      "reveal.js/%s/css/theme/league.min.css" % VER)
+    BEIGE_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                     "reveal.js/%s/css/theme/beige.min.css" % VER)
+    BLOOD_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                     "reveal.js/%s/css/theme/blood.min.css" % VER)
+    SIMPLE_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                      "reveal.js/%s/css/theme/simple.min.css" % VER)
+    SOLARIZED_MIN_CSS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+                         "reveal.js/%s/css/theme/solarized.min.css" % VER)
+    MIN_JS = ("https://cdnjs.cloudflare.com/ajax/libs/"
+              "reveal.js/%s/js/reveal.min.js" % VER)
+
+
+class HighCharts:
+    VER = "8.1.2"
+    HC_CSS = ("https://code.highcharts.com/%s/css/highcharts.css" % VER)
+    HC_JS = ("https://code.highcharts.com/%s/highcharts.js" % VER)
+    EXPORTING_JS = ("https://code.highcharts.com/"
+                    "%s/modules/exporting.js" % VER)
+    EXPORT_DATA_JS = ("https://code.highcharts.com/"
+                      "%s/modules/export-data.js" % VER)
+    ACCESSIBILITY_JS = ("https://code.highcharts.com/"
+                        "%s/modules/accessibility.js" % VER)
 
 
 class BootstrapTour:

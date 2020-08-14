@@ -9,39 +9,42 @@ from seleniumbase.fixtures import constants
 
 class SeleniumBrowser(Plugin):
     """
-    This parser plugin includes the following command-line options for Nose:
-    --browser=BROWSER  (The web browser to use.)
+    This plugin adds the following command-line options to nosetests:
+    --browser=BROWSER  (The web browser to use. Default: "chrome".)
+    --user-data-dir=DIR  (Set the Chrome user data directory to use.)
+    --server=SERVER  (The Selenium Grid server/IP used for tests.)
+    --port=PORT  (The Selenium Grid port used by the test server.)
     --cap-file=FILE  (The web browser's desired capabilities to use.)
     --cap-string=STRING  (The web browser's desired capabilities to use.)
-    --user-data-dir=DIR  (Set the Chrome user data directory to use.)
-    --server=SERVER  (The server / IP address used by the tests.)
-    --port=PORT  (The port that's used by the test server.)
-    --proxy=SERVER:PORT  (This is the proxy server:port combo used by tests.)
-    --agent=STRING  (This designates the web browser's User Agent to use.)
-    --mobile  (The option to use the mobile emulator while running tests.)
-    --metrics=STRING  ("CSSWidth,Height,PixelRatio" for mobile emulator tests.)
+    --proxy=SERVER:PORT  (Connect to a proxy server:port for tests.)
+    --proxy=USERNAME:PASSWORD@SERVER:PORT  (Use authenticated proxy server.)
+    --agent=STRING  (Modify the web browser's User-Agent string.)
+    --mobile  (Use the mobile device emulator while running tests.)
+    --metrics=STRING  (Set mobile "CSSWidth,CSSHeight,PixelRatio".)
     --extension-zip=ZIP  (Load a Chrome Extension .zip file, comma-separated.)
     --extension-dir=DIR  (Load a Chrome Extension directory, comma-separated.)
-    --headless  (The option to run tests headlessly. The default on Linux OS.)
-    --headed  (The option to run tests with a GUI on Linux OS.)
+    --headless  (Run tests headlessly. Default mode on Linux OS.)
+    --headed  (Run tests with a GUI on Linux OS.)
     --start-page=URL  (The starting URL for the web browser when tests begin.)
     --time-limit=SECONDS  (Safely fail any test that exceeds the limit limit.)
-    --slow  (The option to slow down the automation.)
-    --demo  (The option to visually see test actions as they occur.)
-    --demo-sleep=SECONDS  (The option to wait longer after Demo Mode actions.)
+    --slow  (Slow down the automation. Faster than using Demo Mode.)
+    --demo  (Slow down and visually see test actions as they occur.)
+    --demo-sleep=SECONDS  (Set the wait time after Demo Mode actions.)
     --highlights=NUM  (Number of highlight animations for Demo Mode actions.)
     --message-duration=SECONDS  (The time length for Messenger alerts.)
-    --check-js  (The option to check for JavaScript errors after page loads.)
-    --ad-block  (The option to block some display ads after page loads.)
+    --check-js  (Check for JavaScript errors after page loads.)
+    --ad-block  (Block some types of display ads after page loads.)
+    --block-images (Block images from loading during tests.)
     --verify-delay=SECONDS  (The delay before MasterQA verification checks.)
     --disable-csp  (This disables the Content Security Policy of websites.)
-    --enable-sync  (The option to enable "Chrome Sync".)
-    --use-auto-ext  (The option to use Chrome's automation extension.)
-    --incognito  (The option to enable Chrome's Incognito mode.)
-    --guest  (The option to enable Chrome's Guest mode.)
-    --devtools  (The option to open Chrome's DevTools when the browser opens.)
-    --maximize-window  (The option to start with the web browser maximized.)
-    --save-screenshot  (The option to save a screenshot after each test.)
+    --enable-sync  (Enable "Chrome Sync".)
+    --use-auto-ext  (Use Chrome's automation extension.)
+    --swiftshader  (Use Chrome's "--use-gl=swiftshader" feature.)
+    --incognito  (Enable Chrome's Incognito mode.)
+    --guest  (Enable Chrome's Guest mode.)
+    --devtools  (Open Chrome's DevTools when the browser opens.)
+    --maximize  (Start tests with the web browser window maximized.)
+    --save-screenshot  (Save a screenshot at the end of each test.)
     --visual-baseline  (Set the visual baseline for Visual/Layout tests.)
     --timeout-multiplier=MULTIPLIER  (Multiplies the default timeout values.)
     """
@@ -142,7 +145,7 @@ class SeleniumBrowser(Plugin):
                     Example: "375,734,3"
                     Default: None. (Will use default values if None)""")
         parser.add_option(
-            '--extension_zip', '--extension-zip',
+            '--extension_zip', '--extension-zip', '--crx',
             action='store',
             dest='extension_zip',
             default=None,
@@ -241,6 +244,13 @@ class SeleniumBrowser(Plugin):
             help="""Using this makes WebDriver block display ads
                     that are defined in ad_block_list.AD_BLOCK_LIST.""")
         parser.add_option(
+            '--block_images', '--block-images',
+            action="store_true",
+            dest='block_images',
+            default=False,
+            help="""Using this makes WebDriver block images from
+                    loading on web pages during tests.""")
+        parser.add_option(
             '--verify_delay', '--verify-delay',
             action='store',
             dest='verify_delay',
@@ -286,6 +296,13 @@ class SeleniumBrowser(Plugin):
             default=False,
             help="""Using this enables the "Disable GPU" feature.
                     (This setting is now always enabled by default.)""")
+        parser.add_option(
+            '--swiftshader',
+            action="store_true",
+            dest='swiftshader',
+            default=False,
+            help="""Using this enables the "--use-gl=swiftshader"
+                    feature when running tests on Chrome.""")
         parser.add_option(
             '--incognito', '--incognito_mode', '--incognito-mode',
             action="store_true",
@@ -367,12 +384,14 @@ class SeleniumBrowser(Plugin):
         test.test.message_duration = self.options.message_duration
         test.test.js_checking_on = self.options.js_checking_on
         test.test.ad_block_on = self.options.ad_block_on
+        test.test.block_images = self.options.block_images
         test.test.verify_delay = self.options.verify_delay  # MasterQA
         test.test.disable_csp = self.options.disable_csp
         test.test.enable_sync = self.options.enable_sync
         test.test.use_auto_ext = self.options.use_auto_ext
         test.test.no_sandbox = self.options.no_sandbox
         test.test.disable_gpu = self.options.disable_gpu
+        test.test.swiftshader = self.options.swiftshader
         test.test.incognito = self.options.incognito
         test.test.guest_mode = self.options.guest_mode
         test.test.devtools = self.options.devtools
