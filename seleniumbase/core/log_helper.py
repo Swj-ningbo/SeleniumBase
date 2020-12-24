@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 import codecs
+import datetime
 import os
 import shutil
 import sys
@@ -25,6 +27,39 @@ def log_screenshot(test_logpath, driver, screenshot=None, get=False):
             print("WARNING: Unable to get screenshot for failure logs!")
 
 
+def get_master_time():
+    """ Returns (timestamp, the_date, the_time) """
+    timestamp = str(int(time.time())) + "  (Unix Timestamp)"
+    now = datetime.datetime.now()
+    utc_offset = -time.timezone / 3600.0
+    utc_str = "UTC+0"
+    if utc_offset > 0:
+        if utc_offset < 10:
+            utc_str = "UTC+0%s" % utc_offset
+        else:
+            utc_str = "UTC+%s" % utc_offset
+    elif utc_offset < 0:
+        if utc_offset > -10:
+            utc_str = "UTC-0%s" % abs(utc_offset)
+        else:
+            utc_str = "UTC-%s" % abs(utc_offset)
+    utc_str = utc_str.replace('.5', '.3').replace('.', ':') + "0"
+    time_zone = ""
+    try:
+        time_zone = '(' + time.tzname[time.daylight] + ', ' + utc_str + ')'
+    except Exception:
+        time_zone = '(' + utc_str + ')'
+    # Use [Day-of-Week, Month Day, Year] format when time zone < GMT/UTC-3
+    the_date = now.strftime("%A, %B %d, %Y").replace(' 0', ' ')
+    if utc_offset >= -3:
+        # Use [Day-of-Week, Day Month Year] format when time zone >= GMT/UTC-3
+        the_date = now.strftime("%A, %d %B %Y").replace(' 0', ' ')
+    the_time = now.strftime("%I:%M:%S %p  ") + time_zone
+    if the_time.startswith("0"):
+        the_time = the_time[1:]
+    return timestamp, the_date, the_time
+
+
 def log_test_failure_data(test, test_logpath, driver, browser, url=None):
     basic_info_name = settings.BASIC_INFO_NAME
     basic_file_path = "%s/%s" % (test_logpath, basic_info_name)
@@ -33,10 +68,17 @@ def log_test_failure_data(test, test_logpath, driver, browser, url=None):
         last_page = url
     else:
         last_page = get_last_page(driver)
+    timestamp, the_date, the_time = get_master_time()
+    test_id = get_test_id(test)
     data_to_save = []
+    data_to_save.append("%s" % test_id)
+    data_to_save.append("----------------------------------------------------")
     data_to_save.append("Last Page: %s" % last_page)
     data_to_save.append("  Browser: %s" % browser)
-    data_to_save.append("Timestamp: %s" % int(time.time()))
+    data_to_save.append("Timestamp: %s" % timestamp)
+    data_to_save.append("     Date: %s" % the_date)
+    data_to_save.append("     Time: %s" % the_time)
+    data_to_save.append("----------------------------------------------------")
     if sys.version_info[0] >= 3 and hasattr(test, '_outcome') and (
             hasattr(test._outcome, 'errors') and test._outcome.errors):
         try:
@@ -91,6 +133,16 @@ def log_page_source(test_logpath, driver, source=None):
     rendered_source = get_html_source_with_base_href(driver, page_source)
     html_file.write(rendered_source)
     html_file.close()
+
+
+def get_test_id(test):
+    test_id = "%s.%s.%s" % (
+        test.__class__.__module__,
+        test.__class__.__name__,
+        test._testMethodName)
+    if test._sb_test_identifier and len(str(test._sb_test_identifier)) > 6:
+        test_id = test._sb_test_identifier
+    return test_id
 
 
 def get_last_page(driver):

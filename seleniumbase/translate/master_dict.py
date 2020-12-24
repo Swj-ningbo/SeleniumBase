@@ -731,6 +731,18 @@ class MD:
     md["submit"][8] = "отправить"
     md["submit"][9] = "enviar"
 
+    md["clear"] = ["*"] * num_langs
+    md["clear"][0] = "clear"
+    md["clear"][1] = "清除"
+    md["clear"][2] = "wissen"
+    md["clear"][3] = "effacer"
+    md["clear"][4] = "cancellare"
+    md["clear"][5] = "クリアする"
+    md["clear"][6] = "지우려면"
+    md["clear"][7] = "limpar"
+    md["clear"][8] = "очистить"
+    md["clear"][9] = "despejar"
+
     md["js_click"] = ["*"] * num_langs
     md["js_click"][0] = "js_click"
     md["js_click"][1] = "JS单击"
@@ -1440,6 +1452,18 @@ class MD:
     md["assert_pdf_text"][8] = "подтвердить_текст_PDF"
     md["assert_pdf_text"][9] = "verificar_texto_pdf"
 
+    md["assert_downloaded_file"] = ["*"] * num_langs
+    md["assert_downloaded_file"][0] = "assert_downloaded_file"
+    md["assert_downloaded_file"][1] = "检查下载的文件"
+    md["assert_downloaded_file"][2] = "controleren_gedownloade_bestand"
+    md["assert_downloaded_file"][3] = "vérifier_fichier_téléchargé"
+    md["assert_downloaded_file"][4] = "verificare_file_scaricato"
+    md["assert_downloaded_file"][5] = "ダウンロードしたファイルを確認する"
+    md["assert_downloaded_file"][6] = "다운로드한_파일_확인"
+    md["assert_downloaded_file"][7] = "verificar_arquivo_baixado"
+    md["assert_downloaded_file"][8] = "подтвердить_загруженный_файл"
+    md["assert_downloaded_file"][9] = "verificar_archivo_descargado"
+
     md["fail"] = ["*"] * num_langs
     md["fail"][0] = "fail"
     md["fail"][1] = "失败"
@@ -1548,6 +1572,18 @@ class MD:
     md["find_text"][8] = "найти_текст"
     md["find_text"][9] = "encontrar_texto"
 
+    md["set_text"] = ["*"] * num_langs
+    md["set_text"][0] = "set_text"
+    md["set_text"][1] = "设置文本"
+    md["set_text"][2] = "tekst_instellen"
+    md["set_text"][3] = "définir_texte"
+    md["set_text"][4] = "impostare_testo"
+    md["set_text"][5] = "テキストを設定する"
+    md["set_text"][6] = "텍스트_설정"
+    md["set_text"][7] = "definir_texto"
+    md["set_text"][8] = "набор_текст"
+    md["set_text"][9] = "establecer_texto"
+
     md["get_attribute"] = ["*"] * num_langs
     md["get_attribute"][0] = "get_attribute"
     md["get_attribute"][1] = "获取属性"
@@ -1611,7 +1647,7 @@ class MD:
     md["set_messenger_theme"] = ["*"] * num_langs
     md["set_messenger_theme"][0] = "set_messenger_theme"
     md["set_messenger_theme"][1] = "设置消息主题"
-    md["set_messenger_theme"][2] = "kenmerk_thema_van_bericht"
+    md["set_messenger_theme"][2] = "thema_van_bericht_instellen"
     md["set_messenger_theme"][3] = "définir_thème_du_message"
     md["set_messenger_theme"][4] = "impostare_tema_del_messaggio"
     md["set_messenger_theme"][5] = "メッセージのスタイルを設定する"
@@ -1775,6 +1811,18 @@ class MD:
     md["get_user_agent"][7] = "obter_agente_do_usuário"
     md["get_user_agent"][8] = "получить_агента_пользователя"
     md["get_user_agent"][9] = "obtener_agente_de_usuario"
+
+    md["get_locale_code"] = ["*"] * num_langs
+    md["get_locale_code"][0] = "get_locale_code"
+    md["get_locale_code"][1] = "获取语言代码"
+    md["get_locale_code"][2] = "taalcode_ophalen"
+    md["get_locale_code"][3] = "obtenir_code_de_langue"
+    md["get_locale_code"][4] = "ottenere_codice_lingua"
+    md["get_locale_code"][5] = "言語コードを取得する"
+    md["get_locale_code"][6] = "언어_코드를_얻을"
+    md["get_locale_code"][7] = "obter_código_de_idioma"
+    md["get_locale_code"][8] = "получить_код_языка"
+    md["get_locale_code"][9] = "obtener_código_de_idioma"
 
     ################
     # Duplicates

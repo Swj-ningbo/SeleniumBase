@@ -177,6 +177,10 @@ class セレニウムテストケース(BaseCase):  # noqa
         # submit(selector)
         return self.submit(*args, **kwargs)
 
+    def クリアする(self, *args, **kwargs):
+        # clear(selector)
+        return self.clear(*args, **kwargs)
+
     def JSクリックして(self, *args, **kwargs):
         # js_click(selector)
         return self.js_click(*args, **kwargs)
@@ -424,6 +428,10 @@ class セレニウムテストケース(BaseCase):  # noqa
         #                 codec='utf-8', wrap=True, nav=False, override=False)
         return self.assert_pdf_text(*args, **kwargs)
 
+    def ダウンロードしたファイルを確認する(self, *args, **kwargs):
+        # assert_downloaded_file(file)
+        return self.assert_downloaded_file(*args, **kwargs)
+
     def 失敗(self, *args, **kwargs):
         # fail(msg=None)  # Inherited from "unittest"
         return self.fail(*args, **kwargs)
@@ -459,6 +467,10 @@ class セレニウムテストケース(BaseCase):  # noqa
     def テキストを見つける(self, *args, **kwargs):
         # find_text(text, selector="html")  # Same as wait_for_text
         return self.find_text(*args, **kwargs)
+
+    def テキストを設定する(self, *args, **kwargs):
+        # set_text(selector, text)
+        return self.set_text(*args, **kwargs)
 
     def 属性を取得する(self, *args, **kwargs):
         # get_attribute(selector, attribute)
@@ -531,6 +543,10 @@ class セレニウムテストケース(BaseCase):  # noqa
     def ユーザーエージェントの取得(self, *args, **kwargs):
         # get_user_agent()
         return self.get_user_agent(*args, **kwargs)
+
+    def 言語コードを取得する(self, *args, **kwargs):
+        # get_locale_code()
+        return self.get_locale_code(*args, **kwargs)
 
 
 class MasterQA_日本語(MasterQA, セレニウムテストケース):

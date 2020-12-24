@@ -45,6 +45,7 @@ from seleniumbase.config import settings
 from seleniumbase.core import log_helper
 from seleniumbase.core import tour_helper
 from seleniumbase.fixtures import constants
+from seleniumbase.fixtures import css_to_xpath
 from seleniumbase.fixtures import js_utils
 from seleniumbase.fixtures import page_actions
 from seleniumbase.fixtures import page_utils
@@ -97,6 +98,14 @@ class BaseCase(unittest.TestCase):
 
     def open(self, url):
         """ Navigates the current browser window to the specified page. """
+        if type(url) is str:
+            url = url.strip()  # Remove leading and trailing whitespace
+        if (type(url) is not str) or not self.__looks_like_a_page_url(url):
+            # url should start with one of the following:
+            # "http:", "https:", "://", "data:", "file:",
+            # "about:", "chrome:", "opera:", or "edge:".
+            msg = 'Did you forget to prefix your URL with "http:" or "https:"?'
+            raise Exception('Invalid URL: "%s"\n%s' % (url, msg))
         self.__last_page_load_url = None
         js_utils.clear_out_console_logs(self.driver)
         if url.startswith("://"):
@@ -158,7 +167,7 @@ class BaseCase(unittest.TestCase):
                 element.click()
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.05)
+            time.sleep(0.16)
             element = page_actions.wait_for_element_visible(
                 self.driver, selector, by, timeout=timeout)
             if self.browser == "safari":
@@ -228,21 +237,26 @@ class BaseCase(unittest.TestCase):
             actions.double_click(element).perform()
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.05)
+            time.sleep(0.16)
             element = page_actions.wait_for_element_visible(
                 self.driver, selector, by, timeout=timeout)
             actions = ActionChains(self.driver)
             actions.double_click(element).perform()
         except Exception:
             css_selector = self.convert_to_css_selector(selector, by=by)
-            css_selector = re.escape(css_selector)
+            css_selector = re.escape(css_selector)  # Add "\\" to special chars
             css_selector = self.__escape_quotes_if_needed(css_selector)
             double_click_script = (
                 """var targetElement1 = document.querySelector('%s');
                 var clickEvent1 = document.createEvent('MouseEvents');
                 clickEvent1.initEvent('dblclick', true, true);
                 targetElement1.dispatchEvent(clickEvent1);""" % css_selector)
-            self.execute_script(double_click_script)
+            if ":contains\\(" not in css_selector:
+                self.execute_script(double_click_script)
+            else:
+                double_click_script = (
+                    """jQuery('%s').dblclick();""" % css_selector)
+                self.safe_execute_script(double_click_script)
         if settings.WAIT_FOR_RSC_ON_CLICKS:
             self.wait_for_ready_state_complete()
         if self.demo_mode:
@@ -293,18 +307,20 @@ class BaseCase(unittest.TestCase):
         if not self.demo_mode and not self.slow_mode:
             self.__scroll_to_element(element, selector, by)
         try:
-            element.clear()
+            element.clear()  # May need https://stackoverflow.com/a/50691625
+            backspaces = Keys.BACK_SPACE * 42  # Is the answer to everything
+            element.send_keys(backspaces)  # In case autocomplete keeps text
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.06)
+            time.sleep(0.16)
             element = self.wait_for_element_visible(
                 selector, by=by, timeout=timeout)
             try:
                 element.clear()
             except Exception:
-                pass  # Clearing the text field first isn't critical
+                pass  # Clearing the text field first might not be necessary
         except Exception:
-            pass  # Clearing the text field first isn't critical
+            pass  # Clearing the text field first might not be necessary
         self.__demo_mode_pause_if_active(tiny=True)
         pre_action_url = self.driver.current_url
         if type(text) is int or type(text) is float:
@@ -321,7 +337,7 @@ class BaseCase(unittest.TestCase):
                     self.wait_for_ready_state_complete()
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.06)
+            time.sleep(0.16)
             element = self.wait_for_element_visible(
                 selector, by=by, timeout=timeout)
             element.clear()
@@ -361,6 +377,8 @@ class BaseCase(unittest.TestCase):
         if not self.demo_mode and not self.slow_mode:
             self.__scroll_to_element(element, selector, by)
         pre_action_url = self.driver.current_url
+        if type(text) is int or type(text) is float:
+            text = str(text)
         try:
             if not text.endswith('\n'):
                 element.send_keys(text)
@@ -371,7 +389,7 @@ class BaseCase(unittest.TestCase):
                     self.wait_for_ready_state_complete()
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.06)
+            time.sleep(0.16)
             element = self.wait_for_element_visible(
                 selector, by=by, timeout=timeout)
             if not text.endswith('\n'):
@@ -425,6 +443,46 @@ class BaseCase(unittest.TestCase):
         element.submit()
         self.__demo_mode_pause_if_active()
 
+    def clear(self, selector, by=By.CSS_SELECTOR, timeout=None):
+        """ This method clears an element's text field.
+            A clear() is already included with most methods that type text,
+            such as self.type(), self.update_text(), etc.
+            Does not use Demo Mode highlights, mainly because we expect
+            that some users will be calling an unnecessary clear() before
+            calling a method that already includes clear() as part of it.
+            In case websites trigger an autofill after clearing a field,
+            add backspaces to make sure autofill doesn't undo the clear.
+            @Params
+            selector - the selector of the text field
+            by - the type of selector to search by (Default: CSS Selector)
+            timeout - how long to wait for the selector to be visible
+        """
+        if not timeout:
+            timeout = settings.LARGE_TIMEOUT
+        if self.timeout_multiplier and timeout == settings.LARGE_TIMEOUT:
+            timeout = self.__get_new_timeout(timeout)
+        selector, by = self.__recalculate_selector(selector, by)
+        element = self.wait_for_element_visible(
+            selector, by=by, timeout=timeout)
+        self.scroll_to(selector, by=by, timeout=timeout)
+        try:
+            element.clear()
+            backspaces = Keys.BACK_SPACE * 42  # Autofill Defense
+            element.send_keys(backspaces)
+        except (StaleElementReferenceException, ENI_Exception):
+            self.wait_for_ready_state_complete()
+            time.sleep(0.16)
+            element = self.wait_for_element_visible(
+                selector, by=by, timeout=timeout)
+            element.clear()
+            try:
+                backspaces = Keys.BACK_SPACE * 42  # Autofill Defense
+                element.send_keys(backspaces)
+            except Exception:
+                pass
+        except Exception:
+            element.clear()
+
     def refresh_page(self):
         self.__last_page_load_url = None
         js_utils.clear_out_console_logs(self.driver)
@@ -462,6 +520,11 @@ class BaseCase(unittest.TestCase):
     def get_user_agent(self):
         user_agent = self.driver.execute_script("return navigator.userAgent;")
         return user_agent
+
+    def get_locale_code(self):
+        locale_code = self.driver.execute_script(
+            "return navigator.language || navigator.languages[0];")
+        return locale_code
 
     def go_back(self):
         self.__last_page_load_url = None
@@ -634,7 +697,7 @@ class BaseCase(unittest.TestCase):
                 element.click()
             except (StaleElementReferenceException, ENI_Exception):
                 self.wait_for_ready_state_complete()
-                time.sleep(0.05)
+                time.sleep(0.16)
                 element = self.wait_for_link_text_visible(
                     link_text, timeout=timeout)
                 element.click()
@@ -736,7 +799,7 @@ class BaseCase(unittest.TestCase):
                 element.click()
             except (StaleElementReferenceException, ENI_Exception):
                 self.wait_for_ready_state_complete()
-                time.sleep(0.05)
+                time.sleep(0.16)
                 element = self.wait_for_partial_link_text(
                     partial_link_text, timeout=timeout)
                 element.click()
@@ -781,7 +844,7 @@ class BaseCase(unittest.TestCase):
                         partial_link_text, link_css)
 
             if not success:
-                element = self.wait_for_link_text_visible(
+                element = self.wait_for_partial_link_text(
                     partial_link_text, timeout=settings.MINI_TIMEOUT)
                 element.click()
 
@@ -809,7 +872,7 @@ class BaseCase(unittest.TestCase):
             element_text = element.text
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.06)
+            time.sleep(0.14)
             element = page_actions.wait_for_element_visible(
                 self.driver, selector, by, timeout)
             element_text = element.text
@@ -831,7 +894,7 @@ class BaseCase(unittest.TestCase):
             attribute_value = element.get_attribute(attribute)
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.06)
+            time.sleep(0.14)
             element = page_actions.wait_for_element_present(
                 self.driver, selector, by, timeout)
             attribute_value = element.get_attribute(attribute)
@@ -863,7 +926,7 @@ class BaseCase(unittest.TestCase):
         value = re.escape(value)
         value = self.__escape_quotes_if_needed(value)
         css_selector = self.convert_to_css_selector(selector, by=by)
-        css_selector = re.escape(css_selector)
+        css_selector = re.escape(css_selector)  # Add "\\" to special chars
         css_selector = self.__escape_quotes_if_needed(css_selector)
         script = ("""document.querySelector('%s').setAttribute('%s','%s');"""
                   % (css_selector, attribute, value))
@@ -880,7 +943,7 @@ class BaseCase(unittest.TestCase):
         value = re.escape(value)
         value = self.__escape_quotes_if_needed(value)
         css_selector = self.convert_to_css_selector(selector, by=by)
-        css_selector = re.escape(css_selector)
+        css_selector = re.escape(css_selector)  # Add "\\" to special chars
         css_selector = self.__escape_quotes_if_needed(css_selector)
         script = ("""var $elements = document.querySelectorAll('%s');
                   var index = 0, length = $elements.length;
@@ -918,7 +981,7 @@ class BaseCase(unittest.TestCase):
         attribute = re.escape(attribute)
         attribute = self.__escape_quotes_if_needed(attribute)
         css_selector = self.convert_to_css_selector(selector, by=by)
-        css_selector = re.escape(css_selector)
+        css_selector = re.escape(css_selector)  # Add "\\" to special chars
         css_selector = self.__escape_quotes_if_needed(css_selector)
         script = ("""document.querySelector('%s').removeAttribute('%s');"""
                   % (css_selector, attribute))
@@ -931,7 +994,7 @@ class BaseCase(unittest.TestCase):
         attribute = re.escape(attribute)
         attribute = self.__escape_quotes_if_needed(attribute)
         css_selector = self.convert_to_css_selector(selector, by=by)
-        css_selector = re.escape(css_selector)
+        css_selector = re.escape(css_selector)  # Add "\\" to special chars
         css_selector = self.__escape_quotes_if_needed(css_selector)
         script = ("""var $elements = document.querySelectorAll('%s');
                   var index = 0, length = $elements.length;
@@ -1008,7 +1071,8 @@ class BaseCase(unittest.TestCase):
             v_elems = v_elems[:limit]
         return v_elems
 
-    def click_visible_elements(self, selector, by=By.CSS_SELECTOR, limit=0):
+    def click_visible_elements(
+            self, selector, by=By.CSS_SELECTOR, limit=0, timeout=None):
         """ Finds all matching page elements and clicks visible ones in order.
             If a click reloads or opens a new page, the clicking will stop.
             If no matching elements appear, an Exception will be raised.
@@ -1016,9 +1080,12 @@ class BaseCase(unittest.TestCase):
             Also clicks elements that become visible from previous clicks.
             Works best for actions such as clicking all checkboxes on a page.
             Example:  self.click_visible_elements('input[type="checkbox"]') """
+        if not timeout:
+            timeout = settings.SMALL_TIMEOUT
+        if self.timeout_multiplier and timeout == settings.SMALL_TIMEOUT:
+            timeout = self.__get_new_timeout(timeout)
         selector, by = self.__recalculate_selector(selector, by)
-        self.wait_for_element_present(
-            selector, by=by, timeout=settings.SMALL_TIMEOUT)
+        self.wait_for_element_present(selector, by=by, timeout=timeout)
         elements = self.find_elements(selector, by=by)
         if self.browser == "safari":
             if not limit:
@@ -1057,7 +1124,7 @@ class BaseCase(unittest.TestCase):
                 continue  # ElementClickInterceptedException (Overlay likely)
             except (StaleElementReferenceException, ENI_Exception):
                 self.wait_for_ready_state_complete()
-                time.sleep(0.04)
+                time.sleep(0.12)
                 try:
                     if element.is_displayed():
                         self.__scroll_to_element(element)
@@ -1067,10 +1134,17 @@ class BaseCase(unittest.TestCase):
                 except (StaleElementReferenceException, ENI_Exception):
                     return  # Probably on new page / Elements are all stale
 
-    def click_nth_visible_element(self, selector, number, by=By.CSS_SELECTOR):
+    def click_nth_visible_element(
+            self, selector, number, by=By.CSS_SELECTOR, timeout=None):
         """ Finds all matching page elements and clicks the nth visible one.
             Example:  self.click_nth_visible_element('[type="checkbox"]', 5)
                         (Clicks the 5th visible checkbox on the page.) """
+        if not timeout:
+            timeout = settings.SMALL_TIMEOUT
+        if self.timeout_multiplier and timeout == settings.SMALL_TIMEOUT:
+            timeout = self.__get_new_timeout(timeout)
+        selector, by = self.__recalculate_selector(selector, by)
+        self.wait_for_element_present(selector, by=by, timeout=timeout)
         elements = self.find_visible_elements(selector, by=by)
         if len(elements) < number:
             raise Exception("Not enough matching {%s} elements of type {%s} to"
@@ -1085,7 +1159,7 @@ class BaseCase(unittest.TestCase):
             element.click()
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.03)
+            time.sleep(0.12)
             self.__scroll_to_element(element)
             element.click()
 
@@ -1223,7 +1297,37 @@ class BaseCase(unittest.TestCase):
         self.__demo_mode_highlight_if_active(selector, by)
         self.scroll_to(selector, by=by)
         time.sleep(0.05)  # Settle down from scrolling before hovering
-        return page_actions.hover_on_element(self.driver, selector)
+        if self.browser != "chrome":
+            return page_actions.hover_on_element(self.driver, selector)
+        # Using Chrome
+        # (Pure hover actions won't work on early chromedriver versions)
+        try:
+            return page_actions.hover_on_element(self.driver, selector)
+        except WebDriverException as e:
+            driver_capabilities = self.driver.__dict__["capabilities"]
+            if "version" in driver_capabilities:
+                chrome_version = driver_capabilities["version"]
+            else:
+                chrome_version = driver_capabilities["browserVersion"]
+            major_chrome_version = chrome_version.split('.')[0]
+            chrome_dict = self.driver.__dict__["capabilities"]["chrome"]
+            chromedriver_version = chrome_dict["chromedriverVersion"]
+            chromedriver_version = chromedriver_version.split(' ')[0]
+            major_chromedriver_version = chromedriver_version.split('.')[0]
+            install_sb = (
+                "seleniumbase install chromedriver %s" % major_chrome_version)
+            if major_chromedriver_version < major_chrome_version:
+                # Upgrading the driver is required for performing hover actions
+                message = (
+                    "\n"
+                    "You need a newer chromedriver to perform hover actions!\n"
+                    "Your version of chromedriver is: %s\n"
+                    "And your version of Chrome is: %s\n"
+                    "You can fix this issue by running:\n>>> %s\n"
+                    "" % (chromedriver_version, chrome_version, install_sb))
+                raise Exception(message)
+            else:
+                raise Exception(e)
 
     def hover_and_click(self, hover_selector, click_selector,
                         hover_by=By.CSS_SELECTOR, click_by=By.CSS_SELECTOR,
@@ -1381,8 +1485,8 @@ class BaseCase(unittest.TestCase):
             timeout = settings.SMALL_TIMEOUT
         if self.timeout_multiplier and timeout == settings.SMALL_TIMEOUT:
             timeout = self.__get_new_timeout(timeout)
-        if page_utils.is_xpath_selector(dropdown_selector):
-            dropdown_by = By.XPATH
+        dropdown_selector, dropdown_by = self.__recalculate_selector(
+            dropdown_selector, dropdown_by)
         self.wait_for_ready_state_complete()
         element = self.wait_for_element_present(
             dropdown_selector, by=dropdown_by, timeout=timeout)
@@ -1399,7 +1503,7 @@ class BaseCase(unittest.TestCase):
                 Select(element).select_by_visible_text(option)
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.03)
+            time.sleep(0.14)
             element = self.wait_for_element_present(
                 dropdown_selector, by=dropdown_by, timeout=timeout)
             if option_by == "index":
@@ -1631,6 +1735,9 @@ class BaseCase(unittest.TestCase):
         """
         Wait for an iframe to appear, and switch to it. This should be
         usable as a drop-in replacement for driver.switch_to.frame().
+        The iframe identifier can be a selector, an index, an id, a name,
+        or a web element, but scrolling to the iframe first will only occur
+        for visible iframes with a string selector.
         @Params
         frame - the frame element, name, id, index, or selector
         timeout - the time to wait for the alert in seconds
@@ -1639,13 +1746,18 @@ class BaseCase(unittest.TestCase):
             timeout = settings.SMALL_TIMEOUT
         if self.timeout_multiplier and timeout == settings.SMALL_TIMEOUT:
             timeout = self.__get_new_timeout(timeout)
+        if type(frame) is str and self.is_element_visible(frame):
+            try:
+                self.scroll_to(frame, timeout=1)
+            except Exception:
+                pass
         page_actions.switch_to_frame(self.driver, frame, timeout)
 
     def switch_to_default_content(self):
         """ Brings driver control outside the current iframe.
             (If driver control is inside an iframe, the driver control
             will be set to one level above the current frame. If the driver
-            control is not currenly in an iframe, nothing will happen.) """
+            control is not currently in an iframe, nothing will happen.) """
         self.driver.switch_to.default_content()
 
     def open_new_window(self, switch_to=True):
@@ -1665,12 +1777,13 @@ class BaseCase(unittest.TestCase):
     def switch_to_default_window(self):
         self.switch_to_window(0)
 
-    def get_new_driver(self, browser=None, headless=None,
+    def get_new_driver(self, browser=None, headless=None, locale_code=None,
                        servername=None, port=None, proxy=None, agent=None,
                        switch_to=True, cap_file=None, cap_string=None,
-                       disable_csp=None, enable_sync=None, use_auto_ext=None,
-                       no_sandbox=None, disable_gpu=None,
-                       incognito=None, guest_mode=None, devtools=None,
+                       disable_csp=None, enable_ws=None, enable_sync=None,
+                       use_auto_ext=None, no_sandbox=None, disable_gpu=None,
+                       incognito=None, guest_mode=None,
+                       devtools=None, remote_debug=None,
                        swiftshader=None, block_images=None, user_data_dir=None,
                        extension_zip=None, extension_dir=None, is_mobile=False,
                        d_width=None, d_height=None, d_p_r=None):
@@ -1681,6 +1794,7 @@ class BaseCase(unittest.TestCase):
             @Params
             browser - the browser to use. (Ex: "chrome", "firefox")
             headless - the option to run webdriver in headless mode
+            locale_code - the Language Locale Code for the web browser
             servername - if using a Selenium Grid, set the host address here
             port - if using a Selenium Grid, set the host port here
             proxy - if using a proxy server, specify the "host:port" combo here
@@ -1688,6 +1802,7 @@ class BaseCase(unittest.TestCase):
             cap_file - the file containing desired capabilities for the browser
             cap_string - the string with desired capabilities for the browser
             disable_csp - an option to disable Chrome's Content Security Policy
+            enable_ws - the option to enable the Web Security feature (Chrome)
             enable_sync - the option to enable the Chrome Sync feature (Chrome)
             use_auto_ext - the option to enable Chrome's Automation Extension
             no_sandbox - the option to enable the "No-Sandbox" feature (Chrome)
@@ -1695,7 +1810,8 @@ class BaseCase(unittest.TestCase):
             incognito - the option to enable Chrome's Incognito mode (Chrome)
             guest - the option to enable Chrome's Guest mode (Chrome)
             devtools - the option to open Chrome's DevTools on start (Chrome)
-            swiftshader  the option to use "--use-gl=swiftshader" (Chrome-only)
+            remote_debug - the option to enable Chrome's Remote Debugger
+            swiftshader - the option to use Chrome's swiftshader (Chrome-only)
             block_images - the option to block images from loading (Chrome)
             user_data_dir - Chrome's User Data Directory to use (Chrome-only)
             extension_zip - A Chrome Extension ZIP file to use (Chrome-only)
@@ -1731,6 +1847,8 @@ class BaseCase(unittest.TestCase):
         browser_name = browser
         if headless is None:
             headless = self.headless
+        if locale_code is None:
+            locale_code = self.locale_code
         if servername is None:
             servername = self.servername
         if port is None:
@@ -1747,6 +1865,8 @@ class BaseCase(unittest.TestCase):
             user_agent = self.user_agent
         if disable_csp is None:
             disable_csp = self.disable_csp
+        if enable_ws is None:
+            enable_ws = self.enable_ws
         if enable_sync is None:
             enable_sync = self.enable_sync
         if use_auto_ext is None:
@@ -1761,6 +1881,8 @@ class BaseCase(unittest.TestCase):
             guest_mode = self.guest_mode
         if devtools is None:
             devtools = self.devtools
+        if remote_debug is None:
+            remote_debug = self.remote_debug
         if swiftshader is None:
             swiftshader = self.swiftshader
         if block_images is None:
@@ -1771,9 +1893,6 @@ class BaseCase(unittest.TestCase):
             extension_zip = self.extension_zip
         if extension_dir is None:
             extension_dir = self.extension_dir
-        # Due to https://stackoverflow.com/questions/23055651/ , skip extension
-        # if self.demo_mode or self.masterqa_mode:
-        #    disable_csp = True
         test_id = self.__get_test_id()
         if cap_file is None:
             cap_file = self.cap_file
@@ -1795,6 +1914,7 @@ class BaseCase(unittest.TestCase):
         from seleniumbase.core import browser_launcher
         new_driver = browser_launcher.get_driver(browser_name=browser_name,
                                                  headless=headless,
+                                                 locale_code=locale_code,
                                                  use_grid=use_grid,
                                                  servername=servername,
                                                  port=port,
@@ -1803,6 +1923,7 @@ class BaseCase(unittest.TestCase):
                                                  cap_file=cap_file,
                                                  cap_string=cap_string,
                                                  disable_csp=disable_csp,
+                                                 enable_ws=enable_ws,
                                                  enable_sync=enable_sync,
                                                  use_auto_ext=use_auto_ext,
                                                  no_sandbox=no_sandbox,
@@ -1810,6 +1931,7 @@ class BaseCase(unittest.TestCase):
                                                  incognito=incognito,
                                                  guest_mode=guest_mode,
                                                  devtools=devtools,
+                                                 remote_debug=remote_debug,
                                                  swiftshader=swiftshader,
                                                  block_images=block_images,
                                                  user_data_dir=user_data_dir,
@@ -1848,8 +1970,17 @@ class BaseCase(unittest.TestCase):
                     except Exception:
                         pass  # Keep existing browser resolution
                 elif self.browser == 'firefox':
-                    pass  # No changes
+                    width = settings.CHROME_START_WIDTH
+                    try:
+                        if self.maximize_option:
+                            self.driver.maximize_window()
+                        else:
+                            self.driver.set_window_size(width, 720)
+                        self.wait_for_ready_state_complete()
+                    except Exception:
+                        pass  # Keep existing browser resolution
                 elif self.browser == 'safari':
+                    width = settings.CHROME_START_WIDTH
                     if self.maximize_option:
                         try:
                             self.driver.maximize_window()
@@ -1858,7 +1989,20 @@ class BaseCase(unittest.TestCase):
                             pass  # Keep existing browser resolution
                     else:
                         try:
-                            self.driver.set_window_rect(10, 30, 945, 630)
+                            self.driver.set_window_rect(10, 30, width, 630)
+                        except Exception:
+                            pass
+                elif self.browser == 'opera':
+                    width = settings.CHROME_START_WIDTH
+                    if self.maximize_option:
+                        try:
+                            self.driver.maximize_window()
+                            self.wait_for_ready_state_complete()
+                        except Exception:
+                            pass  # Keep existing browser resolution
+                    else:
+                        try:
+                            self.driver.set_window_rect(10, 30, width, 700)
                         except Exception:
                             pass
             if self.start_page and len(self.start_page) >= 4:
@@ -1962,13 +2106,6 @@ class BaseCase(unittest.TestCase):
                 os.remove(cookies_file_path)
 
     def wait_for_ready_state_complete(self, timeout=None):
-        try:
-            # If there's an alert, skip
-            self.driver.switch_to.alert
-            return
-        except Exception:
-            # If there's no alert, continue
-            pass
         if not timeout:
             timeout = settings.EXTREME_TIMEOUT
         if self.timeout_multiplier and timeout == settings.EXTREME_TIMEOUT:
@@ -1983,9 +2120,9 @@ class BaseCase(unittest.TestCase):
             if not current_url == self.__last_page_load_url:
                 time.sleep(0.02)
                 self.ad_block()
-                time.sleep(0.01)
+                time.sleep(0.02)
                 if self.is_element_present("iframe"):
-                    time.sleep(0.07)  # iframe ads take slightly longer to load
+                    time.sleep(0.1)  # iframe ads take slightly longer to load
                     self.ad_block()  # Do ad_block on slower-loading iframes
                 self.__last_page_load_url = current_url
         return is_ready
@@ -2013,6 +2150,17 @@ class BaseCase(unittest.TestCase):
                 if now_ms >= stop_ms:
                     break
                 time.sleep(0.2)
+
+    def activate_design_mode(self):
+        # Activate Chrome's Design Mode, which lets you edit a site directly.
+        # See: https://twitter.com/sulco/status/1177559150563344384
+        script = ("""document.designMode = 'on';""")
+        self.execute_script(script)
+
+    def deactivate_design_mode(self):
+        # Deactivate Chrome's Design Mode.
+        script = ("""document.designMode = 'off';""")
+        self.execute_script(script)
 
     def activate_jquery(self):
         """ If "jQuery is not defined", use this method to activate it for use.
@@ -2086,7 +2234,7 @@ class BaseCase(unittest.TestCase):
                     self.__jquery_slow_scroll_to(selector, by)
             except (StaleElementReferenceException, ENI_Exception, JS_Exc):
                 self.wait_for_ready_state_complete()
-                time.sleep(0.03)
+                time.sleep(0.12)
                 element = self.wait_for_element_visible(
                     selector, by=by, timeout=settings.SMALL_TIMEOUT)
                 self.__slow_scroll_to_element(element)
@@ -2107,7 +2255,7 @@ class BaseCase(unittest.TestCase):
             style = element.get_attribute('style')
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.03)
+            time.sleep(0.12)
             element = self.wait_for_element_visible(
                 selector, by=By.CSS_SELECTOR, timeout=settings.SMALL_TIMEOUT)
             style = element.get_attribute('style')
@@ -2237,7 +2385,7 @@ class BaseCase(unittest.TestCase):
             self.__scroll_to_element(element, selector, by)
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.03)
+            time.sleep(0.12)
             element = self.wait_for_element_visible(
                 selector, by=by, timeout=timeout)
             self.__scroll_to_element(element, selector, by)
@@ -2260,7 +2408,7 @@ class BaseCase(unittest.TestCase):
                 self.__slow_scroll_to_element(element)
         except (StaleElementReferenceException, ENI_Exception, JS_Exc):
             self.wait_for_ready_state_complete()
-            time.sleep(0.03)
+            time.sleep(0.12)
             element = self.wait_for_element_visible(
                 selector, by=by, timeout=timeout)
             self.__slow_scroll_to_element(element)
@@ -2291,7 +2439,7 @@ class BaseCase(unittest.TestCase):
         self.click(xpath, by=By.XPATH)
 
     def js_click(self, selector, by=By.CSS_SELECTOR, all_matches=False):
-        """ Clicks an element using pure JS. Does not use jQuery.
+        """ Clicks an element using JavaScript.
             If "all_matches" is False, only the first match is clicked. """
         selector, by = self.__recalculate_selector(selector, by)
         if by == By.LINK_TEXT:
@@ -2310,12 +2458,20 @@ class BaseCase(unittest.TestCase):
             if not self.demo_mode and not self.slow_mode:
                 self.__scroll_to_element(element, selector, by)
         css_selector = self.convert_to_css_selector(selector, by=by)
-        css_selector = re.escape(css_selector)
+        css_selector = re.escape(css_selector)  # Add "\\" to special chars
         css_selector = self.__escape_quotes_if_needed(css_selector)
         if not all_matches:
-            self.__js_click(selector, by=by)  # The real "magic" happens
+            if ":contains\\(" not in css_selector:
+                self.__js_click(selector, by=by)
+            else:
+                click_script = """jQuery('%s')[0].click();""" % css_selector
+                self.safe_execute_script(click_script)
         else:
-            self.__js_click_all(selector, by=by)  # The real "magic" happens
+            if ":contains\\(" not in css_selector:
+                self.__js_click_all(selector, by=by)
+            else:
+                click_script = """jQuery('%s').click();""" % css_selector
+                self.safe_execute_script(click_script)
         self.wait_for_ready_state_complete()
         self.__demo_mode_pause_if_active()
 
@@ -2332,7 +2488,7 @@ class BaseCase(unittest.TestCase):
             self.__demo_mode_highlight_if_active(selector, by)
         selector = self.convert_to_css_selector(selector, by=by)
         selector = self.__make_css_match_first_element_only(selector)
-        click_script = """jQuery('%s')[0].click()""" % selector
+        click_script = """jQuery('%s')[0].click();""" % selector
         self.safe_execute_script(click_script)
         self.__demo_mode_pause_if_active()
 
@@ -2343,8 +2499,8 @@ class BaseCase(unittest.TestCase):
             selector, by=by, timeout=settings.SMALL_TIMEOUT)
         if self.is_element_visible(selector, by=by):
             self.__demo_mode_highlight_if_active(selector, by)
-        selector = self.convert_to_css_selector(selector, by=by)
-        click_script = """jQuery('%s').click()""" % selector
+        css_selector = self.convert_to_css_selector(selector, by=by)
+        click_script = """jQuery('%s').click();""" % css_selector
         self.safe_execute_script(click_script)
         self.__demo_mode_pause_if_active()
 
@@ -2353,14 +2509,14 @@ class BaseCase(unittest.TestCase):
         selector, by = self.__recalculate_selector(selector, by)
         selector = self.convert_to_css_selector(selector, by=by)
         selector = self.__make_css_match_first_element_only(selector)
-        hide_script = """jQuery('%s').hide()""" % selector
+        hide_script = """jQuery('%s').hide();""" % selector
         self.safe_execute_script(hide_script)
 
     def hide_elements(self, selector, by=By.CSS_SELECTOR):
         """ Hide all elements on the page that match the selector. """
         selector, by = self.__recalculate_selector(selector, by)
         selector = self.convert_to_css_selector(selector, by=by)
-        hide_script = """jQuery('%s').hide()""" % selector
+        hide_script = """jQuery('%s').hide();""" % selector
         self.safe_execute_script(hide_script)
 
     def show_element(self, selector, by=By.CSS_SELECTOR):
@@ -2368,14 +2524,14 @@ class BaseCase(unittest.TestCase):
         selector, by = self.__recalculate_selector(selector, by)
         selector = self.convert_to_css_selector(selector, by=by)
         selector = self.__make_css_match_first_element_only(selector)
-        show_script = """jQuery('%s').show(0)""" % selector
+        show_script = """jQuery('%s').show(0);""" % selector
         self.safe_execute_script(show_script)
 
     def show_elements(self, selector, by=By.CSS_SELECTOR):
         """ Show all elements on the page that match the selector. """
         selector, by = self.__recalculate_selector(selector, by)
         selector = self.convert_to_css_selector(selector, by=by)
-        show_script = """jQuery('%s').show(0)""" % selector
+        show_script = """jQuery('%s').show(0);""" % selector
         self.safe_execute_script(show_script)
 
     def remove_element(self, selector, by=By.CSS_SELECTOR):
@@ -2383,21 +2539,21 @@ class BaseCase(unittest.TestCase):
         selector, by = self.__recalculate_selector(selector, by)
         selector = self.convert_to_css_selector(selector, by=by)
         selector = self.__make_css_match_first_element_only(selector)
-        remove_script = """jQuery('%s').remove()""" % selector
+        remove_script = """jQuery('%s').remove();""" % selector
         self.safe_execute_script(remove_script)
 
     def remove_elements(self, selector, by=By.CSS_SELECTOR):
         """ Remove all elements on the page that match the selector. """
         selector, by = self.__recalculate_selector(selector, by)
         selector = self.convert_to_css_selector(selector, by=by)
-        remove_script = """jQuery('%s').remove()""" % selector
+        remove_script = """jQuery('%s').remove();""" % selector
         self.safe_execute_script(remove_script)
 
     def ad_block(self):
         """ Block ads that appear on the current web page. """
         from seleniumbase.config import ad_block_list
         for css_selector in ad_block_list.AD_BLOCK_LIST:
-            css_selector = re.escape(css_selector)
+            css_selector = re.escape(css_selector)  # Add "\\" to special chars
             css_selector = self.__escape_quotes_if_needed(css_selector)
             script = ("""var $elements = document.querySelectorAll('%s');
                       var index = 0, length = $elements.length;
@@ -2414,10 +2570,10 @@ class BaseCase(unittest.TestCase):
 
     def get_beautiful_soup(self, source=None):
         """ BeautifulSoup is a toolkit for dissecting an HTML document
-            and extracting what you need. It's great for screen-scraping! """
+            and extracting what you need. It's great for screen-scraping!
+            See: https://www.crummy.com/software/BeautifulSoup/bs4/doc/ """
         from bs4 import BeautifulSoup
         if not source:
-            self.wait_for_ready_state_complete()
             source = self.get_page_source()
         soup = BeautifulSoup(source, "html.parser")
         return soup
@@ -2509,7 +2665,7 @@ class BaseCase(unittest.TestCase):
             codec - The compression format for character encoding.
                     (The default codec used by this method is 'utf-8'.)
             wrap - Replaces ' \n' with ' ' so that individual sentences
-                   from a PDF don't get broken up into seperate lines when
+                   from a PDF don't get broken up into separate lines when
                    getting converted into text format.
             nav - If PDF is a URL, navigates to the URL in the browser first.
                   (Not needed because the PDF will be downloaded anyway.)
@@ -2581,7 +2737,7 @@ class BaseCase(unittest.TestCase):
             codec - The compression format for character encoding.
                     (The default codec used by this method is 'utf-8'.)
             wrap - Replaces ' \n' with ' ' so that individual sentences
-                   from a PDF don't get broken up into seperate lines when
+                   from a PDF don't get broken up into separate lines when
                    getting converted into text format.
             nav - If PDF is a URL, navigates to the URL in the browser first.
                   (Not needed because the PDF will be downloaded anyway.)
@@ -2633,9 +2789,11 @@ class BaseCase(unittest.TestCase):
         abs_path = os.path.abspath(file_path)
         self.add_text(selector, abs_path, by=by, timeout=timeout)
 
-    def save_element_as_image_file(self, selector, file_name, folder=None):
+    def save_element_as_image_file(
+            self, selector, file_name, folder=None, overlay_text=""):
         """ Take a screenshot of an element and save it as an image file.
-            If no folder is specified, will save it to the current folder. """
+            If no folder is specified, will save it to the current folder.
+            If overlay_text is provided, will add that to the saved image. """
         element = self.wait_for_element_visible(selector)
         element_png = element.screenshot_as_png
         if len(file_name.split('.')[0]) < 1:
@@ -2653,6 +2811,26 @@ class BaseCase(unittest.TestCase):
             image_file_path = file_name
         with open(image_file_path, "wb") as file:
             file.write(element_png)
+        # Add a text overlay if given
+        if type(overlay_text) is str and len(overlay_text) > 0:
+            from PIL import Image, ImageDraw
+            text_rows = overlay_text.split("\n")
+            len_text_rows = len(text_rows)
+            max_width = 0
+            for text_row in text_rows:
+                if len(text_row) > max_width:
+                    max_width = len(text_row)
+            image = Image.open(image_file_path)
+            draw = ImageDraw.Draw(image)
+            draw.rectangle(
+                (0, 0, (max_width * 6) + 6, 16 * len_text_rows),
+                fill=(236, 236, 28))
+            draw.text(
+                (4, 2),  # Coordinates
+                overlay_text,  # Text
+                (8, 38, 176)  # Color
+            )
+            image.save(image_file_path, 'PNG', quality=100, optimize=True)
 
     def download_file(self, file_url, destination_folder=None):
         """ Downloads the file from the url to the destination folder.
@@ -2697,8 +2875,8 @@ class BaseCase(unittest.TestCase):
     def assert_downloaded_file(self, file, timeout=None):
         """ Asserts that the file exists in the Downloads Folder. """
         if not timeout:
-            timeout = settings.SMALL_TIMEOUT
-        if self.timeout_multiplier and timeout == settings.SMALL_TIMEOUT:
+            timeout = settings.LARGE_TIMEOUT
+        if self.timeout_multiplier and timeout == settings.LARGE_TIMEOUT:
             timeout = self.__get_new_timeout(timeout)
         start_ms = time.time() * 1000.0
         stop_ms = start_ms + (timeout * 1000.0)
@@ -2761,12 +2939,28 @@ class BaseCase(unittest.TestCase):
         self.assertRaises(*args, **kwargs)
 
     def assert_title(self, title):
-        """ Asserts that the web page title matches the expected title. """
-        expected = title
-        actual = self.get_page_title()
-        self.assertEqual(expected, actual, "Expected page title [%s] "
-                         "does not match the actual page title [%s]!"
-                         "" % (expected, actual))
+        """ Asserts that the web page title matches the expected title.
+            When a web page initially loads, the title starts as the URL,
+            but then the title switches over to the actual page title.
+            A slow connection could delay the actual title from displaying. """
+        self.wait_for_ready_state_complete()
+        expected = title.strip()
+        actual = self.get_page_title().strip()
+        error = (
+            "Expected page title [%s] does not match the actual title [%s]!")
+        try:
+            self.assertEqual(expected, actual, error % (expected, actual))
+        except Exception:
+            self.wait_for_ready_state_complete()
+            self.sleep(settings.MINI_TIMEOUT)
+            actual = self.get_page_title().strip()
+            try:
+                self.assertEqual(expected, actual, error % (expected, actual))
+            except Exception:
+                self.wait_for_ready_state_complete()
+                self.sleep(settings.MINI_TIMEOUT)
+                actual = self.get_page_title().strip()
+                self.assertEqual(expected, actual, error % (expected, actual))
         if self.demo_mode:
             a_t = "ASSERT TITLE"
             if self._language != "English":
@@ -2882,6 +3076,9 @@ class BaseCase(unittest.TestCase):
         totp = pyotp.TOTP(totp_key)
         return str(totp.now())
 
+    def convert_css_to_xpath(self, css):
+        return css_to_xpath.convert_css_to_xpath(css)
+
     def convert_xpath_to_css(self, xpath):
         return xpath_to_css.convert_xpath_to_css(xpath)
 
@@ -2927,11 +3124,18 @@ class BaseCase(unittest.TestCase):
             text = str(text)
         value = re.escape(text)
         value = self.__escape_quotes_if_needed(value)
-        css_selector = re.escape(css_selector)
+        css_selector = re.escape(css_selector)  # Add "\\" to special chars
         css_selector = self.__escape_quotes_if_needed(css_selector)
-        script = ("""document.querySelector('%s').value='%s';"""
-                  % (css_selector, value))
-        self.execute_script(script)
+        if ":contains\\(" not in css_selector:
+            script = (
+                """document.querySelector('%s').value='%s';"""
+                "" % (css_selector, value))
+            self.execute_script(script)
+        else:
+            script = (
+                """jQuery('%s')[0].value='%s';"""
+                "" % (css_selector, value))
+            self.safe_execute_script(script)
         if text.endswith('\n'):
             element = self.wait_for_element_present(
                 orginal_selector, by=by, timeout=timeout)
@@ -2989,6 +3193,29 @@ class BaseCase(unittest.TestCase):
             except Exception:
                 pass
 
+    def set_text(self, selector, text, by=By.CSS_SELECTOR, timeout=None):
+        """ Same as self.js_update_text()
+            JavaScript + send_keys are used to update a text field.
+            Performs self.set_value() and triggers event listeners.
+            If text ends in "\n", set_value() presses RETURN after.
+            Works faster than send_keys() alone due to the JS call. """
+        if not timeout:
+            timeout = settings.LARGE_TIMEOUT
+        if self.timeout_multiplier and timeout == settings.LARGE_TIMEOUT:
+            timeout = self.__get_new_timeout(timeout)
+        selector, by = self.__recalculate_selector(selector, by)
+        if type(text) is int or type(text) is float:
+            text = str(text)
+        self.set_value(
+            selector, text, by=by, timeout=timeout)
+        if not text.endswith('\n'):
+            try:
+                element = page_actions.wait_for_element_present(
+                    self.driver, selector, by, timeout=0.2)
+                element.send_keys(" \b")
+            except Exception:
+                pass
+
     def jquery_update_text(self, selector, text, by=By.CSS_SELECTOR,
                            timeout=None):
         """ This method uses jQuery to update a text field.
@@ -3009,7 +3236,7 @@ class BaseCase(unittest.TestCase):
         selector = self.__escape_quotes_if_needed(selector)
         text = re.escape(text)
         text = self.__escape_quotes_if_needed(text)
-        update_text_script = """jQuery('%s').val('%s')""" % (
+        update_text_script = """jQuery('%s').val('%s');""" % (
             selector, text)
         self.safe_execute_script(update_text_script)
         if text.endswith('\n'):
@@ -3034,6 +3261,9 @@ class BaseCase(unittest.TestCase):
 
     def skip(self, reason=""):
         """ Mark the test as Skipped. """
+        if self.dashboard:
+            test_id = self.__get_test_id_2()
+            sb_config._results[test_id] = "Skipped"
         self.skipTest(reason)
 
     ############
@@ -3315,16 +3545,20 @@ class BaseCase(unittest.TestCase):
             '<html>\n'
             '<head>\n'
             '<meta charset="utf-8">\n'
+            '<meta http-equiv="Content-Type" '
+            'content="text/html, charset=utf-8;">\n'
+            '<meta name="viewport" content="shrink-to-fit=no">\n'
             '<link rel="stylesheet" href="%s">\n'
             '<link rel="stylesheet" href="%s">\n'
             '<style>\n'
             'pre{background-color:#fbe8d4;border-radius:8px;}\n'
-            'div[flex_div]{height:75vh;margin:0;align-items:center;'
+            'div[flex_div]{height:68vh;margin:0;align-items:center;'
             'justify-content:center;}\n'
-            'img[rounded]{border-radius:16px;max-width:82%%;}\n'
+            'img[rounded]{border-radius:16px;max-width:64%%;}\n'
             '</style>\n'
             '</head>\n\n'
             '<body>\n'
+            '<!-- Generated by SeleniumBase - https://seleniumbase.io -->\n'
             '<div class="reveal">\n'
             '<div class="slides">\n'
             '' % (constants.Reveal.MIN_CSS, reveal_theme_css))
@@ -3381,13 +3615,13 @@ class BaseCase(unittest.TestCase):
             '\n<section data-transition="%s">%s%s' % (
                 transition, add_line, content))
         if image:
-            html += '\n<div flex_div><img rounded src="%s"></div>' % image
+            html += '\n<div flex_div><img rounded src="%s" /></div>' % image
         if code:
             html += '\n<div></div>'
             html += '\n<pre class="prettyprint">\n%s</pre>' % code
         if iframe:
             html += ('\n<div></div>'
-                     '\n<iframe src="%s" style="width:92%%;height:550;'
+                     '\n<iframe src="%s" style="width:92%%;height:550px;" '
                      'title="iframe content"></iframe>' % iframe)
         add_line = ""
         if content2.startswith("<"):
@@ -3443,7 +3677,7 @@ class BaseCase(unittest.TestCase):
             '<script src="%s"></script>\n'
             '<script src="%s"></script>\n'
             '<script>Reveal.initialize('
-            '{showNotes: %s, slideNumber: true, '
+            '{showNotes: %s, slideNumber: true, hash: false, '
             'autoSlide: %s,});'
             '</script>\n'
             '</body>\n'
@@ -3805,11 +4039,18 @@ class BaseCase(unittest.TestCase):
             },
             plotOptions: {
                 pie: {
+                    size: "95%",
                     allowPointSelect: true,
+                    animation: false,
                     cursor: 'pointer',
                     dataLabels: {
-                        enabled: false,
-                        format: '{point.name}: {point.y:.1f}%'
+                        // enabled: false,
+                        // format: '{point.name}: {point.y:.0f}',
+                        formatter: function() {
+                          if (this.y > 0) {
+                            return this.point.name + ': ' + this.point.y
+                          }
+                        }
                     },
                     states: {
                         hover: {
@@ -3838,7 +4079,10 @@ class BaseCase(unittest.TestCase):
                 plotOptions: {
                     series: {
                         showInLegend: true,
-                        animation: true,
+                        animation: false,
+                        dataLabels: {
+                            enabled: true
+                        },
                         shadow: false,
                         lineWidth: 3,
                         fillOpacity: 0.5,
@@ -3927,13 +4171,15 @@ class BaseCase(unittest.TestCase):
         if self._chart_first_series[chart_name]:
             self._chart_label[chart_name].append(label)
 
-    def save_chart(self, chart_name=None, filename=None):
+    def save_chart(self, chart_name=None, filename=None, folder=None):
         """ Saves a SeleniumBase-generated chart to a file for later use.
             @Params
             chart_name - If creating multiple charts at the same time,
                          use this to select the one you wish to use.
             filename - The name of the HTML file that you wish to
                        save the chart to. (filename must end in ".html")
+            folder - The name of the folder where you wish to
+                     save the HTML file. (Default: "./saved_charts/")
         """
         if not chart_name:
             chart_name = "default"
@@ -3944,6 +4190,9 @@ class BaseCase(unittest.TestCase):
         if not filename.endswith('.html'):
             raise Exception('Chart file must end in ".html"!')
         the_html = '<meta charset="utf-8">\n'
+        the_html += '<meta http-equiv="Content-Type" '
+        the_html += 'content="text/html, charset=utf-8;">\n'
+        the_html += '<meta name="viewport" content="shrink-to-fit=no">\n'
         for chart_data_point in self._chart_data[chart_name]:
             the_html += chart_data_point
         the_html += (
@@ -3965,7 +4214,10 @@ class BaseCase(unittest.TestCase):
             axis += "'%s'," % label
         axis += "], crosshair: false},"
         the_html = the_html.replace("xAxis: { },", axis)
-        saved_charts_folder = constants.Charts.SAVED_FOLDER
+        if not folder:
+            saved_charts_folder = constants.Charts.SAVED_FOLDER
+        else:
+            saved_charts_folder = folder
         if saved_charts_folder.endswith("/"):
             saved_charts_folder = saved_charts_folder[:-1]
         if not os.path.exists(saved_charts_folder):
@@ -4630,13 +4882,17 @@ class BaseCase(unittest.TestCase):
             You can also post messages by using =>
                 self.execute_script('Messenger().post("My Message")')
         """
+        if style not in ["info", "success", "error"]:
+            style = "info"
         if not duration:
             if not self.message_duration:
                 duration = settings.DEFAULT_MESSAGE_DURATION
             else:
                 duration = self.message_duration
-        js_utils.post_message(
-            self.driver, message, duration, style=style)
+        try:
+            js_utils.post_message(self.driver, message, duration, style=style)
+        except Exception:
+            print(" * %s message: %s" % (style.upper(), message))
         if pause:
             duration = float(duration) + 0.15
             time.sleep(float(duration))
@@ -4663,8 +4919,11 @@ class BaseCase(unittest.TestCase):
                 duration = settings.DEFAULT_MESSAGE_DURATION
             else:
                 duration = self.message_duration
-        js_utils.post_message(
-            self.driver, message, duration, style="success")
+        try:
+            js_utils.post_message(
+                self.driver, message, duration, style="success")
+        except Exception:
+            print(" * SUCCESS message: %s" % message)
         if pause:
             duration = float(duration) + 0.15
             time.sleep(float(duration))
@@ -4681,8 +4940,11 @@ class BaseCase(unittest.TestCase):
                 duration = settings.DEFAULT_MESSAGE_DURATION
             else:
                 duration = self.message_duration
-        js_utils.post_message(
-            self.driver, message, duration, style="error")
+        try:
+            js_utils.post_message(
+                self.driver, message, duration, style="error")
+        except Exception:
+            print(" * ERROR message: %s" % message)
         if pause:
             duration = float(duration) + 0.15
             time.sleep(float(duration))
@@ -5102,7 +5364,7 @@ class BaseCase(unittest.TestCase):
     def wait_for_element_not_visible(self, selector, by=By.CSS_SELECTOR,
                                      timeout=None):
         """ Waits for an element to no longer be visible on a page.
-            The element can be non-existant in the HTML or hidden on the page
+            The element can be non-existent in the HTML or hidden on the page
             to qualify as not visible. """
         if not timeout:
             timeout = settings.LARGE_TIMEOUT
@@ -5593,7 +5855,7 @@ class BaseCase(unittest.TestCase):
         """ Clicks an element using pure JS. Does not use jQuery. """
         selector, by = self.__recalculate_selector(selector, by)
         css_selector = self.convert_to_css_selector(selector, by=by)
-        css_selector = re.escape(css_selector)
+        css_selector = re.escape(css_selector)  # Add "\\" to special chars
         css_selector = self.__escape_quotes_if_needed(css_selector)
         script = ("""var simulateClick = function (elem) {
                          var evt = new MouseEvent('click', {
@@ -5612,7 +5874,7 @@ class BaseCase(unittest.TestCase):
         """ Clicks all matching elements using pure JS. (No jQuery) """
         selector, by = self.__recalculate_selector(selector, by)
         css_selector = self.convert_to_css_selector(selector, by=by)
-        css_selector = re.escape(css_selector)
+        css_selector = re.escape(css_selector)  # Add "\\" to special chars
         css_selector = self.__escape_quotes_if_needed(css_selector)
         script = ("""var simulateClick = function (elem) {
                          var evt = new MouseEvent('click', {
@@ -5660,7 +5922,7 @@ class BaseCase(unittest.TestCase):
             selector, by=by, timeout=settings.SMALL_TIMEOUT)
         selector = self.convert_to_css_selector(selector, by=by)
         selector = self.__make_css_match_first_element_only(selector)
-        click_script = """jQuery('%s')[0].click()""" % selector
+        click_script = """jQuery('%s')[0].click();""" % selector
         self.safe_execute_script(click_script)
 
     def __get_href_from_link_text(self, link_text, hard_fail=True):
@@ -5775,7 +6037,11 @@ class BaseCase(unittest.TestCase):
         return False
 
     def __recalculate_selector(self, selector, by):
-        # Try to determine the type of selector automatically
+        # Use auto-detection to return the correct selector with "by" updated
+        _type = type(selector)  # First make sure the selector is a string
+        if _type is not str:
+            msg = 'Expecting a selector of type: "<class \'str\'>" (string)!'
+            raise Exception('Invalid selector type: "%s"\n%s' % (_type, msg))
         if page_utils.is_xpath_selector(selector):
             by = By.XPATH
         if page_utils.is_link_text_selector(selector):
@@ -5788,6 +6054,9 @@ class BaseCase(unittest.TestCase):
             name = page_utils.get_name_from_selector(selector)
             selector = '[name="%s"]' % name
             by = By.CSS_SELECTOR
+        if ":contains(" in selector and by == By.CSS_SELECTOR:
+            selector = self.convert_css_to_xpath(selector)
+            by = By.XPATH
         return (selector, by)
 
     def __looks_like_a_page_url(self, url):
@@ -5797,9 +6066,10 @@ class BaseCase(unittest.TestCase):
             navigate to the page if a URL is detected, but will instead call
             self.get_element(URL_AS_A_SELECTOR) if the input in not a URL. """
         if (url.startswith("http:") or url.startswith("https:") or (
-                url.startswith("://") or url.startswith("data:") or (
-                url.startswith("about:") or url.startswith("chrome:") or (
-                url.startswith("file:"))))):
+                url.startswith("://") or url.startswith("chrome:") or (
+                url.startswith("about:") or url.startswith("data:") or (
+                url.startswith("file:") or url.startswith("edge:") or (
+                url.startswith("opera:")))))):
             return True
         else:
             return False
@@ -5850,7 +6120,7 @@ class BaseCase(unittest.TestCase):
                     self.__slow_scroll_to_element(element)
             except (StaleElementReferenceException, ENI_Exception):
                 self.wait_for_ready_state_complete()
-                time.sleep(0.03)
+                time.sleep(0.12)
                 element = self.wait_for_element_visible(
                     selector, by=by, timeout=settings.SMALL_TIMEOUT)
                 self.__slow_scroll_to_element(element)
@@ -5865,7 +6135,11 @@ class BaseCase(unittest.TestCase):
         self.__demo_mode_pause_if_active(tiny=True)
 
     def __slow_scroll_to_element(self, element):
-        js_utils.slow_scroll_to_element(self.driver, element, self.browser)
+        try:
+            js_utils.slow_scroll_to_element(self.driver, element, self.browser)
+        except Exception:
+            # Scroll to the element instantly if the slow scroll fails
+            js_utils.scroll_to_element(self.driver, element)
 
     def __highlight_with_assert_success(
             self, message, selector, by=By.CSS_SELECTOR):
@@ -5886,7 +6160,7 @@ class BaseCase(unittest.TestCase):
                 self.__slow_scroll_to_element(element)
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.03)
+            time.sleep(0.12)
             element = self.wait_for_element_visible(
                 selector, by=by, timeout=settings.SMALL_TIMEOUT)
             self.__slow_scroll_to_element(element)
@@ -5896,7 +6170,7 @@ class BaseCase(unittest.TestCase):
             style = element.get_attribute('style')
         except (StaleElementReferenceException, ENI_Exception):
             self.wait_for_ready_state_complete()
-            time.sleep(0.05)
+            time.sleep(0.12)
             element = self.wait_for_element_visible(
                 selector, by=By.CSS_SELECTOR, timeout=settings.SMALL_TIMEOUT)
             style = element.get_attribute('style')
@@ -5975,6 +6249,7 @@ class BaseCase(unittest.TestCase):
             self.headless = sb_config.headless
             self.headless_active = False
             self.headed = sb_config.headed
+            self.locale_code = sb_config.locale_code
             self.start_page = sb_config.start_page
             self.log_path = sb_config.log_path
             self.with_testing_base = sb_config.with_testing_base
@@ -5999,6 +6274,10 @@ class BaseCase(unittest.TestCase):
             self.block_images = sb_config.block_images
             self.verify_delay = sb_config.verify_delay
             self.disable_csp = sb_config.disable_csp
+            self.disable_ws = sb_config.disable_ws
+            self.enable_ws = sb_config.enable_ws
+            if not self.disable_ws:
+                self.enable_ws = True
             self.enable_sync = sb_config.enable_sync
             self.use_auto_ext = sb_config.use_auto_ext
             self.no_sandbox = sb_config.no_sandbox
@@ -6006,6 +6285,9 @@ class BaseCase(unittest.TestCase):
             self.incognito = sb_config.incognito
             self.guest_mode = sb_config.guest_mode
             self.devtools = sb_config.devtools
+            self.remote_debug = sb_config.remote_debug
+            self.dashboard = sb_config.dashboard
+            self._dash_initialized = sb_config._dashboard_initialized
             self.swiftshader = sb_config.swiftshader
             self.user_data_dir = sb_config.user_data_dir
             self.extension_zip = sb_config.extension_zip
@@ -6123,6 +6405,16 @@ class BaseCase(unittest.TestCase):
                     "AppleWebKit/537.36 (KHTML, like Gecko) "
                     "Chrome/76.0.3809.132 Mobile Safari/537.36")
 
+        # Dashboard pre-processing:
+        if self.dashboard:
+            sb_config._sbase_detected = True
+            sb_config._only_unittest = False
+            if not self._dash_initialized:
+                sb_config._dashboard_initialized = True
+                sb_config._sbase_detected = True
+                self._dash_initialized = True
+                self.__process_dashboard(False, init=True)
+
         has_url = False
         if self._reuse_session:
             if not hasattr(sb_config, 'shared_driver'):
@@ -6156,6 +6448,7 @@ class BaseCase(unittest.TestCase):
             # Launch WebDriver for both Pytest and Nosetests
             self.driver = self.get_new_driver(browser=self.browser,
                                               headless=self.headless,
+                                              locale_code=self.locale_code,
                                               servername=self.servername,
                                               port=self.port,
                                               proxy=self.proxy_string,
@@ -6164,6 +6457,7 @@ class BaseCase(unittest.TestCase):
                                               cap_file=self.cap_file,
                                               cap_string=self.cap_string,
                                               disable_csp=self.disable_csp,
+                                              enable_ws=self.enable_ws,
                                               enable_sync=self.enable_sync,
                                               use_auto_ext=self.use_auto_ext,
                                               no_sandbox=self.no_sandbox,
@@ -6171,6 +6465,7 @@ class BaseCase(unittest.TestCase):
                                               incognito=self.incognito,
                                               guest_mode=self.guest_mode,
                                               devtools=self.devtools,
+                                              remote_debug=self.remote_debug,
                                               swiftshader=self.swiftshader,
                                               block_images=self.block_images,
                                               user_data_dir=self.user_data_dir,
@@ -6333,12 +6628,236 @@ class BaseCase(unittest.TestCase):
             test_id = self._sb_test_identifier
         return test_id
 
+    def __get_test_id_2(self):
+        """ The id for SeleniumBase Dashboard entries. """
+        test_id = "%s.%s.%s" % (self.__class__.__module__.split('.')[-1],
+                                self.__class__.__name__,
+                                self._testMethodName)
+        if self._sb_test_identifier and len(str(self._sb_test_identifier)) > 6:
+            test_id = self._sb_test_identifier
+            if test_id.count('.') > 1:
+                test_id = '.'.join(test_id.split('.')[1:])
+        return test_id
+
+    def __get_display_id(self):
+        test_id = "%s.py::%s::%s" % (
+            self.__class__.__module__.replace('.', '/'),
+            self.__class__.__name__,
+            self._testMethodName)
+        if self._sb_test_identifier and len(str(self._sb_test_identifier)) > 6:
+            test_id = self._sb_test_identifier
+            if hasattr(self, "_using_sb_fixture_class"):
+                if test_id.count('.') >= 2:
+                    parts = test_id.split('.')
+                    full = parts[-3] + '.py::' + parts[-2] + '::' + parts[-1]
+                    test_id = full
+            elif hasattr(self, "_using_sb_fixture_no_class"):
+                if test_id.count('.') >= 1:
+                    parts = test_id.split('.')
+                    full = parts[-2] + '.py::' + parts[-1]
+                    test_id = full
+        return test_id
+
     def __create_log_path_as_needed(self, test_logpath):
         if not os.path.exists(test_logpath):
             try:
                 os.makedirs(test_logpath)
             except Exception:
                 pass  # Only reachable during multi-threaded runs
+
+    def __process_dashboard(self, has_exception, init=False):
+        ''' SeleniumBase Dashboard Processing '''
+        if len(sb_config._extra_dash_entries) > 1:
+            # First take care of existing entries from non-SeleniumBase tests
+            for test_id in sb_config._extra_dash_entries:
+                if test_id in sb_config._results.keys():
+                    if sb_config._results[test_id] == "Skipped":
+                        sb_config.item_count_skipped += 1
+                        sb_config.item_count_untested -= 1
+                    elif sb_config._results[test_id] == "Failed":
+                        sb_config.item_count_failed += 1
+                        sb_config.item_count_untested -= 1
+                    elif sb_config._results[test_id] == "Passed":
+                        sb_config.item_count_passed += 1
+                        sb_config.item_count_untested -= 1
+                    else:  # Mark "Skipped" if unknown
+                        sb_config.item_count_skipped += 1
+                        sb_config.item_count_untested -= 1
+            sb_config._extra_dash_entries = []  # Reset the list to empty
+        # Process new entries
+        test_id = self.__get_test_id_2()
+        dud = "seleniumbase/plugins/pytest_plugin.py::BaseClass::base_method"
+        if not init:
+            duration_ms = int(time.time() * 1000) - sb_config.start_time_ms
+            duration = float(duration_ms) / 1000.0
+            sb_config._duration[test_id] = duration
+            if test_id not in sb_config._display_id.keys():
+                sb_config._display_id[test_id] = self.__get_display_id()
+            if sb_config._display_id[test_id] == dud:
+                return
+            if hasattr(self, "_using_sb_fixture") and (
+                    test_id not in sb_config._results.keys()):
+                cwd = os.getcwd()
+                if '\\' in cwd:
+                    cwd = cwd.split('\\')[-1]
+                else:
+                    cwd = cwd.split('/')[-1]
+                if test_id.count('.') > 1:
+                    alt_test_id = '.'.join(test_id.split('.')[1:])
+                    if alt_test_id in sb_config._results.keys():
+                        sb_config._results.pop(alt_test_id)
+            if test_id in sb_config._results.keys() and (
+                    sb_config._results[test_id] == "Skipped"):
+                sb_config.item_count_skipped += 1
+                sb_config.item_count_untested -= 1
+                sb_config._results[test_id] = "Skipped"
+            elif has_exception:
+                sb_config._results[test_id] = "Failed"
+                sb_config.item_count_failed += 1
+                sb_config.item_count_untested -= 1
+            else:
+                sb_config._results[test_id] = "Passed"
+                sb_config.item_count_passed += 1
+                sb_config.item_count_untested -= 1
+        num_passed = sb_config.item_count_passed
+        num_failed = sb_config.item_count_failed
+        num_skipped = sb_config.item_count_skipped
+        num_untested = sb_config.item_count_untested
+        self.create_pie_chart(title=constants.Dashboard.TITLE)
+        self.add_data_point("Passed", num_passed, color="#84d474")
+        self.add_data_point("Untested", num_untested, color="#eaeaea")
+        self.add_data_point("Skipped", num_skipped, color="#efd8b4")
+        self.add_data_point("Failed", num_failed, color="#f17476")
+        style = (
+            '<link rel="stylesheet" '
+            'href="%s">' % constants.Dashboard.STYLE_CSS)
+        auto_refresh_html = ''
+        if num_untested > 0:
+            # Refresh every X seconds when waiting for more test results
+            auto_refresh_html = constants.Dashboard.META_REFRESH_HTML
+        else:
+            # The tests are complete
+            if sb_config._using_html_report:
+                # Add the pie chart to the pytest html report
+                sb_config._saved_dashboard_pie = self.extract_chart()
+        head = (
+            '<head><meta charset="utf-8" />'
+            '<meta property="og:image" '
+            'content="https://seleniumbase.io/img/dash_pie.png">'
+            '<link rel="shortcut icon" '
+            'href="https://seleniumbase.io/img/dash_pie_2.png">'
+            '%s'
+            '<title>Dashboard</title>'
+            '%s</head>' % (auto_refresh_html, style))
+        table_html = (
+            '<div></div>'
+            '<table border="1px solid #e6e6e6;" width="100%;" padding: 5px;'
+            ' font-size="12px;" text-align="left;" id="results-table">'
+            '<thead id="results-table-head"><tr>'
+            '<th col="result">Result</th><th col="name">Test</th>'
+            '<th col="duration">Duration</th><th col="links">Links</th>'
+            '</tr></thead>')
+        the_failed = []
+        the_skipped = []
+        the_passed = []
+        the_untested = []
+        for key in sb_config._results.keys():
+            t_res = sb_config._results[key]
+            t_dur = sb_config._duration[key]
+            t_d_id = sb_config._display_id[key]
+            res_low = t_res.lower()
+            if sb_config._results[key] == "Failed":
+                the_failed.append([res_low, t_res, t_d_id, t_dur])
+            if sb_config._results[key] == "Skipped":
+                the_skipped.append([res_low, t_res, t_d_id, t_dur])
+            if sb_config._results[key] == "Passed":
+                the_passed.append([res_low, t_res, t_d_id, t_dur])
+            if sb_config._results[key] == "Untested":
+                the_untested.append([res_low, t_res, t_d_id, t_dur])
+        for row in the_failed:
+            row = (
+                '<tbody class="%s results-table-row"><tr>'
+                '<td class="col-result">%s</td><td>%s</td><td>%s</td>'
+                '<td><a href="latest_logs/">latest_logs/</a></td>'
+                '</tr></tbody>' % (row[0], row[1], row[2], row[3]))
+            table_html += row
+        for row in the_skipped:
+            row = (
+                '<tbody class="%s results-table-row"><tr>'
+                '<td class="col-result">%s</td><td>%s</td><td>%s</td>'
+                '<td></td></tr></tbody>' % (row[0], row[1], row[2], row[3]))
+            table_html += row
+        for row in the_passed:
+            row = (
+                '<tbody class="%s results-table-row"><tr>'
+                '<td class="col-result">%s</td><td>%s</td><td>%s</td>'
+                '<td></td></tr></tbody>' % (row[0], row[1], row[2], row[3]))
+            table_html += row
+        for row in the_untested:
+            row = (
+                '<tbody class="%s results-table-row"><tr>'
+                '<td class="col-result">%s</td><td>%s</td><td>%s</td>'
+                '<td></td></tr></tbody>' % (row[0], row[1], row[2], row[3]))
+            table_html += row
+        table_html += "</table>"
+        add_more = "<br /><b>Last updated:</b> "
+        timestamp, the_date, the_time = log_helper.get_master_time()
+        last_updated = "%s at %s" % (the_date, the_time)
+        add_more = add_more + "%s" % last_updated
+        status = "<p></p><div><b>Status:</b> Awaiting results..."
+        status += " (Refresh the page for updates)"
+        if num_untested == 0:
+            status = "<p></p><div><b>Status:</b> Test Run Complete:"
+            if num_failed == 0:
+                if num_passed > 0:
+                    if num_skipped == 0:
+                        status += " <b>Success!</b> (All tests passed)"
+                    else:
+                        status += " <b>Success!</b> (No failing tests)"
+                else:
+                    status += " All tests were skipped!"
+            else:
+                latest_logs_dir = "latest_logs/"
+                log_msg = "See latest logs for details"
+                if num_failed == 1:
+                    status += (
+                        ' <b>1 test failed!</b> (<a href="%s">%s</a>)'
+                        '' % (latest_logs_dir, log_msg))
+                else:
+                    status += (
+                        ' <b>%s tests failed!</b> (<a href="%s">%s</a>)'
+                        '' % (num_failed, latest_logs_dir, log_msg))
+        status += "</div><p></p>"
+        add_more = add_more + status
+        gen_by = (
+            '<p><div>Generated by: <b><a href="https://seleniumbase.io/">'
+            'SeleniumBase</a></b></div></p><p></p>')
+        add_more = add_more + gen_by
+        # Have dashboard auto-refresh on updates when using an http server
+        refresh_line = (
+            '<script type="text/javascript" src="%s">'
+            '</script>' % constants.Dashboard.LIVE_JS)
+        if num_untested == 0 and sb_config._using_html_report:
+            sb_config._dash_final_summary = status
+        add_more = add_more + refresh_line
+        the_html = head + self.extract_chart() + table_html + add_more
+        abs_path = os.path.abspath('.')
+        file_path = os.path.join(abs_path, "dashboard.html")
+        out_file = codecs.open(file_path, "w+", encoding="utf-8")
+        out_file.writelines(the_html)
+        out_file.close()
+        time.sleep(0.05)  # Add time for dashboard server to process updates
+
+    def has_exception(self):
+        """ (This method should ONLY be used in custom tearDown() methods.)
+            This method returns True if the test failed or raised an exception.
+            This is useful for performing additional steps in your tearDown()
+            method (based on whether or not the test passed or failed).
+            Example use cases:
+                * Performing cleanup steps if a test didn't complete.
+                * Sending test data and/or results to a dashboard service.
+        """
+        return self.__has_exception()
 
     def save_teardown_screenshot(self):
         """ (Should ONLY be used at the start of custom tearDown() methods.)
@@ -6367,6 +6886,36 @@ class BaseCase(unittest.TestCase):
         You'll need to add the following line to the subclass's tearDown():
         super(SubClassOfBaseCase, self).tearDown()
         """
+        try:
+            is_pytest = self.is_pytest  # This fails if overriding setUp()
+            if is_pytest:
+                with_selenium = self.with_selenium
+        except Exception:
+            sub_class_name = str(
+                self.__class__.__bases__[0]).split('.')[-1].split("'")[0]
+            sub_file_name = str(self.__class__.__bases__[0]).split('.')[-2]
+            sub_file_name = sub_file_name + ".py"
+            class_name = str(self.__class__).split('.')[-1].split("'")[0]
+            file_name = str(self.__class__).split('.')[-2] + ".py"
+            class_name_used = sub_class_name
+            file_name_used = sub_file_name
+            if sub_class_name == "BaseCase":
+                class_name_used = class_name
+                file_name_used = file_name
+            fix_setup = "super(%s, self).setUp()" % class_name_used
+            fix_teardown = "super(%s, self).tearDown()" % class_name_used
+            message = ("You're overriding SeleniumBase's BaseCase setUp() "
+                       "method with your own setUp() method, which breaks "
+                       "SeleniumBase. You can fix this by going to your "
+                       "%s class located in your %s file and adding the "
+                       "following line of code AT THE BEGINNING of your "
+                       "setUp() method:\n%s\n\nAlso make sure "
+                       "you have added the following line of code AT THE "
+                       "END of your tearDown() method:\n%s\n"
+                       % (class_name_used, file_name_used,
+                          fix_setup, fix_teardown))
+            raise Exception(message)
+        # *** Start tearDown() officially ***
         self.__slow_mode_pause_if_active()
         has_exception = self.__has_exception()
         if self.__deferred_assert_failures:
@@ -6381,37 +6930,11 @@ class BaseCase(unittest.TestCase):
         if self.is_pytest:
             # pytest-specific code
             test_id = self.__get_test_id()
-            try:
-                with_selenium = self.with_selenium
-            except Exception:
-                sub_class_name = str(
-                    self.__class__.__bases__[0]).split('.')[-1].split("'")[0]
-                sub_file_name = str(self.__class__.__bases__[0]).split('.')[-2]
-                sub_file_name = sub_file_name + ".py"
-                class_name = str(self.__class__).split('.')[-1].split("'")[0]
-                file_name = str(self.__class__).split('.')[-2] + ".py"
-                class_name_used = sub_class_name
-                file_name_used = sub_file_name
-                if sub_class_name == "BaseCase":
-                    class_name_used = class_name
-                    file_name_used = file_name
-                fix_setup = "super(%s, self).setUp()" % class_name_used
-                fix_teardown = "super(%s, self).tearDown()" % class_name_used
-                message = ("You're overriding SeleniumBase's BaseCase setUp() "
-                           "method with your own setUp() method, which breaks "
-                           "SeleniumBase. You can fix this by going to your "
-                           "%s class located in your %s file and adding the "
-                           "following line of code AT THE BEGINNING of your "
-                           "setUp() method:\n%s\n\nAlso make sure "
-                           "you have added the following line of code AT THE "
-                           "END of your tearDown() method:\n%s\n"
-                           % (class_name_used, file_name_used,
-                              fix_setup, fix_teardown))
-                raise Exception(message)
             if with_selenium:
                 # Save a screenshot if logging is on when an exception occurs
                 if has_exception:
                     self.__add_pytest_html_extra()
+                    sb_config._has_exception = True
                 if self.with_testing_base and not has_exception and (
                         self.save_screenshot_after_test):
                     test_logpath = self.log_path + "/" + test_id
@@ -6463,6 +6986,8 @@ class BaseCase(unittest.TestCase):
                             log_helper.log_page_source(
                                 test_logpath, self.driver,
                                 self.__last_page_source)
+                if self.dashboard:
+                    self.__process_dashboard(has_exception)
                 # (Pytest) Finally close all open browser windows
                 self.__quit_all_drivers()
             if self.headless:

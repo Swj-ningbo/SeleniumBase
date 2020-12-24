@@ -9,15 +9,15 @@ from seleniumbase import encryption
 
 class MyTestClass(BaseCase):
 
-    def test_rate_limited_printing(self):
+    def test_decrypt_password(self):
         self.open("https://www.saucedemo.com/")
-        self.update_text("#user-name", "standard_user")
+        self.type("#user-name", "standard_user")
 
         encrypted_password = "$^*ENCRYPT=S3BDTAdCWzMmKEY8Gjg=?&#$"
-        print("Encrypted Password = %s" % encrypted_password)
+        print("\nEncrypted Password = %s" % encrypted_password)
         password = encryption.decrypt(encrypted_password)
-        print("Password = %s" % password)
-        self.update_text("#password", password)
+        print("Decrypted Password = %s" % password)
+        self.type("#password", password)
 
         self.click('input[type="submit"]')
         self.assert_text("Products", "div.product_label")

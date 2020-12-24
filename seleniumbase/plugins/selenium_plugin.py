@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" This is the nosetests Selenium plugin for test configuration. """
+""" This is the Nosetest plugin for setting Selenium test configuration. """
 
 import sys
 from nose.plugins import Plugin
@@ -20,13 +20,14 @@ class SeleniumBrowser(Plugin):
     --proxy=USERNAME:PASSWORD@SERVER:PORT  (Use authenticated proxy server.)
     --agent=STRING  (Modify the web browser's User-Agent string.)
     --mobile  (Use the mobile device emulator while running tests.)
-    --metrics=STRING  (Set mobile "CSSWidth,CSSHeight,PixelRatio".)
-    --extension-zip=ZIP  (Load a Chrome Extension .zip file, comma-separated.)
+    --metrics=STRING  (Set mobile metrics: "CSSWidth,CSSHeight,PixelRatio".)
+    --extension-zip=ZIP  (Load a Chrome Extension .zip|.crx, comma-separated.)
     --extension-dir=DIR  (Load a Chrome Extension directory, comma-separated.)
     --headless  (Run tests headlessly. Default mode on Linux OS.)
     --headed  (Run tests with a GUI on Linux OS.)
+    --locale=LOCALE_CODE  (Set the Language Locale Code for the web browser.)
     --start-page=URL  (The starting URL for the web browser when tests begin.)
-    --time-limit=SECONDS  (Safely fail any test that exceeds the limit limit.)
+    --time-limit=SECONDS  (Safely fail any test that exceeds the time limit.)
     --slow  (Slow down the automation. Faster than using Demo Mode.)
     --demo  (Slow down and visually see test actions as they occur.)
     --demo-sleep=SECONDS  (Set the wait time after Demo Mode actions.)
@@ -36,9 +37,12 @@ class SeleniumBrowser(Plugin):
     --ad-block  (Block some types of display ads after page loads.)
     --block-images (Block images from loading during tests.)
     --verify-delay=SECONDS  (The delay before MasterQA verification checks.)
-    --disable-csp  (This disables the Content Security Policy of websites.)
+    --disable-csp  (Disable the Content Security Policy of websites.)
+    --disable-ws  (Disable Web Security on Chromium-based browsers.)
+    --enable-ws  (Enable Web Security on Chromium-based browsers.)
     --enable-sync  (Enable "Chrome Sync".)
     --use-auto-ext  (Use Chrome's automation extension.)
+    --remote-debug  (Enable Chrome's Remote Debugger on http://localhost:9222)
     --swiftshader  (Use Chrome's "--use-gl=swiftshader" feature.)
     --incognito  (Enable Chrome's Incognito mode.)
     --guest  (Enable Chrome's Guest mode.)
@@ -180,6 +184,16 @@ class SeleniumBrowser(Plugin):
                     (The default setting on Linux is headless.)
                     (The default setting on Mac or Windows is headed.)""")
         parser.add_option(
+            '--locale_code', '--locale-code', '--locale',
+            action='store',
+            dest='locale_code',
+            default=None,
+            help="""Designates the Locale Code for the web browser.
+                    A Locale is a specific version of a spoken Language.
+                    The Locale alters visible text on supported websites.
+                    See: https://seleniumbase.io/help_docs/locale_codes/
+                    Default: None. (The web browser's default mode.)""")
+        parser.add_option(
             '--start_page', '--start-page', '--url',
             action='store',
             dest='start_page',
@@ -266,8 +280,22 @@ class SeleniumBrowser(Plugin):
                     websites, which may interfere with some features of
                     SeleniumBase, such as loading custom JavaScript
                     libraries for various testing actions.
-                    Setting this to True (--disable_csp) overrides the
+                    Setting this to True (--disable-csp) overrides the
                     value set in seleniumbase/config/settings.py""")
+        parser.add_option(
+            '--disable_ws', '--disable-ws', '--disable-web-security',
+            action="store_true",
+            dest='disable_ws',
+            default=False,
+            help="""Using this disables the "Web Security" feature of
+                    Chrome and Chromium-based browsers such as Edge.""")
+        parser.add_option(
+            '--enable_ws', '--enable-ws', '--enable-web-security',
+            action="store_true",
+            dest='enable_ws',
+            default=False,
+            help="""Using this enables the "Web Security" feature of
+                    Chrome and Chromium-based browsers such as Edge.""")
         parser.add_option(
             '--enable_sync', '--enable-sync',
             action="store_true",
@@ -296,6 +324,15 @@ class SeleniumBrowser(Plugin):
             default=False,
             help="""Using this enables the "Disable GPU" feature.
                     (This setting is now always enabled by default.)""")
+        parser.add_option(
+            '--remote_debug', '--remote-debug',
+            action="store_true",
+            dest='remote_debug',
+            default=False,
+            help="""This enables Chromium's remote debugger.
+                    To access the remote debugging interface, go to:
+                    http://localhost:9222 while Chromedriver is running.
+                    Info: chromedevtools.github.io/devtools-protocol/""")
         parser.add_option(
             '--swiftshader',
             action="store_true",
@@ -351,7 +388,7 @@ class SeleniumBrowser(Plugin):
             default=None,
             help="""Setting this overrides the default timeout
                     by the multiplier when waiting for page elements.
-                    Unused when tests overide the default value.""")
+                    Unused when tests override the default value.""")
 
     def configure(self, options, conf):
         super(SeleniumBrowser, self).configure(options, conf)
@@ -366,6 +403,7 @@ class SeleniumBrowser(Plugin):
         test.test.cap_string = self.options.cap_string
         test.test.headless = self.options.headless
         test.test.headed = self.options.headed
+        test.test.locale_code = self.options.locale_code
         test.test.start_page = self.options.start_page
         test.test.servername = self.options.servername
         test.test.port = self.options.port
@@ -387,10 +425,15 @@ class SeleniumBrowser(Plugin):
         test.test.block_images = self.options.block_images
         test.test.verify_delay = self.options.verify_delay  # MasterQA
         test.test.disable_csp = self.options.disable_csp
+        test.test.disable_ws = self.options.disable_ws
+        test.test.enable_ws = self.options.enable_ws
+        if not self.options.disable_ws:
+            test.test.enable_ws = True
         test.test.enable_sync = self.options.enable_sync
         test.test.use_auto_ext = self.options.use_auto_ext
         test.test.no_sandbox = self.options.no_sandbox
         test.test.disable_gpu = self.options.disable_gpu
+        test.test.remote_debug = self.options.remote_debug
         test.test.swiftshader = self.options.swiftshader
         test.test.incognito = self.options.incognito
         test.test.guest_mode = self.options.guest_mode
@@ -400,6 +443,7 @@ class SeleniumBrowser(Plugin):
         test.test.visual_baseline = self.options.visual_baseline
         test.test.timeout_multiplier = self.options.timeout_multiplier
         test.test.use_grid = False
+        test.test.dashboard = False
         test.test._reuse_session = False
         if test.test.servername != "localhost":
             # Use Selenium Grid (Use --server="127.0.0.1" for localhost Grid)

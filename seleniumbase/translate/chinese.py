@@ -177,6 +177,10 @@ class 硒测试用例(BaseCase):  # noqa
         # submit(selector)
         return self.submit(*args, **kwargs)
 
+    def 清除(self, *args, **kwargs):
+        # clear(selector)
+        return self.clear(*args, **kwargs)
+
     def JS单击(self, *args, **kwargs):
         # js_click(selector)
         return self.js_click(*args, **kwargs)
@@ -424,6 +428,10 @@ class 硒测试用例(BaseCase):  # noqa
         #                 codec='utf-8', wrap=True, nav=False, override=False)
         return self.assert_pdf_text(*args, **kwargs)
 
+    def 检查下载的文件(self, *args, **kwargs):
+        # assert_downloaded_file(file)
+        return self.assert_downloaded_file(*args, **kwargs)
+
     def 失败(self, *args, **kwargs):
         # fail(msg=None)  # Inherited from "unittest"
         return self.fail(*args, **kwargs)
@@ -459,6 +467,10 @@ class 硒测试用例(BaseCase):  # noqa
     def 查找文本(self, *args, **kwargs):
         # find_text(text, selector="html")  # Same as wait_for_text
         return self.find_text(*args, **kwargs)
+
+    def 设置文本(self, *args, **kwargs):
+        # set_text(selector, text)
+        return self.set_text(*args, **kwargs)
 
     def 获取属性(self, *args, **kwargs):
         # get_attribute(selector, attribute)
@@ -531,6 +543,10 @@ class 硒测试用例(BaseCase):  # noqa
     def 获取用户代理(self, *args, **kwargs):
         # get_user_agent()
         return self.get_user_agent(*args, **kwargs)
+
+    def 获取语言代码(self, *args, **kwargs):
+        # get_locale_code()
+        return self.get_locale_code(*args, **kwargs)
 
 
 class MasterQA_中文(MasterQA, 硒测试用例):

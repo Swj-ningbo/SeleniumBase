@@ -177,6 +177,10 @@ class Testgeval(BaseCase):
         # submit(selector)
         return self.submit(*args, **kwargs)
 
+    def wissen(self, *args, **kwargs):
+        # clear(selector)
+        return self.clear(*args, **kwargs)
+
     def js_klik(self, *args, **kwargs):
         # js_click(selector)
         return self.js_click(*args, **kwargs)
@@ -424,6 +428,10 @@ class Testgeval(BaseCase):
         #                 codec='utf-8', wrap=True, nav=False, override=False)
         return self.assert_pdf_text(*args, **kwargs)
 
+    def controleren_gedownloade_bestand(self, *args, **kwargs):
+        # assert_downloaded_file(file)
+        return self.assert_downloaded_file(*args, **kwargs)
+
     def mislukken(self, *args, **kwargs):
         # fail(msg=None)  # Inherited from "unittest"
         return self.fail(*args, **kwargs)
@@ -460,6 +468,10 @@ class Testgeval(BaseCase):
         # find_text(text, selector="html")  # Same as wait_for_text
         return self.find_text(*args, **kwargs)
 
+    def tekst_instellen(self, *args, **kwargs):
+        # set_text(selector, text)
+        return self.set_text(*args, **kwargs)
+
     def kenmerk_ophalen(self, *args, **kwargs):
         # get_attribute(selector, attribute)
         return self.get_attribute(*args, **kwargs)
@@ -476,7 +488,7 @@ class Testgeval(BaseCase):
         # write(selector, text)  # Same as update_text()
         return self.write(*args, **kwargs)
 
-    def kenmerk_thema_van_bericht(self, *args, **kwargs):
+    def thema_van_bericht_instellen(self, *args, **kwargs):
         # set_messenger_theme(theme="default", location="default")
         return self.set_messenger_theme(*args, **kwargs)
 
@@ -531,6 +543,10 @@ class Testgeval(BaseCase):
     def gebruikersagent_ophalen(self, *args, **kwargs):
         # get_user_agent()
         return self.get_user_agent(*args, **kwargs)
+
+    def taalcode_ophalen(self, *args, **kwargs):
+        # get_locale_code()
+        return self.get_locale_code(*args, **kwargs)
 
 
 class MasterQA_Nederlands(MasterQA, Testgeval):

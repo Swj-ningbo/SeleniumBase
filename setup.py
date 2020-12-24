@@ -8,11 +8,11 @@ import os
 import sys
 
 
-this_directory = os.path.abspath(os.path.dirname(__file__))
+this_dir = os.path.abspath(os.path.dirname(__file__))
 long_description = None
 total_description = None
 try:
-    with open(os.path.join(this_directory, 'README.md'), 'rb') as f:
+    with open(os.path.join(this_dir, 'README.md'), 'rb') as f:
         total_description = f.read().decode('utf-8')
     description_lines = total_description.split('\n')
     long_description_lines = []
@@ -21,7 +21,12 @@ try:
             long_description_lines.append(line)
     long_description = "\n".join(long_description_lines)
 except IOError:
-    long_description = 'Reliable Browser Automation & Testing Framework'
+    long_description = 'The complete web automation library.'
+about = {}
+# Get the package version from the seleniumbase/__version__.py file
+with open(os.path.join(
+        this_dir, 'seleniumbase', '__version__.py'), 'rb') as f:
+    exec(f.read().decode('utf-8'), about)
 
 if sys.argv[-1] == 'publish':
     reply = None
@@ -44,7 +49,7 @@ if sys.argv[-1] == 'publish':
         print("\n*** Installing twine: *** (Required for PyPI uploads)\n")
         os.system("python -m pip install --upgrade 'twine>=1.15.0'")
         print("\n*** Installing tqdm: *** (Required for PyPI uploads)\n")
-        os.system("python -m pip install --upgrade 'tqdm>=4.48.2'")
+        os.system("python -m pip install --upgrade 'tqdm>=4.54.1'")
         print("\n*** Publishing The Release to PyPI: ***\n")
         os.system('python -m twine upload dist/*')  # Requires ~/.pypirc Keys
         print("\n*** The Release was PUBLISHED SUCCESSFULLY to PyPI! :) ***\n")
@@ -54,8 +59,8 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='seleniumbase',
-    version='1.46.4',
-    description='Web Automation and Test Framework - https://seleniumbase.io',
+    version=about['__version__'],
+    description='The complete web automation library for end-to-end testing.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/seleniumbase/SeleniumBase',
@@ -66,6 +71,10 @@ setup(
     license="MIT",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Environment :: MacOS X",
+        "Environment :: Win32 (MS Windows)",
+        "Environment :: Web Environment",
         "Framework :: Pytest",
         "Intended Audience :: Developers",
         "Intended Audience :: Information Technology",
@@ -74,11 +83,13 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Internet",
         "Topic :: Scientific/Engineering",
         "Topic :: Software Development",
@@ -89,69 +100,95 @@ setup(
         "Topic :: Software Development :: Testing :: Traffic Generation",
         "Topic :: Utilities",
     ],
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     install_requires=[
-        'pip>=20.2.2',
-        'packaging>=20.4',
+        'pip>=20.3.3',
+        'packaging>=20.8',
         'setuptools>=44.1.1;python_version<"3.5"',
-        'setuptools>=49.6.0;python_version>="3.5"',
-        'setuptools-scm',
-        'wheel>=0.35.0',
-        'six',
-        'nose',
-        'ipdb',
+        'setuptools>=50.3.2;python_version>="3.5" and python_version<"3.6"',
+        'setuptools>=51.1.0;python_version>="3.6"',
+        'setuptools-scm>=5.0.1',
+        'wheel>=0.36.2',
+        'attrs>=20.3.0',
+        'certifi>=2020.12.5',
+        'six==1.15.0',
+        'nose==1.3.7',
+        'ipdb==0.13.4',
         'parso==0.7.1',  # The last version for Python 2 and 3.5
         'jedi==0.17.2',  # The last version for Python 2 and 3.5
         'idna==2.10',  # Must stay in sync with "requests"
-        'chardet==3.0.4',  # Must stay in sync with "requests"
-        'urllib3==1.25.10',  # Must stay in sync with "requests"
-        'requests==2.24.0',
+        'chardet==3.0.4;python_version<"3.6"',  # Stay in sync with "requests"
+        'chardet==4.0.0;python_version>="3.6"',  # Stay in sync with "requests"
+        'urllib3==1.26.2',  # Must stay in sync with "requests"
+        'requests==2.25.1',
         'selenium==3.141.0',
-        'msedge-selenium-tools==3.141.2',
+        'msedge-selenium-tools==3.141.3',
+        'more-itertools==5.0.0;python_version<"3.5"',
+        'more-itertools==8.6.0;python_version>="3.5"',
+        'cssselect==1.1.0',
         'pluggy==0.13.1',
-        'attrs>=19.3.0',
         'py==1.8.1;python_version<"3.5"',
-        'py==1.9.0;python_version>="3.5"',
+        'py==1.10.0;python_version>="3.5"',
         'pytest==4.6.11;python_version<"3.5"',
-        'pytest==6.0.1;python_version>="3.5"',
-        'pytest-cov==2.10.0',
+        'pytest==6.1.2;python_version>="3.5" and python_version<"3.6"',
+        'pytest==6.2.1;python_version>="3.6"',
+        'pytest-cov==2.10.1',
         'pytest-forked==1.3.0',
         'pytest-html==1.22.1;python_version<"3.6"',
         'pytest-html==2.0.1;python_version>="3.6"',
         'pytest-metadata==1.8.0;python_version<"3.6"',
-        'pytest-metadata==1.10.0;python_version>="3.6"',
+        'pytest-metadata==1.11.0;python_version>="3.6"',
         'pytest-ordering==0.6',
-        'pytest-rerunfailures==8.0;python_version<"3.6"',
-        'pytest-rerunfailures==9.0;python_version>="3.6"',
-        'pytest-xdist==1.34.0',
+        'pytest-rerunfailures==8.0;python_version<"3.5"',
+        'pytest-rerunfailures==9.1.1;python_version>="3.5"',
+        'pytest-xdist==1.34.0;python_version<"3.5"',
+        'pytest-xdist==2.2.0;python_version>="3.5"',
         'parameterized==0.7.4',
         'soupsieve==1.9.6;python_version<"3.5"',
-        'soupsieve==2.0.1;python_version>="3.5"',
-        'beautifulsoup4==4.9.1',
-        'cryptography==3.0',
-        'pyopenssl==19.1.0',
-        'prompt-toolkit==1.0.18;python_version<"3.6.1"',
-        'prompt-toolkit==3.0.6;python_version>="3.6.1"',
+        'soupsieve==2.0.1;python_version>="3.5" and python_version<"3.6"',
+        'soupsieve==2.1;python_version>="3.6"',
+        'beautifulsoup4==4.9.3',
+        'cryptography==3.0;python_version<"3.6"',
+        'cryptography==3.3.1;python_version>="3.6"',
+        'pyopenssl==19.1.0;python_version<"3.6"',
+        'pyopenssl==20.0.1;python_version>="3.6"',
         'pygments==2.5.2;python_version<"3.5"',
-        'pygments==2.6.1;python_version>="3.5"',
+        'pygments==2.7.3;python_version>="3.5"',
+        'traitlets==4.3.3;python_version<"3.7"',
+        'traitlets==5.0.5;python_version>="3.7"',
         'ipython==5.10.0;python_version<"3.5"',
-        'ipython==6.5.0;python_version>="3.5" and python_version<"3.7"',
-        'ipython==7.17.0;python_version>="3.7"',
-        'colorama==0.4.3',
-        'pymysql==0.10.0',
-        'coverage==5.2.1',
-        'brython>=3.8.9',
-        'pyotp==2.4.0',
+        'prompt-toolkit==1.0.18;python_version<"3.6"',
+        'prompt-toolkit==3.0.8;python_version>="3.6"',
+        'ipython==6.5.0;python_version>="3.5" and python_version<"3.6"',
+        'ipython==7.16.1;python_version>="3.6" and python_version<"3.7"',
+        'ipython==7.19.0;python_version>="3.7"',
+        'colorama==0.4.4',
+        'pathlib2==2.3.5;python_version<"3.5"',  # Sync with "virtualenv"
+        'importlib-metadata==2.0.0;python_version<"3.6"',  # Sync "virtualenv"
+        'virtualenv>=20.2.2',  # Sync with importlib-metadata and pathlib2
+        'pymysql==0.10.1',
+        'coverage==5.3.1',
+        'brython==3.9.0',
+        'pyotp==2.4.1',
         'boto==2.49.0',
-        'cffi==1.14.1',
-        'rich==5.1.2;python_version>="3.6" and python_version<"4.0"',
+        'cffi==1.14.4',
+        'toml==0.10.2',
+        'Pillow==6.2.2;python_version<"3.5"',
+        'Pillow==7.2.0;python_version>="3.5" and python_version<"3.6"',
+        'Pillow==8.0.1;python_version>="3.6"',
+        'rich==9.5.1;python_version>="3.6" and python_version<"4.0"',
+        'zipp==1.2.0;python_version<"3.6"',
+        'zipp==3.4.0;python_version>="3.6"',
         'flake8==3.7.9;python_version<"3.5"',
-        'flake8==3.8.3;python_version>="3.5"',
+        'flake8==3.8.4;python_version>="3.5"',
         'pyflakes==2.1.1;python_version<"3.5"',
         'pyflakes==2.2.0;python_version>="3.5"',
-        'certifi>=2020.6.20',
-        'allure-pytest==2.8.17',
+        'tornado==5.1.1;python_version<"3.5"',
+        'tornado==6.1;python_version>="3.5"',
+        'allure-pytest==2.8.22;python_version<"3.5"',
+        'allure-pytest==2.8.29;python_version>="3.5"',
         'pdfminer.six==20191110;python_version<"3.5"',
-        'pdfminer.six==20200726;python_version>="3.5"',
+        'pdfminer.six==20201018;python_version>="3.5"',
     ],
     packages=[
         'seleniumbase',

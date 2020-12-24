@@ -1,6 +1,40 @@
-<div><a href="https://github.com/seleniumbase/SeleniumBase"><img src="https://cdn2.hubspot.net/hubfs/100006/images/sb_media_logo.png" alt="SeleniumBase" width="240" /></a></div>
+<div><a href="https://github.com/seleniumbase/SeleniumBase"><img src="https://seleniumbase.io/img/sb_logo_7.png" alt="SeleniumBase" width="240" /></a></div>
 
-<h2><img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Help Documents</h2>
+<h2><img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Help Docs</h2>
+
+<p align="left">
+<a href="https://seleniumbase.io/#python_installation">🚀 Start</a> |
+<a href="https://seleniumbase.io/help_docs/customizing_test_runs/">🖥️ CLI</a> |
+<a href="https://seleniumbase.io/help_docs/features_list/">🗂️ Features</a>
+<br />
+<a href="https://seleniumbase.io/examples/ReadMe/">👨‍🏫 Examples</a> |
+<a href="https://seleniumbase.io/help_docs/mobile_testing/">📱 Mobile</a> |
+<a href="https://seleniumbase.io/integrations/github/workflows/ReadMe/">🤖 CI</a>
+<br />
+<a href="https://seleniumbase.io/help_docs/method_summary/">📗 API</a> |
+<a href="https://seleniumbase.io/examples/example_logs/ReadMe/">📊 Reports</a> |
+<a href="https://seleniumbase.io/examples/tour_examples/ReadMe/">🗺️ Tours</a>
+<br />
+<a href="https://seleniumbase.io/seleniumbase/console_scripts/ReadMe/">💻 Console Scripts</a> |
+<a href="https://seleniumbase.io/seleniumbase/utilities/selenium_grid/ReadMe/">🌐 Grid</a>
+<br />
+<a href="https://github.com/seleniumbase/SeleniumBase/tree/master/examples/boilerplates">♻️ Boilerplates</a> |
+<a href="https://seleniumbase.io/help_docs/locale_codes/">🗾 Locales</a>
+<br />
+<a href="https://seleniumbase.io/help_docs/js_package_manager/">🗄️ PkgManager</a> |
+<a href="https://seleniumbase.io/examples/visual_testing/ReadMe/">🖼️ VisualTest</a>
+<br />
+<a href="https://seleniumbase.io/help_docs/translations/">🌏 Translate</a> |
+<a href="https://seleniumbase.io/examples/master_qa/ReadMe/">🛂 MasterQA</a>
+<br />
+<a href="https://seleniumbase.io/seleniumbase/utilities/selenium_ide/ReadMe/">⏺️ Recorder</a> |
+<a href="https://github.com/seleniumbase/SeleniumBase/tree/master/integrations/node_js">🏃 NodeRunner</a>
+<br />
+<a href="https://seleniumbase.io/examples/presenter/ReadMe/">📑 Presenter</a> |
+<a href="https://seleniumbase.io/examples/chart_maker/ReadMe/">📈 ChartMaker</a>
+</p>
+
+--------
 
 <h3>Table of Contents (<a href="https://seleniumbase.io">seleniumbase.io</a>)</h3>
 
@@ -18,6 +52,7 @@
 <div><a href="https://seleniumbase.io/help_docs/mobile_testing/"><b>Mobile Device Testing</b></a></div>
 <div><a href="https://seleniumbase.io/help_docs/method_summary/"><b>Method Summary (API Ref)</b></a></div>
 <div><a href="https://seleniumbase.io/help_docs/translations/"><b>Language Translations</b></a></div>
+<div><a href="https://seleniumbase.io/help_docs/locale_codes/"><b>Language Locale Codes</b></a></div>
 <div><a href="https://seleniumbase.io/help_docs/js_package_manager/"><b>JS Package Manager</b></a></div>
 <div><a href="https://seleniumbase.io/examples/tour_examples/ReadMe/"><b>Tour Examples</b></a></div>
 <div><a href="https://seleniumbase.io/examples/presenter/ReadMe/"><b>Presentation Maker</b></a></div>
@@ -31,7 +66,20 @@
 
 --------
 
-<h3>GitHub Pages ToC (<a href="https://seleniumbase.com">seleniumbase.com</a>)</h3>
+<h3>Demo Pages / Web Examples</h3>
+
+<div><a href="https://seleniumbase.io/demo_page"><b>Demo Page / Demo Site</b></a></div>
+<div><a href="https://seleniumbase.io/tinymce/"><b>TinyMCE Demo Page</b></a></div>
+<div><a href="https://seleniumbase.io/devices/"><b>Virtual Device Farm</b></a></div>
+<div><a href="https://seleniumbase.io/error_page/"><b>Error Page for Tests</b></a></div>
+<div><a href="https://seleniumbase.io/other/presenter.html"><b>Presenter Demo</b></a></div>
+<div><a href="https://seleniumbase.io/other/core_presentation.html"><b>Core Presentation</b></a></div>
+<div><a href="https://seleniumbase.io/other/chart_presentation.html"><b>Chart Maker Demo</b></a></div>
+<div><a href="https://seleniumbase.io/other/py_virtual_envs.html"><b>Python Virtual Envs</b></a></div>
+
+--------
+
+<h3>GitHub Pages (<a href="https://seleniumbase.com">seleniumbase.com</a>)</h3>
 
 <div><a href="https://seleniumbase.com/help_docs/features_list"><b>Features List</b></a></div>
 <div><a href="https://seleniumbase.com/help_docs/customizing_test_runs"><b>Command Line Tutorial</b></a></div>
@@ -46,6 +94,7 @@
 <div><a href="https://seleniumbase.com/help_docs/mobile_testing"><b>Mobile Device Testing</b></a></div>
 <div><a href="https://seleniumbase.com/help_docs/method_summary"><b>Method Summary (API Ref)</b></a></div>
 <div><a href="https://seleniumbase.com/help_docs/translations"><b>Language Translations</b></a></div>
+<div><a href="https://seleniumbase.com/help_docs/locale_codes"><b>Language Locale Codes</b></a></div>
 <div><a href="https://seleniumbase.com/help_docs/js_package_manager"><b>JS Package Manager</b></a></div>
 <div><a href="https://seleniumbase.com/examples/tour_examples/"><b>Tour Examples</b></a></div>
 <div><a href="https://seleniumbase.com/examples/presenter/"><b>Presentation Maker</b></a></div>

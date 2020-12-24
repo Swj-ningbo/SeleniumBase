@@ -177,6 +177,10 @@ class CasDeBase(BaseCase):
         # submit(selector)
         return self.submit(*args, **kwargs)
 
+    def effacer(self, *args, **kwargs):
+        # clear(selector)
+        return self.clear(*args, **kwargs)
+
     def js_cliquer(self, *args, **kwargs):
         # js_click(selector)
         return self.js_click(*args, **kwargs)
@@ -424,6 +428,10 @@ class CasDeBase(BaseCase):
         #                 codec='utf-8', wrap=True, nav=False, override=False)
         return self.assert_pdf_text(*args, **kwargs)
 
+    def vérifier_fichier_téléchargé(self, *args, **kwargs):
+        # assert_downloaded_file(file)
+        return self.assert_downloaded_file(*args, **kwargs)
+
     def échouer(self, *args, **kwargs):
         # fail(msg=None)  # Inherited from "unittest"
         return self.fail(*args, **kwargs)
@@ -459,6 +467,10 @@ class CasDeBase(BaseCase):
     def trouver_texte(self, *args, **kwargs):
         # find_text(text, selector="html")  # Same as wait_for_text
         return self.find_text(*args, **kwargs)
+
+    def définir_texte(self, *args, **kwargs):
+        # set_text(selector, text)
+        return self.set_text(*args, **kwargs)
 
     def obtenir_attribut(self, *args, **kwargs):
         # get_attribute(selector, attribute)
@@ -531,6 +543,10 @@ class CasDeBase(BaseCase):
     def obtenir_agent_utilisateur(self, *args, **kwargs):
         # get_user_agent()
         return self.get_user_agent(*args, **kwargs)
+
+    def obtenir_code_de_langue(self, *args, **kwargs):
+        # get_locale_code()
+        return self.get_locale_code(*args, **kwargs)
 
 
 class MasterQA_Français(MasterQA, CasDeBase):

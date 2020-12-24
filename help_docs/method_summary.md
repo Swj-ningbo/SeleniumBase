@@ -1,6 +1,6 @@
-[<img src="https://cdn2.hubspot.net/hubfs/100006/images/SeleniumBaseText_F.png" title="SeleniumBase" align="center" width="290">](https://github.com/seleniumbase/SeleniumBase/blob/master/README.md)
+[<img src="https://seleniumbase.io/cdn/img/sb_text_f.png" title="SeleniumBase" align="center" width="360">](https://github.com/seleniumbase/SeleniumBase/blob/master/README.md)
 
-## <img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Method Summary (API Reference)
+<h2><img src="https://seleniumbase.io/img/logo6.png" title="SeleniumBase" width="32" /> Method Summary (API Reference)</h2>
 
 Here's a summary of SeleniumBase method definitions, which are defined in [base_case.py](https://github.com/seleniumbase/SeleniumBase/blob/master/seleniumbase/fixtures/base_case.py)
 
@@ -23,15 +23,17 @@ self.double_click(selector, by=By.CSS_SELECTOR, timeout=None)
 
 self.click_chain(selectors_list, by=By.CSS_SELECTOR, timeout=None, spacing=0)
 
-self.update_text(selector, text, by=By.CSS_SELECTOR, timeout=None, retry=False)
-# Duplicates: self.type(selector, text, by=By.CSS_SELECTOR, timeout=None, retry=False)
-#             self.input(selector, text, by=By.CSS_SELECTOR, timeout=None, retry=False)
-#             self.write(selector, text, by=By.CSS_SELECTOR, timeout=None, retry=False)
+self.type(selector, text, by=By.CSS_SELECTOR, timeout=None)
+# Duplicates: self.update_text(selector, text, by=By.CSS_SELECTOR, timeout=None)
+#             self.input(selector, text, by=By.CSS_SELECTOR, timeout=None)
+#             self.write(selector, text, by=By.CSS_SELECTOR, timeout=None)
 
 self.add_text(selector, text, by=By.CSS_SELECTOR, timeout=None)
 # Duplicates: self.send_keys(selector, text, by=By.CSS_SELECTOR, timeout=None)
 
 self.submit(selector, by=By.CSS_SELECTOR)
+
+self.clear(selector, by=By.CSS_SELECTOR, timeout=None)
 
 self.refresh_page()
 # Duplicates: self.refresh(), self.reload(), self.reload_page()
@@ -44,6 +46,8 @@ self.get_title()
 # Duplicates: self.get_page_title()
 
 self.get_user_agent()
+
+self.get_locale_code()
 
 self.go_back()
 
@@ -94,9 +98,9 @@ self.find_elements(selector, by=By.CSS_SELECTOR, limit=0)
 
 self.find_visible_elements(selector, by=By.CSS_SELECTOR, limit=0)
 
-self.click_visible_elements(selector, by=By.CSS_SELECTOR, limit=0)
+self.click_visible_elements(selector, by=By.CSS_SELECTOR, limit=0, timeout=None)
 
-self.click_nth_visible_element(selector, number, by=By.CSS_SELECTOR)
+self.click_nth_visible_element(selector, number, by=By.CSS_SELECTOR, timeout=None)
 
 self.click_if_visible(selector, by=By.CSS_SELECTOR)
 
@@ -193,6 +197,10 @@ self.wait_for_angularjs(timeout=None)
 self.sleep(seconds)
 # Duplicates: self.wait(seconds)
 
+self.activate_design_mode()
+
+self.deactivate_design_mode()
+
 self.activate_jquery()
 
 self.bring_to_front(selector, by=By.CSS_SELECTOR)
@@ -269,7 +277,7 @@ self.create_folder(folder)
 
 self.choose_file(selector, file_path, by=By.CSS_SELECTOR, timeout=None)
 
-self.save_element_as_image_file(selector, file_name, folder=None)
+self.save_element_as_image_file(selector, file_name, folder=None, overlay_text="")
 
 self.download_file(file_url, destination_folder=None)
 
@@ -303,6 +311,8 @@ self.inspect_html()
 
 self.get_google_auth_password(totp_key=None)
 
+self.convert_css_to_xpath(css)
+
 self.convert_xpath_to_css(xpath)
 
 self.convert_to_css_selector(selector, by)
@@ -311,6 +321,7 @@ self.set_value(selector, text, by=By.CSS_SELECTOR, timeout=None)
 
 self.js_update_text(selector, text, by=By.CSS_SELECTOR, timeout=None)
 # Duplicates: self.js_type(selector, text, by=By.CSS_SELECTOR, timeout=None)
+#             self.set_text(selector, text, by=By.CSS_SELECTOR, timeout=None)
 
 self.jquery_update_text(selector, text, by=By.CSS_SELECTOR, timeout=None)
 
@@ -390,7 +401,7 @@ self.add_series_to_chart(data_name=None, chart_name=None)
 
 self.add_data_point(label, value, color=None, chart_name=None)
 
-self.save_chart(chart_name=None, filename=None)
+self.save_chart(chart_name=None, filename=None, folder=None)
 
 self.display_chart(chart_name=None, filename=None, interval=0)
 
@@ -536,7 +547,7 @@ self.process_deferred_asserts(print_only=False)
 
 self.fail(msg=None)  # Inherited from "unittest"
 
-self.print(TEXT)  # Calls Python's print() / Allows for translations
+self._print(TEXT)  # Calls Python's print() / Allows for translations
 ```
 
 ---

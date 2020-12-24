@@ -1,4 +1,4 @@
-<h3 align="left"><a href="https://github.com/seleniumbase/SeleniumBase/"><img src="https://cdn2.hubspot.net/hubfs/100006/images/super_logo_m.png" title="SeleniumBase" width="290" /></a></h3>
+<h3 align="left"><a href="https://github.com/seleniumbase/SeleniumBase/"><img src="https://seleniumbase.io/cdn/img/super_logo_m.png" title="SeleniumBase" width="290" /></a></h3>
 
 <a id="language_tests"></a>
 <h3><img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Language Tests (Python 3+)</h3>
@@ -7,11 +7,9 @@
 
 Examples can be found in [<a href="https://github.com/seleniumbase/SeleniumBase/tree/master/examples/translations">SeleniumBase/examples/translations</a>].
 
-Multi-language tests are run with **pytest** like any other test. Every test method has a one-to-one mapping to every other supported language.<br /><i>Examples:</i>
+Multi-language tests are run with **pytest** like any other test. Every test method has a one-to-one mapping to every other supported language. <i>Example:</i>
 ```
-self.开启网址(URL) = self.open(URL)
-self.нажмите(CSS) = self.click(CSS)
-self.뒤로() = self.go_back()
+self.open(URL) <=> self.开启网址(URL)
 ```
 
 <a id="translation_api"></a>
@@ -25,7 +23,7 @@ seleniumbase translate
 
 ```
 * Usage:
-seleniumbase translate [SB_FILE].py [LANGUAGE] [ACTION]
+seleniumbase translate [SB_FILE.py] [LANGUAGE] [ACTION]
 
 * Languages:
 ``--en`` / ``--English``  |  ``--zh`` / ``--Chinese``
@@ -56,7 +54,7 @@ specified. Method calls and ``import`` lines get swapped.
 Both a language and an action must be specified.
 The ``-p`` action can be paired with one other action.
 When running with ``-c`` (or ``--copy``) the new file name
-will be the orginal name appended with an underscore
+will be the original name appended with an underscore
 plus the 2-letter language code of the new language.
 (Example: Translating ``test_1.py`` into Japanese with
 ``-c`` will create a new file called ``test_1_ja.py``.)

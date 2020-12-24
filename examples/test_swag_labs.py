@@ -3,8 +3,8 @@ from seleniumbase import BaseCase
 
 class SwagLabsTests(BaseCase):
 
-    def login(self, username="standard_user"):
-        """ Login to Swag Labs and verify that login was successful. """
+    def login_to_swag_labs(self, username="standard_user"):
+        """ Login to Swag Labs and verify success. """
         self.open("https://www.saucedemo.com/")
         if username not in self.get_text("#login_credentials"):
             self.fail("Invalid user for login: %s" % username)
@@ -16,7 +16,7 @@ class SwagLabsTests(BaseCase):
 
     def test_swag_labs_basic_flow(self):
         """ This test checks functional flow of the Swag Labs store. """
-        self.login(username="standard_user")
+        self.login_to_swag_labs(username="standard_user")
 
         # Verify that the "Test.allTheThings() T-Shirt" appears on the page
         item_name = "Test.allTheThings() T-Shirt"

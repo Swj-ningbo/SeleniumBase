@@ -177,6 +177,10 @@ class CasoDePrueba(BaseCase):
         # submit(selector)
         return self.submit(*args, **kwargs)
 
+    def despejar(self, *args, **kwargs):
+        # clear(selector)
+        return self.clear(*args, **kwargs)
+
     def js_haga_clic(self, *args, **kwargs):
         # js_click(selector)
         return self.js_click(*args, **kwargs)
@@ -424,6 +428,10 @@ class CasoDePrueba(BaseCase):
         #                 codec='utf-8', wrap=True, nav=False, override=False)
         return self.assert_pdf_text(*args, **kwargs)
 
+    def verificar_archivo_descargado(self, *args, **kwargs):
+        # assert_downloaded_file(file)
+        return self.assert_downloaded_file(*args, **kwargs)
+
     def fallar(self, *args, **kwargs):
         # fail(msg=None)  # Inherited from "unittest"
         return self.fail(*args, **kwargs)
@@ -459,6 +467,10 @@ class CasoDePrueba(BaseCase):
     def encontrar_texto(self, *args, **kwargs):
         # find_text(text, selector="html")  # Same as wait_for_text
         return self.find_text(*args, **kwargs)
+
+    def establecer_texto(self, *args, **kwargs):
+        # set_text(selector, text)
+        return self.set_text(*args, **kwargs)
 
     def obtener_atributo(self, *args, **kwargs):
         # get_attribute(selector, attribute)
@@ -531,6 +543,10 @@ class CasoDePrueba(BaseCase):
     def obtener_agente_de_usuario(self, *args, **kwargs):
         # get_user_agent()
         return self.get_user_agent(*args, **kwargs)
+
+    def obtener_código_de_idioma(self, *args, **kwargs):
+        # get_locale_code()
+        return self.get_locale_code(*args, **kwargs)
 
 
 class MasterQA_Español(MasterQA, CasoDePrueba):

@@ -25,13 +25,6 @@ def wait_for_ready_state_complete(driver, timeout=settings.EXTREME_TIMEOUT):
     for x in range(int(timeout * 10)):
         shared_utils.check_if_time_limit_exceeded()
         try:
-            # If there's an alert, skip
-            driver.switch_to.alert
-            return
-        except Exception:
-            # If there's no alert, continue
-            pass
-        try:
             ready_state = driver.execute_script("return document.readyState")
         except WebDriverException:
             # Bug fix for: [Permission denied to access property "document"]
@@ -55,13 +48,6 @@ def execute_async_script(driver, script, timeout=settings.EXTREME_TIMEOUT):
 
 
 def wait_for_angularjs(driver, timeout=settings.LARGE_TIMEOUT, **kwargs):
-    try:
-        # If there's an alert, skip
-        driver.switch_to.alert
-        return
-    except Exception:
-        # If there's no alert, continue
-        pass
     if not settings.WAIT_FOR_ANGULARJS:
         return
 
@@ -477,8 +463,9 @@ def activate_messenger(driver):
                  "messenger-on-bottom messenger-on-right', "
                  "theme: 'flat'}")
 
-    add_js_link(driver, jquery_js)
-    wait_for_jquery_active(driver, timeout=0.2)
+    if not is_jquery_activated(driver):
+        add_js_link(driver, jquery_js)
+        wait_for_jquery_active(driver, timeout=0.9)
     add_css_link(driver, messenger_css)
     add_css_link(driver, msgr_theme_flat_css)
     add_css_link(driver, msgr_theme_future_css)
@@ -510,6 +497,8 @@ def set_messenger_theme(driver, theme="default", location="default",
         theme = "flat"
     if location == "default":
         location = "bottom_right"
+        if sb_config.mobile_emulator:
+            location = "top_center"
     if max_messages == "default":
         max_messages = "8"
 

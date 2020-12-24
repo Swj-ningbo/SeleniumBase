@@ -177,6 +177,10 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
         # submit(selector)
         return self.submit(*args, **kwargs)
 
+    def 지우려면(self, *args, **kwargs):
+        # clear(selector)
+        return self.clear(*args, **kwargs)
+
     def JS_클릭(self, *args, **kwargs):
         # js_click(selector)
         return self.js_click(*args, **kwargs)
@@ -424,6 +428,10 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
         #                 codec='utf-8', wrap=True, nav=False, override=False)
         return self.assert_pdf_text(*args, **kwargs)
 
+    def 다운로드한_파일_확인(self, *args, **kwargs):
+        # assert_downloaded_file(file)
+        return self.assert_downloaded_file(*args, **kwargs)
+
     def 실패(self, *args, **kwargs):
         # fail(msg=None)  # Inherited from "unittest"
         return self.fail(*args, **kwargs)
@@ -459,6 +467,10 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
     def 텍스트_찾기(self, *args, **kwargs):
         # find_text(text, selector="html")  # Same as wait_for_text
         return self.find_text(*args, **kwargs)
+
+    def 텍스트_설정(self, *args, **kwargs):
+        # set_text(selector, text)
+        return self.set_text(*args, **kwargs)
 
     def 특성_검색(self, *args, **kwargs):
         # get_attribute(selector, attribute)
@@ -531,6 +543,10 @@ class 셀레늄_테스트_케이스(BaseCase):  # noqa
     def 사용자_에이전트_가져_오기(self, *args, **kwargs):
         # get_user_agent()
         return self.get_user_agent(*args, **kwargs)
+
+    def 언어_코드를_얻을(self, *args, **kwargs):
+        # get_locale_code()
+        return self.get_locale_code(*args, **kwargs)
 
 
 class MasterQA_한국어(MasterQA, 셀레늄_테스트_케이스):

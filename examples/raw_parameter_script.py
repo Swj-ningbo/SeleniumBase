@@ -30,6 +30,7 @@ except (ImportError, ValueError):
     sb.headless = False
     sb.headed = False
     sb.start_page = None
+    sb.locale_code = None
     sb.servername = "localhost"
     sb.port = 4444
     sb.data = None
@@ -46,6 +47,8 @@ except (ImportError, ValueError):
     sb.log_path = "latest_logs/"
     sb.archive_logs = False
     sb.disable_csp = False
+    sb.disable_ws = False
+    sb.enable_ws = False
     sb.enable_sync = False
     sb.use_auto_ext = False
     sb.no_sandbox = False
@@ -66,8 +69,11 @@ except (ImportError, ValueError):
     sb.demo_mode = False
     sb.time_limit = None
     sb.demo_sleep = 1
+    sb.dashboard = False
+    sb._dash_initialized = False
     sb.message_duration = 2
     sb.block_images = False
+    sb.remote_debug = False
     sb.settings_file = None
     sb.user_data_dir = None
     sb.proxy_string = None

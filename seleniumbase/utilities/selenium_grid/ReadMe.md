@@ -1,4 +1,4 @@
-[<img src="https://cdn2.hubspot.net/hubfs/100006/images/super_logo_q.png" title="SeleniumBase" width="290">](https://github.com/seleniumbase/SeleniumBase/blob/master/README.md)
+[<img src="https://seleniumbase.io/cdn/img/super_logo_sb.png" title="SeleniumBase" width="290">](https://github.com/seleniumbase/SeleniumBase/blob/master/README.md)
 
 <h2><img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> The Selenium Grid Hub:</h2>
 
@@ -18,17 +18,18 @@ seleniumbase download server
 <h4><img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Grid Hub server controls:</h4>
 
 ```bash
-seleniumbase grid-hub {start|stop} [OPTIONS]
+seleniumbase grid-hub {start|stop|restart} [OPTIONS]
 ```
 <b>Options:</b>
 <ul>
 <li> -v / --verbose  (Increases verbosity of logging output.)</li>
+<li> --timeout=TIMEOUT  (Close idle browser after TIMEOUT sec.)</li>
 </ul>
 
 <h4><img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Grid node server controls:</h4>
 
 ```bash
-seleniumbase grid-node {start|stop} --hub=[HUB_IP] [OPTIONS]
+seleniumbase grid-node {start|stop|restart} --hub=[HUB_IP] [OPTIONS]
 ```
 <b>Options:</b>
 <ul>

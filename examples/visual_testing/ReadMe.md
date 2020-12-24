@@ -1,11 +1,12 @@
-<p align="center"><a href="https://github.com/seleniumbase/SeleniumBase/"><img src="https://cdn2.hubspot.net/hubfs/100006/images/sb_logo_f6.png" alt="SeleniumBase" width="320" /></a></p>
+<p align="center"><a href="https://github.com/seleniumbase/SeleniumBase/"><img src="https://seleniumbase.io/cdn/img/sb_logo_f6.png" alt="SeleniumBase" width="320" /></a></p>
 
 ## <img src="https://seleniumbase.io/img/sb_icon.png" title="SeleniumBase" width="30" /> Automated Visual Regression Testing
 
-[<img src="https://img.youtube.com/vi/erwkoiDeNzA/0.jpg" title="Automated Visual Regression Testing" width="276">](https://www.youtube.com/watch?v=erwkoiDeNzA)
-<p>(<b><a href="https://www.youtube.com/watch?v=erwkoiDeNzA">Watch the tutorial on YouTube</a></b>)</p>
+Automated Visual Regression Testing can help you detect when the layout of a web page has changed. Instead of comparing pixels from screenshots, layout differences can be detected by comparing HTML tags and attributes with a baseline. If a change is detected, it could mean that something broke, the web page was redesigned, or dynamic content changed.
 
-Automated Visual Regression Testing helps you detect when the layout of a web page has changed. Rather than comparing screenshots, layout differences are detected by comparing HTML tags and attributes with a baseline. If a change is detected, it could mean that something broke, the web page was redesigned, or dynamic content changed.
+<p>(<b><a href="https://www.youtube.com/watch?v=erwkoiDeNzA">Watch the tutorial on YouTube ↘️</a></b>)</p>
+
+[<img src="https://img.youtube.com/vi/erwkoiDeNzA/0.jpg" title="Automated Visual Regression Testing" width="376">](https://www.youtube.com/watch?v=erwkoiDeNzA)
 
 To handle automated visual testing, SeleniumBase uses the ``self.check_window()`` method, which can set visual baselines for comparison and then compare the latest versions of web pages to the existing baseline.
 
@@ -161,4 +162,8 @@ To run the example (from [examples/visual_testing/](https://github.com/seleniumb
 pytest test_layout_fail.py --html=report.html
 ```
 Here's what the pytest HTML Report looks like:<br />
-[<img src="https://cdn2.hubspot.net/hubfs/100006/visual_testing_report_2.png" title="Test Report">](https://cdn2.hubspot.net/hubfs/100006/visual_testing_report_2.png)
+[<img src="https://seleniumbase.io/cdn/img/visual_testing_report_2.png" title="Test Report">](https://seleniumbase.io/cdn/img/visual_testing_report_2.png)
+
+--------
+
+In conclusion, open source automated visual testing tools are being built directly into test frameworks, and this trend is growing. Just like many years ago when free Wi-Fi at coffee shops replaced Internet cafes that charged money for Internet access, open source tools for visual testing will replace their paid counterparts in time. You'll remember this next time you're sipping your Starbucks® Pumpkin Spice Latte with your free Internet access, instead of paying for Internet at cybercafes.

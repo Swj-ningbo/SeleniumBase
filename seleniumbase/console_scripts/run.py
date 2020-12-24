@@ -7,10 +7,10 @@ seleniumbase [COMMAND] [PARAMETERS]
 
 Examples:
 sbase install chromedriver
-sbase mkdir browser_tests
+sbase mkdir ui_tests
 sbase mkfile new_test.py
 sbase options
-sbase convert old_webdriver_unittest.py
+sbase convert webdriver_unittest_file.py
 sbase print my_first_test.py -n
 sbase translate my_first_test.py --zh -p
 sbase extract-objects my_first_test.py
@@ -26,61 +26,68 @@ sbase grid-node start --hub=127.0.0.1
 
 import colorama
 import sys
+colorama.init(autoreset=True)
 
 
 def show_usage():
     show_basic_usage()
     sc = ("")
-    sc += ('Type "sbase help [COMMAND]" for specific command info.\n')
-    sc += ('For info on all commands, type: "seleniumbase --help".\n')
-    sc += ('* (Use "pytest" for running tests) *\n')
-    c1 = colorama.Fore.BLUE + colorama.Back.LIGHTCYAN_EX
-    c2 = colorama.Fore.BLUE + colorama.Back.LIGHTGREEN_EX
-    c3 = colorama.Fore.BLUE + colorama.Back.LIGHTYELLOW_EX
-    c4 = colorama.Fore.MAGENTA + colorama.Back.LIGHTYELLOW_EX
-    cr = colorama.Style.RESET_ALL
-    sc = sc.replace("seleniumbase", c1 + "selenium" + c2 + "base" + cr)
-    sc = sc.replace("sbase", c1 + "s" + c2 + "base" + cr)
-    sc = sc.replace("pytest", c3 + "pytest" + cr)
-    sc = sc.replace("--help", c4 + "--help" + cr)
-    sc = sc.replace("help", c4 + "help" + cr)
+    sc += ('    Type "sbase help [COMMAND]" for specific command info.\n')
+    sc += ('    For info on all commands, type: "seleniumbase --help".\n')
+    sc += (' * (Use "pytest" for running tests) *\n')
+    if "linux" not in sys.platform:
+        c1 = colorama.Fore.BLUE + colorama.Back.LIGHTCYAN_EX
+        c2 = colorama.Fore.BLUE + colorama.Back.LIGHTGREEN_EX
+        c3 = colorama.Fore.BLUE + colorama.Back.LIGHTYELLOW_EX
+        c4 = colorama.Fore.MAGENTA + colorama.Back.LIGHTYELLOW_EX
+        cr = colorama.Style.RESET_ALL
+        sc = sc.replace("seleniumbase", c1 + "selenium" + c2 + "base" + cr)
+        sc = sc.replace("sbase", c1 + "s" + c2 + "base" + cr)
+        sc = sc.replace("pytest", c3 + "pytest" + cr)
+        sc = sc.replace("--help", c4 + "--help" + cr)
+        sc = sc.replace("help", c4 + "help" + cr)
     print(sc)
 
 
 def show_basic_usage():
+    import time
     from seleniumbase.console_scripts import logo_helper
     seleniumbase_logo = logo_helper.get_seleniumbase_logo()
     print(seleniumbase_logo)
-    print("%s" % get_version()[0:1])
-    print("")
+    time.sleep(0.25)  # Enough time to see the logo
+    print()
+    show_package_location()
+    show_version_info()
+    print()
     sc = ("")
-    sc += ('Usage: "seleniumbase [COMMAND] [PARAMETERS]"\n')
-    sc += ('(simplified): "sbase [COMMAND] [PARAMETERS]"\n')
+    sc += (' * USAGE: "seleniumbase [COMMAND] [PARAMETERS]"\n')
+    sc += (' *    OR:        "sbase [COMMAND] [PARAMETERS]"\n')
     sc += ("\n")
-    sc += ("Commands:\n")
-    sc += ("      install         [DRIVER_NAME] [OPTIONS]\n")
-    sc += ("      mkdir           [DIRECTORY_NAME]\n")
-    sc += ("      mkfile          [FILE_NAME.py]\n")
-    sc += ("      options         (display common pytest options)\n")
-    sc += ("      convert         [PYTHON_WEBDRIVER_UNITTEST_FILE]\n")
+    sc += ("COMMANDS:\n")
+    sc += ("      install         [DRIVER] [OPTIONS]\n")
+    sc += ("      mkdir           [DIRECTORY]\n")
+    sc += ("      mkfile          [FILE.py]\n")
+    sc += ("      options         (List common pytest options)\n")
     sc += ("      print           [FILE] [OPTIONS]\n")
-    sc += ("      translate       [SB_PYTHON_FILE] [LANGUAGE] [ACTION]\n")
-    sc += ("      extract-objects [SB_PYTHON_FILE]\n")
-    sc += ("      inject-objects  [SB_PYTHON_FILE] [OPTIONS]\n")
-    sc += ("      objectify       [SB_PYTHON_FILE] [OPTIONS]\n")
-    sc += ("      revert-objects  [SB_PYTHON_FILE]\n")
+    sc += ("      translate       [SB_FILE.py] [LANG] [ACTION]\n")
+    sc += ("      convert         [WEBDRIVER_UNITTEST_FILE.py]\n")
+    sc += ("      extract-objects [SB_FILE.py]\n")
+    sc += ("      inject-objects  [SB_FILE.py] [OPTIONS]\n")
+    sc += ("      objectify       [SB_FILE.py] [OPTIONS]\n")
+    sc += ("      revert-objects  [SB_FILE.py]\n")
     sc += ("      encrypt         (OR: obfuscate)\n")
     sc += ("      decrypt         (OR: unobfuscate)\n")
     sc += ("      download server (Selenium Server JAR file)\n")
     sc += ("      grid-hub        [start|stop] [OPTIONS]\n")
-    sc += ("      grid-node       [start|stop] --hub=[HUB_IP] [OPTIONS]\n")
-    sc += ('  *  (EXAMPLE: "sbase install chromedriver latest")  *\n')
+    sc += ("      grid-node       [start|stop] --hub=[HOST/IP]\n")
+    sc += (' * (EXAMPLE: "sbase install chromedriver latest")  *\n')
     sc += ("")
-    c1 = colorama.Fore.BLUE + colorama.Back.LIGHTCYAN_EX
-    c2 = colorama.Fore.BLUE + colorama.Back.LIGHTGREEN_EX
-    cr = colorama.Style.RESET_ALL
-    sc = sc.replace("seleniumbase", c1 + "selenium" + c2 + "base" + cr)
-    sc = sc.replace("sbase", c1 + "s" + c2 + "base" + cr)
+    if "linux" not in sys.platform:
+        c1 = colorama.Fore.BLUE + colorama.Back.LIGHTCYAN_EX
+        c2 = colorama.Fore.BLUE + colorama.Back.LIGHTGREEN_EX
+        cr = colorama.Style.RESET_ALL
+        sc = sc.replace("seleniumbase", c1 + "selenium" + c2 + "base" + cr)
+        sc = sc.replace("sbase", c1 + "s" + c2 + "base" + cr)
     print(sc)
 
 
@@ -104,10 +111,13 @@ def show_install_usage():
     print("  Example:")
     print("           sbase install chromedriver")
     print("           sbase install geckodriver")
-    print("           sbase install chromedriver 83.0.4103.39")
+    print("           sbase install edgedriver")
+    print("           sbase install chromedriver 85")
+    print("           sbase install chromedriver 85.0.4183.87")
     print("           sbase install chromedriver latest")
     print("           sbase install chromedriver -p")
     print("           sbase install chromedriver latest -p")
+    print("           sbase install edgedriver 85.0.564.68")
     print("  Output:")
     print("           Installs the chosen webdriver to seleniumbase/drivers/")
     print("           (chromedriver is required for Chrome automation)")
@@ -147,8 +157,8 @@ def show_mkfile_usage():
     print(sc)
     print("")
     print("  Usage:")
-    print("           seleniumbase mkfile [FILE_NAME.py]")
-    print("           OR:    sbase mkfile [FILE_NAME.py]")
+    print("           seleniumbase mkfile [FILE.py]")
+    print("           OR:    sbase mkfile [FILE.py]")
     print("  Example:")
     print("           sbase mkfile new_test.py")
     print("  Options:")
@@ -164,7 +174,7 @@ def show_mkfile_usage():
     print("          If the file already exists, an error is raised.")
     print("          By default, uses English mode and creates a")
     print("          boilerplate with the 5 most common SeleniumBase")
-    print('          methods, which are "open", "click", "update_text",')
+    print('          methods, which are "open", "type", "click",')
     print('          "assert_element", and "assert_text". If using the')
     print('          basic boilerplate option, only the "open" method')
     print('          is included.')
@@ -179,8 +189,8 @@ def show_convert_usage():
     print(sc)
     print("")
     print("  Usage:")
-    print("           seleniumbase convert [PYTHON_WEBDRIVER_UNITTEST_FILE]")
-    print("           OR:    sbase convert [PYTHON_WEBDRIVER_UNITTEST_FILE]")
+    print("           seleniumbase convert [WEBDRIVER_UNITTEST_FILE.py]")
+    print("           OR:    sbase convert [WEBDRIVER_UNITTEST_FILE.py]")
     print("  Output:")
     print("           Converts a Selenium IDE exported WebDriver unittest")
     print("           file into a SeleniumBase file. Adds _SB to the new")
@@ -202,7 +212,6 @@ def show_print_usage():
     print("         OR:    sbase print [FILE] [OPTIONS]")
     print("  Options:")
     print("         -n   (Add line Numbers to the rows)")
-    print("         -w   (Use word-Wrap for long lines)")
     print("  Output:")
     print("         Prints the code/text of any file")
     print("         with syntax-highlighting.")
@@ -237,7 +246,7 @@ def show_translate_usage():
     print("         Both a language and an action must be specified.")
     print('         The "-p" action can be paired with one other action.')
     print('         When running with "-c" (or "--copy"), the new file name')
-    print('         will be the orginal name appended with an underscore')
+    print('         will be the original name appended with an underscore')
     print("         plus the 2-letter language code of the new language.")
     print('         (Example: Translating "test_1.py" into Japanese with')
     print('          "-c" will create a new file called "test_1_ja.py".)')
@@ -252,8 +261,8 @@ def show_extract_objects_usage():
     print(sc)
     print("")
     print("  Usage:")
-    print("           seleniumbase extract-objects [SELENIUMBASE_PYTHON_FILE]")
-    print("           OR:    sbase extract-objects [SELENIUMBASE_PYTHON_FILE]")
+    print("           seleniumbase extract-objects [SB_FILE.py]")
+    print("           OR:    sbase extract-objects [SB_FILE.py]")
     print("  Output:")
     print("           Creates page objects based on selectors found in a")
     print("           seleniumbase Python file and saves those objects to the")
@@ -269,8 +278,8 @@ def show_inject_objects_usage():
     print(sc)
     print("")
     print("  Usage:")
-    print("           seleniumbase inject-objects [SELENIUMBASE_PYTHON_FILE]")
-    print("           OR:    sbase inject-objects [SELENIUMBASE_PYTHON_FILE]")
+    print("           seleniumbase inject-objects [SB_FILE.py]")
+    print("           OR:    sbase inject-objects [SB_FILE.py]")
     print("  Options:")
     print("           -c, --comments  (Add object selectors to the comments.)")
     print("                           (Default: No added comments.)")
@@ -289,8 +298,8 @@ def show_objectify_usage():
     print(sc)
     print("")
     print("  Usage:")
-    print("           seleniumbase objectify [SELENIUMBASE_PYTHON_FILE]")
-    print("           OR:    sbase objectify [SELENIUMBASE_PYTHON_FILE]")
+    print("           seleniumbase objectify [SB_FILE.py]")
+    print("           OR:    sbase objectify [SB_FILE.py]")
     print("  Options:")
     print("           -c, --comments  (Add object selectors to the comments.)")
     print("                           (Default: No added comments.)")
@@ -312,8 +321,8 @@ def show_revert_objects_usage():
     print(sc)
     print("")
     print("  Usage:")
-    print("           seleniumbase revert-objects [SELENIUMBASE_PYTHON_FILE]")
-    print("           OR:    sbase revert-objects [SELENIUMBASE_PYTHON_FILE]")
+    print("           seleniumbase revert-objects [SB_FILE.py]")
+    print("           OR:    sbase revert-objects [SB_FILE.py]")
     print("  Options:")
     print("           -c, --comments  (Keep existing comments for the lines.)")
     print("                           (Default: No comments are kept.)")
@@ -383,11 +392,14 @@ def show_grid_hub_usage():
     print(sc)
     print("")
     print("  Usage:")
-    print("           seleniumbase grid-hub {start|stop}")
-    print("           OR:    sbase grid-hub {start|stop}")
+    print("           seleniumbase grid-hub {start|stop|restart} [OPTIONS]")
+    print("           OR:    sbase grid-hub {start|stop|restart} [OPTIONS]")
     print("  Options:")
     print("           -v, --verbose  (Increase verbosity of logging output.)")
     print("                          (Default: Quiet logging / not verbose.)")
+    print("           --timeout=TIMEOUT  (Close idle browser after TIMEOUT.)")
+    print("                              (The default TIMEOUT: 230 seconds.)")
+    print("                              (Use --timeout=0 to skip timeouts.)")
     print("  Example:")
     print("           seleniumbase grid-hub start")
     print("  Output:")
@@ -407,13 +419,13 @@ def show_grid_node_usage():
     print(sc)
     print("")
     print("  Usage:")
-    print("           seleniumbase grid-node {start|stop} [OPTIONS]")
-    print("           OR:    sbase grid-node {start|stop} [OPTIONS]")
+    print("           seleniumbase grid-node {start|stop|restart} [OPTIONS]")
+    print("           OR:    sbase grid-node {start|stop|restart} [OPTIONS]")
     print("  Options:")
-    print("           --hub=[HUB_IP] (The Grid Hub IP Address to connect to.)")
-    print("                          (Default: 127.0.0.1 if not set)")
+    print("           --hub=[HOST/IP]  (The Grid Hub Hostname / IP Address.)")
+    print("                                 (Default: 127.0.0.1 if not set.)")
     print("           -v, --verbose  (Increase verbosity of logging output.)")
-    print("                          (Default: Quiet logging / not verbose.)")
+    print("                          (Default: Quiet logging / Not verbose.)")
     print("  Example:")
     print("           seleniumbase grid-node start --hub=127.0.0.1")
     print("  Output:")
@@ -423,19 +435,39 @@ def show_grid_node_usage():
     print("")
 
 
-def get_version():
-    import pkg_resources
+def get_version_info():
+    # from pkg_resources import get_distribution
+    # version = get_distribution("seleniumbase").version
+    from seleniumbase import __version__
     version_info = None
-    try:
-        version_info = pkg_resources.require("seleniumbase")[0:1]
-    except Exception:
-        version_info = ["ERROR: Cannot detect version! Please reinstall!"]
+    c1 = colorama.Fore.BLUE + colorama.Back.LIGHTCYAN_EX
+    c2 = colorama.Fore.BLUE + colorama.Back.LIGHTGREEN_EX
+    c3 = colorama.Fore.BLUE + colorama.Back.LIGHTYELLOW_EX
+    cr = colorama.Style.RESET_ALL
+    sb_text = c1 + "selenium" + c2 + "base" + cr
+    version_info = "%s %s%s%s" % (sb_text, c3, __version__, cr)
     return version_info
 
 
 def show_version_info():
-    version = get_version()
-    print('\n%s\n' % version)
+    version_info = get_version_info()
+    print('%s' % version_info)
+
+
+def get_package_location():
+    # from pkg_resources import get_distribution
+    # location = get_distribution("seleniumbase").location
+    import os
+    import seleniumbase
+    location = os.path.dirname(os.path.realpath(seleniumbase.__file__))
+    if location.endswith("seleniumbase"):
+        location = location[0:-len("seleniumbase")]
+    return location
+
+
+def show_package_location():
+    location = get_package_location()
+    print("%s" % location)
 
 
 def show_options():
@@ -443,7 +475,7 @@ def show_options():
     c2 = colorama.Fore.BLUE + colorama.Back.LIGHTGREEN_EX
     c3 = colorama.Fore.BLUE + colorama.Back.LIGHTYELLOW_EX
     cr = colorama.Style.RESET_ALL
-    sc = ("\n " + c2 + " ** " + c3 + " pytest CMD Options " + c2 + " ** " + cr)
+    sc = ("\n " + c2 + " ** " + c3 + " pytest CLI Options " + c2 + " ** " + cr)
     print(sc)
     print("")
     line = "Here are some common pytest options to use with SeleniumBase:"
@@ -457,6 +489,7 @@ def show_options():
     print('--reuse-session / --rs  (Reuse the browser session between tests.)')
     print('--crumbs  (Delete all cookies between tests reusing a session.)')
     print('--maximize  (Start tests with the web browser window maximized.)')
+    print('--dashboard (Enable the SeleniumBase Dashboard at dashboard.html)')
     print("--incognito  (Enable Chrome's Incognito mode.)")
     print("--guest  (Enable Chrome's Guest mode.)")
     print('-m MARKER  (Run tests with the specified pytest marker.)')
@@ -469,7 +502,7 @@ def show_options():
     print('          n: Next line of method. s: Step through. c: Continue.)')
     print('--pdb  (Enter Debug Mode if a test fails. h: Help. c: Continue.')
     print('        where: Stacktrace location. u: Up stack. d: Down stack.')
-    print('        longlist: Stack code. dir(): List objects in namespace.)')
+    print('        longlist / ll: See code. dir(): List namespace objects.)')
     print('-x  (Stop running the tests after the first failure is reached.)')
     print('--archive-logs  (Archive old log files instead of deleting them.)')
     print('--save-screenshot  (Save a screenshot at the end of each test.)')
@@ -566,7 +599,6 @@ def main():
     elif command == "print":
         if len(command_args) >= 1:
             if sys.version_info[0] == 2:
-                colorama.init(autoreset=True)
                 c5 = colorama.Fore.RED + colorama.Back.LIGHTYELLOW_EX
                 cr = colorama.Style.RESET_ALL
                 msg = '"sbase print" does NOT support Python 2! '
@@ -582,7 +614,6 @@ def main():
     elif command == "translate":
         if len(command_args) >= 1:
             if sys.version_info[0] == 2:
-                colorama.init(autoreset=True)
                 c5 = colorama.Fore.RED + colorama.Back.LIGHTYELLOW_EX
                 cr = colorama.Style.RESET_ALL
                 msg = "The SeleniumBase Translator does NOT support Python 2!"
@@ -660,7 +691,13 @@ def main():
             show_grid_node_usage()
     elif command == "version" or command == "--version":
         if len(command_args) == 0:
+            from seleniumbase.console_scripts import logo_helper
+            seleniumbase_logo = logo_helper.get_seleniumbase_logo()
+            print(seleniumbase_logo)
+            print()
+            show_package_location()
             show_version_info()
+            print()
         else:
             show_basic_usage()
     elif command == "options" or command == "--options":

@@ -3,8 +3,8 @@
 Creates a new SeleniumBase test file with boilerplate code.
 
 Usage:
-    seleniumbase mkfile [FILE_NAME.py] [OPTIONS]
-    or     sbase mkfile [FILE_NAME.py] [OPTIONS]
+    seleniumbase mkfile [FILE.py] [OPTIONS]
+    or     sbase mkfile [FILE.py] [OPTIONS]
 
 Example:
     sbase mkfile new_test.py
@@ -24,7 +24,7 @@ Output:
     If the file already exists, an error is raised.
     By default, uses English mode and creates a
     boilerplate with the 5 most common SeleniumBase
-    methods, which are "open", "click", "update_text",
+    methods, which are "open", "type", "click",
     "assert_element", and "assert_text". If using the
     basic boilerplate option, only the "open" method
     is included.
@@ -39,8 +39,8 @@ import sys
 def invalid_run_command(msg=None):
     exp = ("  ** mkfile **\n\n")
     exp += "  Usage:\n"
-    exp += "          seleniumbase mkfile [FILE_NAME.py] [OPTIONS]\n"
-    exp += "          OR     sbase mkfile [FILE_NAME.py] [OPTIONS]\n"
+    exp += "          seleniumbase mkfile [FILE.py] [OPTIONS]\n"
+    exp += "          OR     sbase mkfile [FILE.py] [OPTIONS]\n"
     exp += "  Example:\n"
     exp += "          sbase mkfile new_test.py\n"
     exp += "  Options:\n"
@@ -56,7 +56,7 @@ def invalid_run_command(msg=None):
     exp += "          If the file already exists, an error is raised.\n"
     exp += "          By default, uses English mode and creates a\n"
     exp += "          boilerplate with the 5 most common SeleniumBase\n"
-    exp += '          methods, which are "open", "click", "update_text",\n'
+    exp += '          methods, which are "open", "type", "click",\n'
     exp += '          "assert_element", and "assert_text". If using the\n'
     exp += '          basic boilerplate option, only the "open" method\n'
     exp += '          is included.\n'
